@@ -1,0 +1,8 @@
+compilation_debug/
+compilation_release/
+.git/
+.gitignore
+projet/projet.pro.user
+Documents/
+UML/
+doxygen
