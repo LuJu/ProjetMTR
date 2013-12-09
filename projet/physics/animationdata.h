@@ -2,7 +2,7 @@
 #define ANIMATIONDATA_H
 #include "btBulletCollisionCommon.h"
 #include "utils/triplet.h"
-#include "curve.h"
+#include "utils/curve.h"
 
 class Curve3d : public Triplet<Curve>
 {

@@ -1,6 +1,11 @@
 #include "simulation.h"
 
-Simulation::Simulation():_initiated(false),_going(false),_over(false),_timer_autoloop(NULL),_timer_simulations(NULL)
+Simulation::Simulation():
+    _initiated(false),
+    _going(false),
+    _simulation_over(false),
+    _timer_autoloop(NULL),
+    _timer_simulations(NULL)
 {
 }
 
@@ -38,11 +43,11 @@ void Simulation::standard() {
     params.set_gravity(btVector3(0,-9.8,0));
     params.set_coefficient(GlobalConfig::get_int("coefficient"));
     params.set_duration(GlobalConfig::get_int("duration"));
-    params._steps_duration=GlobalConfig::get_int("steps_duration");
+    params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
     params.set_ups(60);
     initiate(params);
-
-    _human.loadObjects();
+    _human.set_mass(GlobalConfig::get_int("body_mass"));
+    _human.loadObjects(GlobalConfig::get_string("input_location"));
     _display = _human._parts;
     _ground = new InteractiveObject();
     _ground->set_shape(btVector3(20,1,20) );
@@ -87,10 +92,9 @@ void Simulation::startSimulation(){
 void Simulation::resetStep(float time){
     deleteTimer(_timer_steps);
     _timer_steps= new QTimer();
-    _timer_steps->setInterval(_params._steps_duration);
+    _timer_steps->setInterval(_params.get_steps_duration());
     _timer_steps->connect(_timer_steps, SIGNAL(timeout()),this, SLOT(stepOver()));
     _timer_steps->start();
-
 
     cleanWorld();
     _elapsed=time;
@@ -98,6 +102,7 @@ void Simulation::resetStep(float time){
     _human.setSimulationPosition(_elapsed);
     fillWorld();
 }
+
 void Simulation::stepOver(){
     _human.calculateWork();
     resetStep(_elapsed);
@@ -105,15 +110,13 @@ void Simulation::stepOver(){
 
 void Simulation::cleanWorld(){
     btRigidBody * body;
-    InteractiveObject * object;
     if (_world_filled){
         for (int i = 0; i < _display.size(); ++i) {
-            object = _display[i];
-            body = &(object->get_body());
+            body = &(_display[i]->get_body());
             _world->removeRigidBody(body);
         }
-        _world_filled = false;
-    }
+        _world_filled = false; //indicates that the world is now empty
+    } else qWarning()<<"Attempting to clean an empty world" ;
 }
 
 void Simulation::fillWorld(){
@@ -122,14 +125,14 @@ void Simulation::fillWorld(){
     //        btVector3 pivotA(-1.0f, -1.f, 1.f);
     //        btVector3 pivotB(-1.0f, -1.f, -1.f);
     //        btHingeConstraint* hinge = new btHingeConstraint(*body1, *body2, pivotA, pivotB, axisA, axisB);
+    btRigidBody * body;
     if (!_world_filled){
-        btRigidBody * body;
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
             _world->addRigidBody(body);
         }
         _world_filled = true;
-    }
+    } else qWarning()<<"Attempting to fill a full world" ;
     //    _world->addConstraint(hinge);
 }
 
@@ -139,7 +142,7 @@ void Simulation::simulationOver()
     if(_going){
          _human.saveDataList();
          _going = false;
-         _over = true;
+         _simulation_over = true;
          qDebug()<<"\n\nSimulation over";
     }
 }
@@ -157,10 +160,9 @@ void Simulation::autoloopSteps(){
 }
 
 void Simulation::update(){
-
     btScalar coeff = _params.get_coefficient();
     _diff = _clock.getTimeMilliseconds()/coeff-_elapsed;
-    _world->stepSimulation(1./(60.*coeff),0 );
+    _world->stepSimulation(1./(60.*coeff),0);
     _elapsed=_clock.getTimeMilliseconds()/coeff;
     _human.updateEnergyInformations(_elapsed,_diff,_params.get_gravity().y());
 }

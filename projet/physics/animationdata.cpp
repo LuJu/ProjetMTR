@@ -1,5 +1,4 @@
 #include "animationdata.h"
 
-AnimationData::AnimationData()
-{
+AnimationData::AnimationData() {
 }

@@ -19,9 +19,10 @@ void Viewer::draw()
     float scale = (((float)_ui->get_zoom())/100)+0.5;
     V.translate( 0,-5.5,1);
     V.scale(scale,scale,scale);
-    V.rotate(_ui->get_rotate().x(),1,0,0);
-    V.rotate(_ui->get_rotate().y(),0,1,0);
-    V.rotate(_ui->get_rotate().z(),QVector3D(0,0,1));
+//    V.rotate(_ui->get_rotate().x(),1,0,0);
+//    V.rotate(_ui->get_rotate().y(),0,1,0);
+//    V.rotate(_ui->get_rotate().z(),0,0,1);
+    V = V*_ui->_rotation;
 
     _ui->set_view(V);
     _program->setUniformValue("V",V);
@@ -68,12 +69,19 @@ void Viewer::startShaders(){
 QGLShader * Viewer::compileShader(const char * path, QGLShader::ShaderType type){
     QGLShader * shader;
     QFile shaderf(GlobalConfig::find_asset_path(path));
-    shaderf.open(QIODevice::ReadOnly);
-    QByteArray qvs = shaderf.readAll();
-    shaderf.close();
-    shader = new QGLShader(type, this);
-    shader->compileSourceCode(qvs.data());
-    return shader;
+    qDebug()<<GlobalConfig::find_asset_path(path);
+    qDebug()<<shaderf.exists();
+    if (shaderf.open(QIODevice::ReadOnly)){
+        QByteArray qvs = shaderf.readAll();
+        shaderf.close();
+        shader = new QGLShader(type, this);
+        shader->compileSourceCode(qvs.data());
+        shaderf.close();
+        return shader;
+    } else {
+        qCritical()<<"Error opening shader";
+        return NULL;
+    }
 }
 
 void Viewer::display3DObjects(){

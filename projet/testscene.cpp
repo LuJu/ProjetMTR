@@ -116,7 +116,7 @@ void TestScene::displaySimulation(){
             _program->setUniformValue("pvm",pvm);
             for (int i = 0; i < 3; ++i) {
 
-                obj->_animation_from_simulation.get_translation_curves()[i].render();
+                Mesh::render(obj->_animation_from_simulation.get_translation_curves()[i]);
             }
             glViewport(0,0,width(),height()/2);
         }
@@ -124,15 +124,8 @@ void TestScene::displaySimulation(){
 }
 
 void TestScene::display3DObjects(){
-    QMatrix4x4& V = _ui->get_view();
-    QMatrix4x4& P = _ui->get_projection();
-    QMatrix4x4 M;
-    QMatrix4x4 pvm;
-    M.scale(10,1,10);
-    pvm = P*V*M;
-    _program->setUniformValue("pvm",pvm);
     _program->setUniformValue("shininess",(GLfloat)1.0);
-    //    _cube_mesh.render();
+
     if (GlobalConfig::is_enabled("display_second_viewport")){
         glViewport(0,0,width(),height()/2);
     } else {

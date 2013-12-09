@@ -57,37 +57,68 @@ void UIState::changeZoom(int delta){
 }
 
 
+void UIState::rotate(QPoint mouse_coordinates){
+    float xangle = 0.0;
+    float yangle = 0.0;
+    xangle = mouse_coordinates.x();
+    QMatrix4x4 rotation;
+    qDebug()<<xangle;
+    if( xangle < 0) rotation.rotate(-xangle,0,-1,0);
+    else rotation.rotate(xangle,0,1,0);
+
+    yangle = (float)mouse_coordinates.y()/2;
+    qDebug()<<yangle;
+    if( yangle < 0) rotation.rotate(-yangle,-1,0,0);
+    else rotation.rotate(yangle,1,0,0);
+
+    _rotation = _rotation* rotation.transposed() ;
+}
+
 void UIState::actionProcess(){
+    QMatrix4x4 rotation;
     for (int i=0;i<NUMBER_OF_ACTIONS;i++){
         if(_actions[i]==true){
             switch (i){
             case left:
                 _rotate.y(_rotate.y()+2);
                 if(_rotate.y() >= 360 )_rotate.y(_rotate.y()-360);
+                rotation.rotate(1,0,1,0);
+                _quaternion = _quaternion * QQuaternion(1,0,1,0);
                 break;
             case right:
                 _rotate.y(_rotate.y()-2);
                 if(_rotate.y() < 0)_rotate.y(_rotate.y()+360);
+                rotation.rotate(-1,0,1,0);
                 break;
             case up:
                 _rotate.x(_rotate.x()+2);
                 if(_rotate.x() >= 360 )_rotate.x(_rotate.x()-360);
+                rotation.rotate(1,1,0,0);
                 break;
             case down:
                 _rotate.x(_rotate.x()-2);
                 if(_rotate.x() < 0)_rotate.x(_rotate.x()+360);
+                rotation.rotate(-1,1,0,0);
                 break;
             case forward:
                 _rotate.z(_rotate.z()+2);
                 if(_rotate.z() >= 360 )_rotate.z(_rotate.z()-360);
+                rotation.rotate(1,0,0,1);
                 break;
             case backward:
                 _rotate.z(_rotate.z()-2);
                 if(_rotate.z() < 0)_rotate.z(_rotate.z()+360);
+                rotation.rotate(-1,0,0,1);
                 break;
             }
         }
     }
+    _rotation =  _rotation * rotation;
+
+//    _rotation=QMatrix4x4();
+//    _rotation.rotate(_rotate.x(),1,0,0);
+//    _rotation.rotate(_rotate.y(),0,1,0);
+//    _rotation.rotate(_rotate.z(),0,0,1);
 }
 
 void UIState::saveState(){

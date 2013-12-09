@@ -1,12 +1,5 @@
 #include "globalconfig.h"
 
-//bool GlobalConfig::_color_enabled=true;
-//bool GlobalConfig::_vertex_enabled=true;
-//bool GlobalConfig::_normal_enabled=true;
-//bool GlobalConfig::_texture_enabled=false;
-//bool GlobalConfig::_display_bezier=false;
-//bool GlobalConfig::_display_light=false;
-//bool GlobalConfig::_test=false;
 QHash<QString,bool> GlobalConfig::_bool;
 QHash<QString,int> GlobalConfig::_int;
 QHash<QString,QString> GlobalConfig::_string;
@@ -65,6 +58,10 @@ void GlobalConfig::saveConfiguration(){
 }
 
 bool GlobalConfig::loadConfiguration(){
+
+    FILE *fp;
+    char path[1000];
+
     QString option;
     QString value;
     QStringList keys;
@@ -72,6 +69,13 @@ bool GlobalConfig::loadConfiguration(){
     bool ok;
     _settings.beginGroup("bool");
     keys=_settings.allKeys();
+
+    QString command = QString("ls");
+    fp = popen(command.toStdString().c_str(), "r");
+    while (fgets(path, 1000, fp) != NULL){
+        QString s(path);
+        qDebug()<<"s : "<<s;
+    }
     for (int i =0; i < keys.size() ; i++){
         option=keys[i];
         value=_settings.value(keys[i]).toString();
@@ -98,29 +102,42 @@ bool GlobalConfig::loadConfiguration(){
     }
     _settings.endGroup();
 
+    set_int("body_mass",100);
+    set_string("input_location","values.csv");
+
     qDebug()<<"Previous configuration loaded";
     return true;
 }
 
 void GlobalConfig::parseArguments(int argc, char *argv[]){
-    for (int i = 0; i < argc; ++i) {
+    int value=0;
+    bool ok=false;
+    for (int i = 1; i < argc; ++i) {
         QString param(argv[i]);
-        qDebug()<<"param "<<i;
-        qDebug()<<param;
+        qDebug()<<"param "<<i<<": "<<param;
+        if(i != 1){
+            value= param.toInt(&ok);
+            if (!ok)
+                qWarning()<<"parameter "<<i<<" invalid";
+            else qWarning()<<"parameter "<<value<<" valid";
+        }
         switch (i){
         case 0:
             break ;
         case 1:
-            set_int("duration",param.toInt());
+            set_string("input_location",param);
             break ;
         case 2:
-            set_int("coefficient",param.toInt());
+            set_int("body_mass",value);
             break ;
         case 3:
+            set_int("duration",value);
             break ;
         case 4:
+            set_int("coefficient",value);
+            break ;
+        case 5:
             break ;
         }
-
     }
 }

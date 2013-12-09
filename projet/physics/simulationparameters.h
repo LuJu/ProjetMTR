@@ -20,9 +20,11 @@ public:
     void set_coefficient(int coefficient){_coefficient = coefficient;}
     int get_ups() const {return _ups;}
     void set_ups(int ups){_ups = ups;}
-    float _steps_duration;
+    int get_steps_duration() const {return _steps_duration;}
+    void set_steps_duration(int steps_duration){_steps_duration = steps_duration;}
 
 private:
+    int _steps_duration;
     int _duration;
     int _total_duration;
     int _coefficient;

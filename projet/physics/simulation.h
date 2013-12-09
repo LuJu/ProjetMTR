@@ -22,6 +22,7 @@ public slots:
     void simulationOver();
     void autoloopSteps();
     void stepOver();
+
 public:
 
     Simulation();
@@ -31,23 +32,26 @@ public:
     void update();
     void loop();
     void autoloopStart();
-    void cleanWorld();
     void startSimulation();
     void resetStep(float time = 0);
     void deleteTimer(QTimer * timer);
+
+    //! function called each step, empties the world
+    void cleanWorld();
+
+    //! fills the world with all the objects of the simulation
     void fillWorld();
 
-    QList<InteractiveObject * >& get_display_list(){return  _display;}
+    QList<InteractiveObject * >& get_display_list() {return  _display;}
     btDiscreteDynamicsWorld * get_world() {return _world;}
-    void set_world(btDiscreteDynamicsWorld * world){_world = world;}
+
     bool is_going() const {return _going;}
-    bool is_over() const {return _over;}
+    bool is_over() const {return _simulation_over;}
     void set_autoloop(bool autoloop){_autoloop=autoloop;}
 
     float get_elapsed() const {return _elapsed;}
     float get_time_simulation() const {return _elapsed;}
     float _diff;
-    void calculateWork();
 
 private:
 
@@ -74,7 +78,7 @@ private:
 
 
 
-    bool _over;
+    bool _simulation_over;
     bool _going;
     bool _autoloop;
     bool _initiated;

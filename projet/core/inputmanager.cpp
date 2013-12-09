@@ -89,6 +89,7 @@ void InputManager::mouseEvent( int eventType, QPoint pos, int key)
         }
         break;
     case Moved:
+        _ui->rotate(pos);
         break;
     default:
         break;

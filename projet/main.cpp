@@ -10,16 +10,9 @@
 #include "3d/transform.h"
 #include <QMatrix4x4>
 #include <QVector4D>
-#include <physics/curve.h>
-int lolo=3;
-const int& lol() {
-    return lolo;
-}
+#include <utils/curve.h>
 
 void speedTest(){
-    const int& ll = lol();
-    qDebug()<<ll;
-    qDebug()<<lol();
 }
 
 int main(int argc, char *argv[])

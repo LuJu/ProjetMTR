@@ -8,14 +8,12 @@ HEADERS     = \
     utils/maths.h \
     utils/csvparser.h \
     utils/typedefinitions.h \
-    physics/bodyinfo.h \
-    physics/humanbody.h
+    utils/curve.h
 SOURCES     = \
     main.cpp \
     utils/maths.cpp \
     utils/csvparser.cpp \
-    physics/bodyinfo.cpp \
-    physics/humanbody.cpp
+    utils/curve.cpp
 ############################
 
 #   CORE     ##############
@@ -53,13 +51,15 @@ HEADERS += \
     physics/simulationparameters.h \
     physics/simulation.h \
     physics/animationdata.h \
-    physics/curve.h
+    physics/bodyinfo.h \
+    physics/humanbody.h
 SOURCES     += \
     physics/interactiveobject.cpp \
     physics/simulationparameters.cpp \
     physics/simulation.cpp \
     physics/animationdata.cpp \
-    physics/curve.cpp
+    physics/bodyinfo.cpp \
+    physics/humanbody.cpp
 ############################
 
 

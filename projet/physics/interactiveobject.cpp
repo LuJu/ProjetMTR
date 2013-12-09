@@ -20,17 +20,9 @@ InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& s
     _transform.setIdentity();
     _transform.setOrigin(origin);
 
-    _animation_from_simulation.get_translation_curves()[0]._color[0]=1;
-    _animation_from_simulation.get_translation_curves()[0]._color[1]=0;
-    _animation_from_simulation.get_translation_curves()[0]._color[2]=0;
-
-    _animation_from_simulation.get_translation_curves()[1]._color[0]=0;
-    _animation_from_simulation.get_translation_curves()[1]._color[1]=1;
-    _animation_from_simulation.get_translation_curves()[1]._color[2]=0;
-
-    _animation_from_simulation.get_translation_curves()[2]._color[0]=0;
-    _animation_from_simulation.get_translation_curves()[2]._color[1]=0;
-    _animation_from_simulation.get_translation_curves()[2]._color[2]=1;
+    _animation_from_simulation.get_translation_curves()[0].set_color(QColor(1,0,0));
+    _animation_from_simulation.get_translation_curves()[1].set_color(QColor(0,1,0));
+    _animation_from_simulation.get_translation_curves()[2].set_color(QColor(0,0,1));
 }
 
 //InteractiveObject::InteractiveObject(const InteractiveObject& object) :

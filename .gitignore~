@@ -4,5 +4,4 @@ compilation_release/
 .gitignore
 projet/projet.pro.user
 Documents/
-UML/
 doxygen

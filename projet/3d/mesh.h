@@ -9,7 +9,8 @@
 #include "qgl.h"
 #include "core/core.h"
 #include "vertex.h"
-
+#include "utils/curve.h"
+class Curve;
 class Mesh
 {
 public:
@@ -23,7 +24,7 @@ public:
     };
 
     Mesh();
-    void render();
+    void render() const;
 
     void loadFromFile(QString filepath, int filetype = obj);
     GLuint get_texture() const {return _texture;}
@@ -35,6 +36,7 @@ public:
     QVector<unsigned short>& get_polygons() {return _polygons;}
     QVector<Vertex>& get_vertices() {return _vertices;}
 
+    static void render(const Curve& curve);
 
 protected:
     GLuint _texture;

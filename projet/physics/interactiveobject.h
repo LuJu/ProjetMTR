@@ -7,7 +7,7 @@
 #include "utils/geometry.h"
 #include "utils/typedefinitions.h"
 #include "utils/maths.h"
-#include "curve.h"
+#include "utils/curve.h"
 #include "animationdata.h"
 
 class InteractiveObject

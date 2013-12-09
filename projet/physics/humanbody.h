@@ -13,15 +13,21 @@ public:
     ~HumanBody();
 
     QList<InteractiveObject * > _parts;
-    int _mass;
 
-    void loadObjects(QString path="values.csv");
+    void loadObjects(QString path);
     void calculateWork();
     QList<InteractiveObject::energy_info> _data_list;
     void saveDataList();
     void setSimulationPosition(float time);
     void updateEnergyInformations(float elapsed,float diff,float gravity);
     btScalar computeWork(btScalar ke_simulation , btScalar ke_animation , btScalar ake_simulation , btScalar ake_animation , btScalar pe_simulation , btScalar pe_animation);
+
+    int get_mass() const {return _mass;}
+    void set_mass(int mass){_mass = mass;}
+
+protected:
+    int _mass;
+
 };
 
 #endif // HUMANBODY_H

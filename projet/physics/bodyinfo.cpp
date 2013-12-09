@@ -1,11 +1,6 @@
 #include "bodyinfo.h"
 
-BodyInfo::BodyInfo()
-{
-}
-
-
-float BodyInfo::mass(QString body_part, float total_mass){
+float BodyInfo::mass(const QString& body_part, float total_mass){
     float proportion;
     QHash<QString,float> segments;
     segments.insert("head",8.26);
@@ -27,7 +22,7 @@ float BodyInfo::mass(QString body_part, float total_mass){
     segments.insert("foot",1.43);
     segments.insert("leg & foot",6.18);
 
-    QHash<QString,float>::Iterator it = segments.find(body_part.toLower());
+    QHash<QString,float>::const_iterator it = segments.find(body_part.toLower());
     if (it !=segments.end())
         proportion = it.value();
     else proportion = 0;

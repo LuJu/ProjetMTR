@@ -6,8 +6,9 @@
 class BodyInfo
 {
 public:
-    BodyInfo();
-    static float mass(QString body_part, float total_mass);
+    static float mass(const QString& body_part, float total_mass);
+private:
+    virtual void abstract() = 0;
 };
 
 #endif // BODYINFO_H

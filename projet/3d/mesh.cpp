@@ -7,7 +7,7 @@ Mesh::Mesh():
 {
 }
 
-void Mesh::render(){
+void Mesh::render() const{
     int size;
     const Vertex * vertices =_vertices.constData();
     if(_vertices.size()>0){
@@ -186,4 +186,22 @@ void Mesh::loadFromFile(QString filepath, int filetype){
     default:
         break;
     }
+}
+
+void Mesh::render(const Curve& curve){
+    Mesh mesh;
+    mesh.set_type(Mesh::line_strip);
+    QMap<float,float>::const_iterator iterator = curve.begin();
+    int i = 0;
+    while (iterator != curve.end()){
+        Vertex v(iterator.key(),iterator.value(),0);
+        v._color[0]=curve.get_color().red();
+        v._color[1]=curve.get_color().green();
+        v._color[2]=curve.get_color().blue();
+        mesh.get_vertices().append(v);
+        mesh.get_polygons().append(i);
+        i++;
+        iterator++;
+    }
+    mesh.render();
 }

@@ -18,7 +18,7 @@ void HumanBody::loadObjects(QString path){
     QStringList temp;
     int i=0;
     int total_mass=0;
-    InteractiveObject * object;
+    InteractiveObject * object = NULL;
     while (list[i].at(0)!="final"){
         object = new InteractiveObject();
         object->_shape_type=InteractiveObject::cylinder;

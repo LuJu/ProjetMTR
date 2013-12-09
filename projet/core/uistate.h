@@ -30,7 +30,7 @@ public:
 
     //! Get the zoom value of the view
     /*!
-        The zoom value goes from 0 to 100
+        The zoom value goes from 0 to 1000
     */
     inline int get_zoom(){return _zoom;}
     Point3d<float> get_position() const {return _position;}
@@ -77,6 +77,9 @@ public:
     QMatrix4x4& get_view() {return _view;}
     void set_view(QMatrix4x4 view){_view=view;}
     void set_projection(QMatrix4x4 projection){_projection=projection;}
+    QMatrix4x4 _rotation;
+    QQuaternion _quaternion;
+    void rotate(QPoint mouse_coordinates);
 private:
 
 
