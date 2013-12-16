@@ -9,6 +9,8 @@ void TestScene::draw(){
     Viewer::draw();
 //    _simulation.loop();
     display3DObjects();
+    if(_simulation.is_over() && GlobalConfig::is_enabled("automatic_close"))
+        close();
     frameEnd();
 }
 
@@ -103,22 +105,72 @@ void TestScene::displaySimulation(){
         default:
             break;
         }
+    }
+}
 
-        if (GlobalConfig::is_enabled("display_second_viewport")){
+void TestScene::displayStats(){
+    QMatrix4x4 M;
+    QMatrix4x4 V;
+    QMatrix4x4 P;
+    QMatrix4x4 pvm;
+    QRect window;
+    pvm = P*V*M;
+    _program->setUniformValue("shininess",(GLfloat)1.0);
 
-            glViewport(0,height()/2,width(),height()/2);
-            M = QMatrix4x4();
-            QMatrix4x4  P1,V1;
-            P1.ortho(-1,2000,-10,10,-100,100);
-            V1 = QMatrix4x4();
-            pvm = P1*V1*M;
-            _program->setUniformValue("M",M);
-            _program->setUniformValue("pvm",pvm);
-            for (int i = 0; i < 3; ++i) {
+    QList<InteractiveObject * >& display = _simulation.get_display_list();
+    float right,top,bottom,value;
+    value = bottom = top = right = 0;
+    for (int i = 0; i < display.size(); ++i) {
+//        for (int j = 0; j < 3; ++j) {
+//            value = (display.at(i)->_animation_from_simulation.get_translation_curves()[j].end()-1).key();
+//            if (right < value)
+//                right = value;
+//            value = display.at(i)->_animation_from_simulation.get_translation_curves()[j].get_max();
+//            if (top < value)
+//                top = value;
+//            value = display.at(i)->_animation_from_simulation.get_translation_curves()[j].get_min();
+//            if (bottom > value)
+//                bottom = value;
+//        }
+        const QList<Curve>& curves= display.at(i)->_curves;
+        for (int j = 0; j < curves.size(); ++j) {
+            value = (curves[j].end()-1).key();
+            if (right < value)
+                right = value;
+            value = curves[j].get_max();
+            if (top < value)
+                top = value;
+            value = curves[j].get_min();
+            if (bottom > value)
+                bottom = value;
+        }
+    }
+//    if (top > 90) { window.setY(100);window.setHeight(-200); }
+//    else { window.setY(10);  window.setHeight(-20); }
+    window.setY(_ui->get_zoom()/10+1);
+    window.setHeight((-(_ui->get_zoom()/5)+1));
+    qDebug()<<"zoom :"<<_ui->get_zoom();
+    window.setX(right-width()*4);
+    window.setWidth(width()*4);
+    qDebug()<<"values :"<<top<<" "<<bottom;
 
-                Mesh::render(obj->_animation_from_simulation.get_translation_curves()[i]);
-            }
-            glViewport(0,0,width(),height()/2);
+//    QRect window(0,top ,right,absolute_value(top-(bottom)));
+//    QRect window(0,top+1,right+10,top+1-(bottom-1));
+//        P.ortho(-100,100,-100,100,-100,100);
+    P.ortho(window);
+    Mesh::drawGrid(window,QColor(0,0,0,255),1,0,0);
+
+    for (int i = 0; i < display.size(); ++i) {
+        InteractiveObject * obj = display.at(i);
+        const QList<Curve>& curves= display.at(i)->_curves;
+        M = QMatrix4x4();
+        V = QMatrix4x4();
+        pvm = P*V*M;
+        _program->setUniformValue("M",M);
+        _program->setUniformValue("pvm",pvm);
+        for (int j = 0; j < curves.size(); ++j) {
+//            const Curve& c = obj->_animation_from_simulation.get_translation_curves()[j];
+            Mesh::render(curves[j],curves[j].get_color(),i+2);
         }
     }
 }
@@ -126,17 +178,41 @@ void TestScene::displaySimulation(){
 void TestScene::display3DObjects(){
     _program->setUniformValue("shininess",(GLfloat)1.0);
 
-    if (GlobalConfig::is_enabled("display_second_viewport")){
-        glViewport(0,0,width(),height()/2);
-    } else {
+    if (GlobalConfig::is_enabled("viewport_fullscreen")) {
         glViewport(0,0,width(),height());
+        if (GlobalConfig::is_enabled("display_second_viewport")){
+            displayStats();
+        } else {
+            if (GlobalConfig::is_enabled("display_simulation")){
+                displaySimulation();
+            }
+            if (GlobalConfig::is_enabled("display_animation")){
+                displayAnimation();
+            }
+        }
     }
-    if (GlobalConfig::is_enabled("display_simulation")){
-        displaySimulation();
-    }
-    if (GlobalConfig::is_enabled("display_animation")){
-        displayAnimation();
-    }
+//    if (GlobalConfig::is_enabled("display_simulation")){
+//        displaySimulation();
+//    }
+//    if (GlobalConfig::is_enabled("display_animation")){
+//        displayAnimation();
+//    }
+//    if (GlobalConfig::is_enabled("display_second_viewport")){
+//        if (GlobalConfig::is_enabled("second_viewport_fullscreen")) {
+//            glViewport(0,0,width(),height());
+//            displayStats();
+//        } else {
+//            glViewport(0,height()/2,width(),height()/2);
+//            displayStats();
+//            glViewport(0,0,width(),height()/2);
+//        }
+//    }
+//    if (GlobalConfig::is_enabled("display_simulation")){
+//        displaySimulation();
+//    }
+//    if (GlobalConfig::is_enabled("display_animation")){
+//        displayAnimation();
+//    }
 }
 
 void TestScene::init(){

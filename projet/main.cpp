@@ -13,6 +13,18 @@
 #include <utils/curve.h>
 
 void speedTest(){
+    Curve c;
+    c.set_interpolation(Curve::closest);
+    Curve::const_iterator i = c.begin();
+    qDebug()<<i.value();
+    c.insert(10,15);
+    c.insert(13,17);
+    qDebug()<<c.get_min();
+    qDebug()<<c.get_max();
+
+    qDebug()<<c.get_value(11.5);
+    qDebug()<<c.get_max();
+
 }
 
 int main(int argc, char *argv[])

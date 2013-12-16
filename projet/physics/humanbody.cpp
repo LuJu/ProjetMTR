@@ -17,7 +17,6 @@ void HumanBody::loadObjects(QString path){
     list.parseFile(GlobalConfig::find_asset_path_qstring("CSV/input/"+filename),";");
     QStringList temp;
     int i=0;
-    int total_mass=0;
     InteractiveObject * object = NULL;
     while (list[i].at(0)!="final"){
         object = new InteractiveObject();
@@ -25,7 +24,7 @@ void HumanBody::loadObjects(QString path){
 
         for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
             temp= list[i];
-            if (temp.size()>=1){
+            if (temp.size() > 0 ){
                 if (temp.at(0)=="scaling") {
                     for (int k=0; k<3;k++) {
                         QStringList values = list[i+1+k] ;
@@ -49,9 +48,11 @@ void HumanBody::loadObjects(QString path){
                     }
                 } else if (temp.at(0) == "object") {
                     object->set_body_part(temp.at(1));
-                    object->set_mass(BodyInfo::mass(temp.at(1),total_mass));
-                } else if (temp.at(0) == "body") {
-                    total_mass = temp.at(1).toFloat();
+                    object->set_mass(BodyInfo::mass(temp.at(1),_mass));
+
+                } else if (temp.at(0) == "hinge"){
+
+//                    btHingeConstraint * hinge = new btHingeConstraint();
                 }
             }
         }
@@ -60,6 +61,11 @@ void HumanBody::loadObjects(QString path){
         _parts.append(object);
         i++;
     }
+    QList<InteractiveObject *>::iterator head = findPartByName("head");
+    if (head != _parts.end()){
+        qDebug()<<(*head)->get_mass();
+    }
+    qDebug()<<(*head)->get_mass();
 }
 
 void HumanBody::calculateWork(){
@@ -77,10 +83,23 @@ btScalar HumanBody::computeWork(btScalar ke_simulation , btScalar ke_animation ,
 }
 
 void HumanBody::saveDataList(){
-    QString path;
+    QString path = "CSV/output/";
+    QString name=GlobalConfig::get_date_time()+"_output";
+    QString oldname=name;
+    QString ext="csv";
+
     InteractiveObject::energy_info save;
-    path = QString("CSV/output/"+GlobalConfig::get_date_time()+"_output.csv");
-    QFile file(GlobalConfig::find_asset_path_qstring(path));
+    path = GlobalConfig::find_asset_path_qstring(path);
+    QFile file;
+    file.setFileName(name+"."+ext);
+    int i = 1;
+    QDir::setCurrent(GlobalConfig::find_asset_path_qstring(path));
+    while (file.exists()){
+        qWarning()<<"File already exists";
+        name = oldname+" ("+QString::number(i)+")";
+        file.setFileName(name+"."+ext);
+        ++i;
+    }
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
         qWarning()<<"Couldn't write file "<<path;
         exit(0);
@@ -100,7 +119,8 @@ void HumanBody::saveDataList(){
                     save.work<<","<<save.mean_error<<"\n";
         }
         file.close();
-        qDebug()<<"File successfully written : "<<path;
+        qDebug()<<"File successfully written : "<<path + name;
+        qDebug()<<"File successfully written : "<<file.fileName();
     }
 }
 

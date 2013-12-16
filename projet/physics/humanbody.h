@@ -3,6 +3,8 @@
 
 #include <QList>
 #include <core/core.h>
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
 #include "interactiveobject.h"
 #include "utils/csvparser.h"
 #include "bodyinfo.h"
@@ -13,6 +15,7 @@ public:
     ~HumanBody();
 
     QList<InteractiveObject * > _parts;
+    QList<btConstraintArray *> _constraints;
 
     void loadObjects(QString path);
     void calculateWork();
@@ -24,6 +27,24 @@ public:
 
     int get_mass() const {return _mass;}
     void set_mass(int mass){_mass = mass;}
+
+    float get_total_work() const{
+        float work = 0;
+        for (int i = 0; i < _parts.size(); ++i) {
+            work+=_parts[i]->getEnergyInformation().work;
+        }
+        return work;
+    }
+
+    QList<InteractiveObject * >::iterator findPartByName(const QString& name){
+        QList<InteractiveObject * >::iterator i;
+        InteractiveObject * value;
+        for (i = _parts.begin(); i != _parts.end(); ++i) {
+            value = *i;
+            if (value->get_body_part() == name) return i;
+        }
+        return _parts.end();
+    }
 
 protected:
     int _mass;

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVector>
+#include <QRect>
 #include "viewer.h"
 #include "btBulletDynamicsCommon.h"
 #include "btBulletCollisionCommon.h"
@@ -29,6 +30,7 @@ public:
     void saveCurrentStatus();
     void displayAnimation();
     void displaySimulation();
+    void displayStats();
 private:
     Mesh _cube_mesh;
     Mesh _cylinder_mesh;

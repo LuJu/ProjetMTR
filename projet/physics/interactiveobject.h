@@ -36,6 +36,8 @@ public:
         float mean_error;
     }t_energy_info;
 
+    QList<Curve> _curves;
+
     enum shapetype{
         cube,
         cylinder
@@ -101,6 +103,7 @@ public:
     btScalar get_mean_error() const {
         return _speed_error / _ticks ;
     }
+
 
 private:
     void deleteMotion();

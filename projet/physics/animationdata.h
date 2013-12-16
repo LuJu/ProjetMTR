@@ -4,9 +4,7 @@
 #include "utils/triplet.h"
 #include "utils/curve.h"
 
-class Curve3d : public Triplet<Curve>
-{
-};
+
 
 class AnimationData
 {

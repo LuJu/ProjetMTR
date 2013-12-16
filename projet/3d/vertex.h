@@ -8,6 +8,7 @@ class Vertex
 {
 public:
     Vertex();
+//    Vertex(const Vertex& v);
     Vertex(float x, float y, float z);
     Vertex(Point3d<float> point);
     bool operator=(const Vertex &b);

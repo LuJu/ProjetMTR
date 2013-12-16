@@ -7,7 +7,7 @@ template<class T> class Triplet
 public:
     inline Triplet();
     inline Triplet(T x, T y, T z);
-    inline Triplet(const Triplet<T>& v);
+    inline Triplet(const Triplet<T>& t);
 
     inline T& operator[](int) const;
 
@@ -28,8 +28,8 @@ template<class T> Triplet<T>::Triplet()
 {
 }
 
-template<class T> Triplet<T>::Triplet(const Triplet<T>& v) :
-    _x(v.x()), _y(v.y()), _z(v.z())
+template<class T> Triplet<T>::Triplet(const Triplet<T>& t) :
+    _x(t.x()), _y(t.y()), _z(t.z())
 {
 }
 

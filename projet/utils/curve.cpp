@@ -14,20 +14,35 @@ void Curve::set_interpolation(Interpolation interpolation){
 }
 
 
-float Curve::get_value(float time) const{
+float Curve::get_value(float x) const{
     QMap<float,float>::const_iterator it;
-    it = lowerBound(time);
-    if (it.key() == time) {
+    it = lowerBound(x);
+    if (it== end()) return (--it).value();
+    if (it.key() == x || it==begin()) {
         return it.value();
     } else {
         QMap<float,float>::const_iterator it2 = it;
         it2--;
-        interpolate(it2.key(),it2.value(),it.key(),it.value(),time);
+        interpolate(it2.key(),it2.value(),it.key(),it.value(),x);
     }
 }
 
 float Curve::interpolate(float time1,float value1,float time2,float value2, float target) const{
-    return linearInterpolation(time1, value1, time2, value2,  target);
+    switch (_interpolation){
+    case linear:
+        return linearInterpolation(time1, value1, time2, value2,  target);
+        break;
+    case upper:
+        return value2;
+        break;
+    case lower:
+        return value1;
+        break;
+    case closest:
+        return (absolute_value(target-time1) < absolute_value(time2-target))?value1:value2;
+        break;
+    }
+
 }
 float Curve::linearInterpolation(float time1,float value1,float time2,float value2, float target) const {
     float interval,interval_target,proportion,diff,value_prop,ret;

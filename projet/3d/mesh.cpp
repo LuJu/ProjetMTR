@@ -35,6 +35,9 @@ void Mesh::render() const{
             case line_strip:
                 glDrawElements(GL_LINE_STRIP,_polygons.size(),GL_UNSIGNED_SHORT,polygons);
                 break;
+            case points:
+                glDrawElements(GL_POINTS,_polygons.size(),GL_UNSIGNED_SHORT,polygons);
+                break;
             }
 
         }
@@ -161,7 +164,7 @@ void Mesh::fillVertices(const QVector<Point3df>& _temp_vertices,
             v[j]._color[0]=v[j]._point[0];
             v[j]._color[1]=v[j]._point[1];
             v[j]._color[2]=v[j]._point[2];
-            v[j]._color[3]=1;
+            v[j]._color[3]=0.5;
             index[j] = _vertices.indexOf(v[j]);
 
             if(index[j]==-1){
@@ -188,16 +191,18 @@ void Mesh::loadFromFile(QString filepath, int filetype){
     }
 }
 
-void Mesh::render(const Curve& curve){
+void Mesh::render(const Curve& curve, const QColor &color, int thickness, bool points){
     Mesh mesh;
     mesh.set_type(Mesh::line_strip);
+    if(points) mesh.set_type(Mesh::points);
     QMap<float,float>::const_iterator iterator = curve.begin();
     int i = 0;
+    glLineWidth((GLfloat)thickness);
     while (iterator != curve.end()){
         Vertex v(iterator.key(),iterator.value(),0);
-        v._color[0]=curve.get_color().red();
-        v._color[1]=curve.get_color().green();
-        v._color[2]=curve.get_color().blue();
+        v._color[0]=color.red();
+        v._color[1]=color.green();
+        v._color[2]=color.blue();
         mesh.get_vertices().append(v);
         mesh.get_polygons().append(i);
         i++;
@@ -205,3 +210,152 @@ void Mesh::render(const Curve& curve){
     }
     mesh.render();
 }
+
+void Mesh::drawGrid(QRect bounds, const QColor &color, int thickness, int horizontal_progression ,int vertical_progression){
+    Mesh mesh;
+    float x1=bounds.topLeft().x();
+    float y1=bounds.topLeft().y();
+    float x2=bounds.bottomRight().x();
+    float y2=bounds.bottomRight().y();
+    float xmin = qMin(x1,x2);
+    float xmax = qMax(x1,x2);
+    float ymin = qMin(y1,y2);
+    float ymax = qMax(y1,y2);
+    int positive_x_progression;
+    int negative_x_progression;
+    int positive_y_progression;
+    int negative_y_progression;
+
+    mesh.set_type(Mesh::lines);
+    int i = 0;
+    glLineWidth((GLfloat)thickness);
+
+    int progression = 1;
+
+    progression = 1000;
+    while (i < xmax) {
+        Vertex v1( i,y1,0);
+        Vertex v2( i,y2,0);
+        
+        v1._color[0]=(float)color.red()/255;
+        v1._color[1]=(float)color.green()/255;
+        v1._color[2]=(float)color.blue()/255;
+        v1._color[3]=(float)color.alpha()/255;
+        v2._color[0]=(float)color.red()/255;
+        v2._color[1]=(float)color.green()/255;
+        v2._color[2]=(float)color.blue()/255;
+        v2._color[3]=(float)color.alpha()/255;
+        mesh.get_vertices().append(v1);
+        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+        mesh.get_vertices().append(v2);
+        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+        i+= progression;
+    }
+    i=0;
+    while (i > xmin) {
+        Vertex v1( i,y1,0);
+        Vertex v2( i,y2,0);
+
+        v1._color[0]=(float)color.red()/255;
+        v1._color[1]=(float)color.green()/255;
+        v1._color[2]=(float)color.blue()/255;
+        v1._color[3]=(float)color.alpha()/255;
+        v2._color[0]=(float)color.red()/255;
+        v2._color[1]=(float)color.green()/255;
+        v2._color[2]=(float)color.blue()/255;
+        v2._color[3]=(float)color.alpha()/255;
+        mesh.get_vertices().append(v1);
+        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+        mesh.get_vertices().append(v2);
+        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+        i-= progression;
+    }
+//    for (i = 0; i <= xmax - xmin ; i+=progression) {
+
+//        Vertex v1(xmin + i,y1,0);
+//        Vertex v2(xmin + i,y2,0);
+
+//        v1._color[0]=(float)color.red()/255;
+//        v1._color[1]=(float)color.green()/255;
+//        v1._color[2]=(float)color.blue()/255;
+//        v1._color[3]=(float)color.alpha()/255;
+//        v2._color[0]=(float)color.red()/255;
+//        v2._color[1]=(float)color.green()/255;
+//        v2._color[2]=(float)color.blue()/255;
+//        v2._color[3]=(float)color.alpha()/255;
+//        mesh.get_vertices().append(v1);
+//        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+//        mesh.get_vertices().append(v2);
+//        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+//    }
+    progression = 1;
+//    if      ((absolute_value(bounds.height()) > 10000) ) progression *= 10000;
+//    else if ((absolute_value(bounds.height()) > 1000) ) progression *= 1000;
+//    else if ((absolute_value(bounds.height()) > 100) ) progression *= 100;
+//    else if ((absolute_value(bounds.height()) > 10) ) progression *= 10;
+
+    if      ((absolute_value(bounds.height()) > 10000) ) progression *= 10000;
+    else if ((absolute_value(bounds.height()) > 1000) ) progression *= 1000;
+    else if ((absolute_value(bounds.height()) > 100) ) progression *= 100;
+    else if ((absolute_value(bounds.height()) > 10) ) progression *= 10;
+    progression = 100;
+//    for (i = 0; i < ymax - ymin ; i+=progression) {
+
+//        Vertex v1(x1,ymin + i,0);
+//        Vertex v2(x2,ymin + i,0);
+
+//        v1._color[0]=(float)color.red()/255;
+//        v1._color[1]=(float)color.green()/255;
+//        v1._color[2]=(float)color.blue()/255;
+//        v1._color[3]=(float)color.alpha()/255;
+//        v2._color[0]=(float)color.red()/255;
+//        v2._color[1]=(float)color.green()/255;
+//        v2._color[2]=(float)color.blue()/255;
+//        v2._color[3]=(float)color.alpha()/255;
+//        mesh.get_vertices().append(v1);
+//        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+//        mesh.get_vertices().append(v2);
+//        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+//    }
+    i = 0;
+    while (i < ymax){
+        Vertex v1(x1,0 + i,0);
+        Vertex v2(x2,0 + i,0);
+
+        v1._color[0]=(float)color.red()/255;
+        v1._color[1]=(float)color.green()/255;
+        v1._color[2]=(float)color.blue()/255;
+        v1._color[3]=(float)color.alpha()/255;
+        v2._color[0]=(float)color.red()/255;
+        v2._color[1]=(float)color.green()/255;
+        v2._color[2]=(float)color.blue()/255;
+        v2._color[3]=(float)color.alpha()/255;
+        mesh.get_vertices().append(v1);
+        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+        mesh.get_vertices().append(v2);
+        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+        i+=progression;
+    }
+    i = 0;
+    while (i > ymin){
+        Vertex v1(x1,0 + i,0);
+        Vertex v2(x2,0 + i,0);
+
+        v1._color[0]=(float)color.red()/255;
+        v1._color[1]=(float)color.green()/255;
+        v1._color[2]=(float)color.blue()/255;
+        v1._color[3]=(float)color.alpha()/255;
+        v2._color[0]=(float)color.red()/255;
+        v2._color[1]=(float)color.green()/255;
+        v2._color[2]=(float)color.blue()/255;
+        v2._color[3]=(float)color.alpha()/255;
+        mesh.get_vertices().append(v1);
+        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+        mesh.get_vertices().append(v2);
+        mesh.get_polygons().append(mesh.get_vertices().size()-1);
+        i-=progression;
+    }
+
+    mesh.render();
+}
+

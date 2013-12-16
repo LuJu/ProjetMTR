@@ -160,6 +160,7 @@ void Viewer::init()
     int major,minor;
     glGetIntegerv(GL_MAJOR_VERSION,&major);
     glGetIntegerv(GL_MINOR_VERSION,&minor);
+    glClearColor(0.2,0.2,0.2,1);
     qDebug()<<"OPENGLVersion :"<<major<<"."<<minor;
     qDebug()<<"GLSL Version  :"<<QString(*glGetString(GL_SHADING_LANGUAGE_VERSION));
     qDebug()<<"FLAGS : "<<(int)QGLFormat::OpenGLVersionFlags();

@@ -20,7 +20,8 @@ public:
     enum polygontype{
         triangle,
         lines,
-        line_strip
+        line_strip,
+        points
     };
 
     Mesh();
@@ -36,8 +37,9 @@ public:
     QVector<unsigned short>& get_polygons() {return _polygons;}
     QVector<Vertex>& get_vertices() {return _vertices;}
 
-    static void render(const Curve& curve);
+    static void render(const Curve& curve, const QColor& color, int thickness, bool points=false);
 
+    static void drawGrid(QRect bounds, const QColor &color, int thickness, int horizontal_progression ,int vertical_progression);
 protected:
     GLuint _texture;
 private:

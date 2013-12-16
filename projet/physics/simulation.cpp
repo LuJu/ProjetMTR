@@ -44,7 +44,7 @@ void Simulation::standard() {
     params.set_coefficient(GlobalConfig::get_int("coefficient"));
     params.set_duration(GlobalConfig::get_int("duration"));
     params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
-    params.set_ups(60);
+    params.set_ups(GlobalConfig::get_int("ups"));
     initiate(params);
     _human.set_mass(GlobalConfig::get_int("body_mass"));
     _human.loadObjects(GlobalConfig::get_string("input_location"));

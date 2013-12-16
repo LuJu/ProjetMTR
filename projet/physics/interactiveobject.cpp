@@ -23,6 +23,27 @@ InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& s
     _animation_from_simulation.get_translation_curves()[0].set_color(QColor(1,0,0));
     _animation_from_simulation.get_translation_curves()[1].set_color(QColor(0,1,0));
     _animation_from_simulation.get_translation_curves()[2].set_color(QColor(0,0,1));
+
+    Curve c=Curve();
+    c.set_color(QColor(255,0,0));
+    c.set_label("Animation speed");
+    _curves.append(c);
+    c=Curve();
+    c.set_color(QColor(255,255,0));
+    c.set_label("Animation KE");
+    _curves.append(c);
+    c=Curve();
+    c.set_color(QColor(255,255,255));
+    c.set_label("animation_pe");
+    _curves.append(c);
+    c=Curve();
+    c.set_color(QColor(0,255,0));
+    c.set_label("mean_error");
+    _curves.append(c);
+    c=Curve();
+    c.set_color(QColor(0,255,255));
+    c.set_label("work");
+    _curves.append(c);
 }
 
 //InteractiveObject::InteractiveObject(const InteractiveObject& object) :
@@ -103,8 +124,15 @@ const InteractiveObject::t_energy_info& InteractiveObject::update_energy_info(fl
     _animation_from_simulation.get_translation_curves()[0].insert(elapsed,_body->getCenterOfMassPosition().x());
     _animation_from_simulation.get_translation_curves()[1].insert(elapsed,_body->getCenterOfMassPosition().y());
     _animation_from_simulation.get_translation_curves()[2].insert(elapsed,_body->getCenterOfMassPosition().z());
+
+
     ++_ticks;
     _energy.mean_error = get_mean_error();
+    _curves[0].insert(elapsed,_energy.simulation_speed);
+    _curves[1].insert(elapsed,_energy.animation_ke);
+    _curves[2].insert(elapsed,_energy.animation_pe);
+    _curves[3].insert(elapsed,_energy.mean_error);
+    _curves[4].insert(elapsed,_energy.work);
     return _energy;
 }
 
