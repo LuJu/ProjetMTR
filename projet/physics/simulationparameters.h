@@ -3,6 +3,7 @@
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
+
 #include "utils/geometry.h"
 
 class SimulationParameters

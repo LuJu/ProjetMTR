@@ -127,6 +127,7 @@ void Simulation::fillWorld(){
     //        btHingeConstraint* hinge = new btHingeConstraint(*body1, *body2, pivotA, pivotB, axisA, axisB);
     btRigidBody * body;
     if (!_world_filled){
+        qDebug()<<_display.size();
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
             _world->addRigidBody(body);

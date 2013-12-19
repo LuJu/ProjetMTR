@@ -3,10 +3,13 @@
 
 #include <QList>
 #include <core/core.h>
+
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-#include "interactiveobject.h"
+
 #include "utils/csvparser.h"
+
+#include "interactiveobject.h"
 #include "bodyinfo.h"
 class HumanBody
 {

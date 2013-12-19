@@ -1,48 +1,58 @@
 QT          += opengl xml widgets
 
-#   UTILS   ###############
-HEADERS     = \
-    utils/triplet.h \
-    utils/extendedtriplet.h \
-    utils/geometry.h \
-    utils/maths.h \
-    utils/csvparser.h \
-    utils/typedefinitions.h \
-    utils/curve.h
 SOURCES     = \
     main.cpp \
-    utils/maths.cpp \
-    utils/csvparser.cpp \
-    utils/curve.cpp
-############################
+    ../../DeeCore/core/camera.cpp
 
-#   CORE     ##############
+#   UTILS   ###############
 HEADERS     += \
-    core/globalconfig.h \
-    core/inputmanager.h \
-    core/uistate.h \
-    core/debugger.h \
-    core/timing.h \
-    core/core.h
+    /home/batman/Programmation/QtDee/utils/utils.h \
+    /home/batman/Programmation/QtDee/utils/triplet.h \
+    /home/batman/Programmation/QtDee/utils/extendedtriplet.h \
+    /home/batman/Programmation/QtDee/utils/geometry.h \
+    /home/batman/Programmation/QtDee/utils/maths.h \
+    /home/batman/Programmation/QtDee/utils/csvparser.h \
+    /home/batman/Programmation/QtDee/utils/typedefinitions.h \
+    /home/batman/Programmation/QtDee/utils/curve.h \
+    ../../DeeCore/core/camera.h
 SOURCES     += \
-    core/globalconfig.cpp \
-    core/inputmanager.cpp \
-    core/uistate.cpp \
-    core/debugger.cpp \
-    core/timing.cpp
+    /home/batman/Programmation/QtDee/utils/maths.cpp \
+    /home/batman/Programmation/QtDee/utils/csvparser.cpp \
+    /home/batman/Programmation/QtDee/utils/curve.cpp
 ############################
 
 #   3D         #############
 HEADERS += \
-    3d/graphicobject3d.h \
-    3d/vertex.h \
-    3d/transform.h \
-    3d/mesh.h
+    /home/batman/Programmation/QtDee/3d/3d.h \
+    /home/batman/Programmation/QtDee/3d/graphicobject3d.h \
+    /home/batman/Programmation/QtDee/3d/vertex.h \
+    /home/batman/Programmation/QtDee/3d/transform.h \
+    /home/batman/Programmation/QtDee/3d/movementpath.h \
+    /home/batman/Programmation/QtDee/3d/mesh.h
 SOURCES     += \
-    3d/graphicobject3d.cpp \
-    3d/vertex.cpp \
-    3d/transform.cpp \
-    3d/mesh.cpp
+    /home/batman/Programmation/QtDee/3d/graphicobject3d.cpp \
+    /home/batman/Programmation/QtDee/3d/vertex.cpp \
+    /home/batman/Programmation/QtDee/3d/transform.cpp \
+    /home/batman/Programmation/QtDee/3d/movementpath.cpp \
+    /home/batman/Programmation/QtDee/3d/mesh.cpp
+############################
+
+#   CORE     ##############
+HEADERS     += \
+    /home/batman/Programmation/DeeCore/core/globalconfig.h \
+    /home/batman/Programmation/DeeCore/core/inputmanager.h \
+    /home/batman/Programmation/DeeCore/core/uistate.h \
+    /home/batman/Programmation/DeeCore/core/debugger.h \
+    /home/batman/Programmation/DeeCore/core/timing.h \
+    /home/batman/Programmation/DeeCore/core/viewer.h \
+    /home/batman/Programmation/DeeCore/core/core.h
+SOURCES     += \
+    /home/batman/Programmation/DeeCore/core/globalconfig.cpp \
+    /home/batman/Programmation/DeeCore/core/inputmanager.cpp \
+    /home/batman/Programmation/DeeCore/core/uistate.cpp \
+    /home/batman/Programmation/DeeCore/core/debugger.cpp \
+    /home/batman/Programmation/DeeCore/core/viewer.cpp \
+    /home/batman/Programmation/DeeCore/core/timing.cpp
 ############################
 
 #   PHYSICS        #########
@@ -65,10 +75,8 @@ SOURCES     += \
 
 #   PROGRAM  ###############
 HEADERS += \
-    viewer.h \
     testscene.h
 SOURCES     += \
-    viewer.cpp \
     testscene.cpp
 ############################
 
@@ -82,6 +90,10 @@ unix:!macx:!symbian: LIBS += -L$usr/lib/x86_64-linux-gnu/
 
 INCLUDEPATH += /usr/local/include/bullet
 DEPENDPATH += /usr/local/include/bullet
+INCLUDEPATH += /home/batman/Programmation/QtDee
+DEPENDPATH += /home/batman/Programmation/QtDee
+INCLUDEPATH += /home/batman/Programmation/DeeCore
+DEPENDPATH += /home/batman/Programmation/DeeCore
 #INCLUDEPATH += /usr/local/include/bullet/LinearMath
 # Linux
 #INCLUDEPATH *= $/usr/include/QGLViewer
@@ -99,3 +111,6 @@ CONFIG(debug,debug|release){
     QMAKE_CXXFLAGS += -std=c++0x
     QMAKE_CXXFLAGS_WARN_ON = -Wno-unused-parameter
 }
+
+FORMS += \
+    Debugging.ui

@@ -1,6 +1,8 @@
 #ifndef ANIMATIONDATA_H
 #define ANIMATIONDATA_H
+
 #include "btBulletCollisionCommon.h"
+
 #include "utils/triplet.h"
 #include "utils/curve.h"
 

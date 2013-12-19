@@ -61,12 +61,6 @@ void TestScene::displayAnimation(){
         }
     }
     _program->release();
-    glDisable(GL_LIGHTING);
-        glDisable(GL_DEPTH_TEST);
-    qglColor(Qt::white);
-    renderText(10,0,"test",QFont("Arial", 12, QFont::Bold, false));
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
     _program->bind();
 }
 
@@ -121,17 +115,6 @@ void TestScene::displayStats(){
     float right,top,bottom,value;
     value = bottom = top = right = 0;
     for (int i = 0; i < display.size(); ++i) {
-//        for (int j = 0; j < 3; ++j) {
-//            value = (display.at(i)->_animation_from_simulation.get_translation_curves()[j].end()-1).key();
-//            if (right < value)
-//                right = value;
-//            value = display.at(i)->_animation_from_simulation.get_translation_curves()[j].get_max();
-//            if (top < value)
-//                top = value;
-//            value = display.at(i)->_animation_from_simulation.get_translation_curves()[j].get_min();
-//            if (bottom > value)
-//                bottom = value;
-//        }
         const QList<Curve>& curves= display.at(i)->_curves;
         for (int j = 0; j < curves.size(); ++j) {
             value = (curves[j].end()-1).key();
@@ -145,20 +128,16 @@ void TestScene::displayStats(){
                 bottom = value;
         }
     }
-//    if (top > 90) { window.setY(100);window.setHeight(-200); }
-//    else { window.setY(10);  window.setHeight(-20); }
     window.setY(_ui->get_zoom()/10+1);
     window.setHeight((-(_ui->get_zoom()/5)+1));
-    qDebug()<<"zoom :"<<_ui->get_zoom();
     window.setX(right-width()*4);
     window.setWidth(width()*4);
-    qDebug()<<"values :"<<top<<" "<<bottom;
 
 //    QRect window(0,top ,right,absolute_value(top-(bottom)));
 //    QRect window(0,top+1,right+10,top+1-(bottom-1));
 //        P.ortho(-100,100,-100,100,-100,100);
     P.ortho(window);
-    Mesh::drawGrid(window,QColor(0,0,0,255),1,0,0);
+    Mesh::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 
     for (int i = 0; i < display.size(); ++i) {
         InteractiveObject * obj = display.at(i);
@@ -224,7 +203,8 @@ void TestScene::init(){
 
     _simulation.standard();
     _simulation.set_autoloop(true);
-    _simulation.startSimulation();
+    if (GlobalConfig::is_enabled("automatic_start"))
+        _simulation.startSimulation();
 }
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include <QRect>
-#include "viewer.h"
+#include "core/viewer.h"
 #include "btBulletDynamicsCommon.h"
 #include "btBulletCollisionCommon.h"
 #include "BulletSoftBody/btSoftBody.h"

@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QHash>
+
 class BodyInfo
 {
 public:

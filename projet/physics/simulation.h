@@ -4,16 +4,20 @@
 
 #include "btBulletDynamicsCommon.h"
 #include "btBulletCollisionCommon.h"
-#include "simulationparameters.h"
-#include "interactiveobject.h"
-#include "core/core.h"
-#include "utils/csvparser.h"
-#include  <QTimer>
+
+#include <QTimer>
 #include <QTextStream>
 #include <QObject>
 #include <QVector>
+
+#include "core/core.h"
+
+#include "utils/csvparser.h"
+
 #include "bodyinfo.h"
 #include "humanbody.h"
+#include "simulationparameters.h"
+#include "interactiveobject.h"
 
 class Simulation : public QObject
 {

@@ -2,12 +2,15 @@
 #define INTERACTIVEOBJECT_H
 
 #include <QDebug>
+
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
+
 #include "utils/geometry.h"
 #include "utils/typedefinitions.h"
 #include "utils/maths.h"
 #include "utils/curve.h"
+
 #include "animationdata.h"
 
 class InteractiveObject

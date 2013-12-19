@@ -1,13 +1,13 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'viewer.h'
 **
-** Created: Mon Dec 16 15:22:37 2013
+** Created: Wed Dec 18 16:51:31 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../projet/viewer.h"
+#include "../../DeeCore/core/viewer.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'viewer.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 63
