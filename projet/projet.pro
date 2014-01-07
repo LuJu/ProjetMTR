@@ -1,8 +1,7 @@
 QT          += opengl xml widgets
 
 SOURCES     = \
-    main.cpp \
-    ../../DeeCore/core/camera.cpp
+    main.cpp
 
 #   UTILS   ###############
 HEADERS     += \
@@ -13,8 +12,7 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/maths.h \
     /home/batman/Programmation/QtDee/utils/csvparser.h \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h \
-    ../../DeeCore/core/camera.h
+    /home/batman/Programmation/QtDee/utils/curve.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \
@@ -45,6 +43,7 @@ HEADERS     += \
     /home/batman/Programmation/DeeCore/core/debugger.h \
     /home/batman/Programmation/DeeCore/core/timing.h \
     /home/batman/Programmation/DeeCore/core/viewer.h \
+    /home/batman/Programmation/DeeCore/core/camera.h \
     /home/batman/Programmation/DeeCore/core/core.h
 SOURCES     += \
     /home/batman/Programmation/DeeCore/core/globalconfig.cpp \
@@ -52,6 +51,7 @@ SOURCES     += \
     /home/batman/Programmation/DeeCore/core/uistate.cpp \
     /home/batman/Programmation/DeeCore/core/debugger.cpp \
     /home/batman/Programmation/DeeCore/core/viewer.cpp \
+    /home/batman/Programmation/DeeCore/core/camera.cpp \
     /home/batman/Programmation/DeeCore/core/timing.cpp
 ############################
 
@@ -62,14 +62,16 @@ HEADERS += \
     physics/simulation.h \
     physics/animationdata.h \
     physics/bodyinfo.h \
-    physics/humanbody.h
+    physics/humanbody.h \
+    physics/debugginginterface.h
 SOURCES     += \
     physics/interactiveobject.cpp \
     physics/simulationparameters.cpp \
     physics/simulation.cpp \
     physics/animationdata.cpp \
     physics/bodyinfo.cpp \
-    physics/humanbody.cpp
+    physics/humanbody.cpp \
+    physics/debugginginterface.cpp
 ############################
 
 
@@ -113,4 +115,7 @@ CONFIG(debug,debug|release){
 }
 
 FORMS += \
-    Debugging.ui
+    physics/Debugging.ui
+
+RESOURCES += \
+    ../assets/ressources.qrc

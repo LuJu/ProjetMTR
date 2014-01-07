@@ -56,6 +56,7 @@ void main (void)
 
 //    gl_FragColor = vec4(0.0,0.0,1.0,0.3);
     vec4 col = vec4((gl_Color.rgba)*shininess);
-    gl_FragColor = col;
+    gl_FragColor =  texture2D(Texture0, gl_TexCoord[0].st);
+//    gl_FragColor = col;
 }
 

@@ -8,9 +8,10 @@
 #include <QTimer>
 #include <QTextStream>
 #include <QObject>
+#include <QWidget>
 #include <QVector>
 
-#include "core/core.h"
+#include "core/globalconfig.h"
 
 #include "utils/csvparser.h"
 
@@ -57,6 +58,8 @@ public:
     float get_time_simulation() const {return _elapsed;}
     float _diff;
 
+    HumanBody * get_human() {return &_human;}
+
 private:
 
     bool is_autoloop() const {return _autoloop;}
@@ -90,6 +93,8 @@ private:
     btClock _clock;
 
     HumanBody _human;
+
+
 };
 
 #endif // SIMULATION_H

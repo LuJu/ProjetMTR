@@ -14,7 +14,7 @@ HumanBody::~HumanBody(){
 void HumanBody::loadObjects(QString path){
     QString filename=path;
     CSVParser list;
-    list.parseFile(GlobalConfig::find_asset_path_qstring("CSV/input/"+filename),";");
+    list.parseFile(":/CSV/input/"+filename,";");
     QStringList temp;
     int i=0;
     InteractiveObject * object = NULL;
@@ -83,17 +83,20 @@ btScalar HumanBody::computeWork(btScalar ke_simulation , btScalar ke_animation ,
 }
 
 void HumanBody::saveDataList(){
-    QString path = "CSV/output/";
+    QString path = "output/";
     QString name=GlobalConfig::get_date_time()+"_output";
     QString oldname=name;
     QString ext="csv";
 
     InteractiveObject::energy_info save;
-    path = GlobalConfig::find_asset_path_qstring(path);
     QFile file;
     file.setFileName(name+"."+ext);
     int i = 1;
-    QDir::setCurrent(GlobalConfig::find_asset_path_qstring(path));
+    if (QDir::setCurrent(path))
+        qDebug()<<"path set";
+    else {
+        qDebug()<<"path not set "<<path;
+    }
     while (file.exists()){
         qWarning()<<"File already exists";
         name = oldname+" ("+QString::number(i)+")";
@@ -119,7 +122,6 @@ void HumanBody::saveDataList(){
                     save.work<<","<<save.mean_error<<"\n";
         }
         file.close();
-        qDebug()<<"File successfully written : "<<path + name;
         qDebug()<<"File successfully written : "<<file.fileName();
     }
 }

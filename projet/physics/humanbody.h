@@ -2,7 +2,7 @@
 #define HUMANBODY_H
 
 #include <QList>
-#include <core/core.h>
+#include <core/globalconfig.h>
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"

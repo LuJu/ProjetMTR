@@ -10,7 +10,8 @@
 #include "3d/transform.h"
 #include <QMatrix4x4>
 #include <QVector4D>
-#include <utils/curve.h>
+#include "utils/curve.h"
+#include "ui_Debugging.h"
 
 void speedTest(){
     Curve c;
@@ -32,7 +33,6 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     Viewer * gui;
     int ret=0;
-
     qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
     qDebug()<<"LAUNCHING PROGRAM";
     GlobalConfig::loadConfiguration();
@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
     gui = new TestScene();
     gui->setWindowTitle("Physics simulation");
     gui->show();
+//    debugging.show();
     ret=app.exec();
     delete gui;
     return ret;

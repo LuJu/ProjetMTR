@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/models">
+        <file alias="Bane_3.obj">models/Bane_3.obj</file>
+        <file alias="cube.obj">models/cube.obj</file>
+        <file alias="cylinder.obj">models/cylinder.obj</file>
+    </qresource>
+    <qresource prefix="/CSV/input">
+        <file alias="values.csv">CSV/input/values.csv</file>
+    </qresource>
+    <qresource prefix="/shaders">
+        <file alias="vshader.glsl">shaders/vshader.glsl</file>
+        <file alias="fshader.glsl">shaders/fshader.glsl</file>
+        <file alias="gshader.glsl">shaders/gshader.glsl</file>
+    </qresource>
+</RCC>

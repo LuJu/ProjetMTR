@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'testscene.h'
 **
-** Created: Wed Dec 18 16:51:37 2013
+** Created: Tue Jan 7 14:43:34 2014
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!

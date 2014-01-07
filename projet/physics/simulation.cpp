@@ -1,5 +1,7 @@
 #include "simulation.h"
 
+
+
 Simulation::Simulation():
     _initiated(false),
     _going(false),
@@ -50,9 +52,12 @@ void Simulation::standard() {
     _human.loadObjects(GlobalConfig::get_string("input_location"));
     _display = _human._parts;
     _ground = new InteractiveObject();
-    _ground->set_shape(btVector3(20,1,20) );
+    _ground->set_shape(btVector3(2,0.5,2) );
     _ground->set_mass(0); // no gravity
     _display.append(_ground);
+
+
+
 }
 
 void Simulation::initiate(const SimulationParameters& params){
@@ -150,7 +155,7 @@ void Simulation::simulationOver()
 
 void Simulation::autoloopStart(){
     _timer_autoloop= new QTimer();
-    _timer_autoloop->setInterval(Timing::fps_delta_time);
+    _timer_autoloop->setInterval(_params.get_ups());
     _timer_autoloop->connect(_timer_autoloop, SIGNAL(timeout()),this, SLOT(autoloopSteps()));
     _timer_autoloop->start();
 }
