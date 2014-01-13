@@ -66,7 +66,7 @@ private:
     void saveDataList();
     void deleteData();
 
-    QList<InteractiveObject::energy_info> _data_list;
+    QList<InteractiveObject::part_info> _data_list;
     SimulationParameters _params;
 
     btDiscreteDynamicsWorld * _world;
@@ -76,6 +76,7 @@ private:
     btSequentialImpulseConstraintSolver *_sequentialImpulseConstraintSolver;
 
     QList<InteractiveObject * > _display;
+    QList<btPoint2PointConstraint *> _constraints;
     InteractiveObject * _ground;
     QTimer * _timer_simulations;
     QTimer * _timer_autoloop;

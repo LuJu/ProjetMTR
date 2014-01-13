@@ -2,6 +2,9 @@
 #define HUMANBODY_H
 
 #include <QList>
+#include <QDir>
+#include <QDateTime>
+
 #include <core/globalconfig.h>
 
 #include "btBulletCollisionCommon.h"
@@ -11,6 +14,7 @@
 
 #include "interactiveobject.h"
 #include "bodyinfo.h"
+
 class HumanBody
 {
 public:
@@ -18,14 +22,14 @@ public:
     ~HumanBody();
 
     QList<InteractiveObject * > _parts;
-    QList<btConstraintArray *> _constraints;
+    QList<btPoint2PointConstraint *> _constraints;
 
     void loadObjects(QString path);
     void calculateWork();
-    QList<InteractiveObject::energy_info> _data_list;
+    QList<InteractiveObject::part_info> _data_list;
     void saveDataList();
     void setSimulationPosition(float time);
-    void updateEnergyInformations(float elapsed,float diff,float gravity);
+    void updateBodyInformations(float elapsed,float diff,float gravity);
     btScalar computeWork(btScalar ke_simulation , btScalar ke_animation , btScalar ake_simulation , btScalar ake_animation , btScalar pe_simulation , btScalar pe_animation);
 
     int get_mass() const {return _mass;}

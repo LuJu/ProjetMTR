@@ -1,6 +1,6 @@
 #include "testscene.h"
 
-DebuggingInterface TestScene::debugging_ui;
+DebuggingInterface TestScene::_debugging_ui;
 
 TestScene::~TestScene(){
 
@@ -10,7 +10,7 @@ void TestScene::draw(){
     Viewer::draw();
 //    _simulation.loop();
     display3DObjects();
-    debugging_ui.update();
+    _debugging_ui.update();
     if(_simulation.is_over() && GlobalConfig::is_enabled("automatic_close"))
         close();
     frameEnd();
@@ -58,6 +58,9 @@ void TestScene::displayAnimation(){
         case InteractiveObject::cylinder:
             _cylinder_mesh.render();
             break;
+        case InteractiveObject::capsule:
+            _capsule_mesh.render();
+            break;
         default:
             break;
         }
@@ -98,6 +101,9 @@ void TestScene::displaySimulation(){
             break;
         case InteractiveObject::cylinder:
             _cylinder_mesh.render();
+            break;
+        case InteractiveObject::capsule:
+            _capsule_mesh.render();
             break;
         default:
             break;
@@ -158,6 +164,7 @@ void TestScene::displayStats(){
 }
 
 void TestScene::display3DObjects(){
+    _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
 
     if (GlobalConfig::is_enabled("viewport_fullscreen")) {
@@ -173,6 +180,7 @@ void TestScene::display3DObjects(){
             }
         }
     }
+    _program->release();
 //    if (GlobalConfig::is_enabled("display_simulation")){
 //        displaySimulation();
 //    }
@@ -198,8 +206,10 @@ void TestScene::display3DObjects(){
 }
 
 void TestScene::installDebugger(){
-    debugging_ui.setupUi(&debugging);
-    debugging.show();
+//    debugging.setParent(this);
+    _debugging_ui.setupUi(&_debugging);
+    _debugging.show();
+
     qInstallMsgHandler(customMessageHandler);
 }
 
@@ -209,6 +219,8 @@ void TestScene::init(){
 
     _cube_mesh.loadFromFile(":/models/cube.obj");
     _cylinder_mesh.loadFromFile(":/models/cylinder.obj");
+    _capsule_mesh.loadFromFile(":/models/capsule.obj");
+//    _cylinder_mesh.loadFromFile(":/models/Bane_3.obj");
 //    _cube_mesh.loadFromFile(":assets/models/cube.obj");
 //    _cylinder_mesh.loadFromFile(":assets/models/Bane_3.obj");
     loadTexture(":/models/Bane3_Chest_D.png");
@@ -219,8 +231,8 @@ void TestScene::init(){
     if (GlobalConfig::is_enabled("automatic_start"))
         _simulation.startSimulation();
     installDebugger();
-    debugging_ui._human=_simulation.get_human();
-    debugging_ui.init();
+    _debugging_ui._human=_simulation.get_human();
+    _debugging_ui.init();
 }
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)
@@ -235,5 +247,11 @@ void TestScene::keyPressEvent(QKeyEvent *keyEvent)
 void TestScene::keyReleaseEvent(QKeyEvent *keyEvent)
 {
     Viewer::keyReleaseEvent(keyEvent);
+}
+
+void TestScene::closeEvent(QCloseEvent * event){
+    Viewer::closeEvent(event);
+    _debugging.close();
+//    QGLViewer::closeEvent(event);
 }
 

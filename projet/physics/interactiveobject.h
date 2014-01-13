@@ -19,31 +19,27 @@ public:
 
     void updateAnimationFromSimulation(float elapsed);
     void setSimulationPosition(float time);
+
     typedef struct energy_info{
+        float x,y,z;
+        float speed;
+        float ake,ke,pe;
+    }t_energy_info;
+
+    typedef struct part_info{
         QString part_name;
-        float animation_x;
-        float animation_y;
-        float animation_z;
-        float simulation_x;
-        float simulation_y;
-        float simulation_z;
-        float animation_speed;
-        float animation_ke;
-        float animation_ake;
-        float animation_pe;
-        float simulation_speed;
-        float simulation_ke;
-        float simulation_ake;
-        float simulation_pe;
+        t_energy_info animation, simulation;
         float work;
         float mean_error;
-    }t_energy_info;
+        float mean_error_2;
+    }t_part_info;
 
     QList<Curve> _curves;
 
     enum shapetype{
         cube,
-        cylinder
+        cylinder,
+        capsule
     };
 
     InteractiveObject(const btVector3 &origin=btVector3(0,0,0), const btVector3 &shape=btVector3(1,1,1),shapetype type=cube);
@@ -57,15 +53,29 @@ public:
         \return output
     */
     void buildMotion();    
-    const InteractiveObject::t_energy_info& update_energy_info(float elapsed,float diff,float gravity);
+
+    //! calculates the information about the energy of the part of the body
+    /*!
+        calculates the information about the energy of the part of the body \n
+        This is where the kinetic energy and speed and potential energy are calculated
+        \n Status  1 : not implemented
+        \param  input
+        \return output
+    */
+    const InteractiveObject::t_part_info& updatePartInfo(float elapsed,float diff,float gravity);
 
     btVector3 _previous_position;
-    btVector3 _previous_position_simulation;
-    btVector3 _animation_speed;
+
+
+    btVector3 get_previous_position_simulation() const {return _previous_position_simulation;}
+    void set_previous_position_simulation(btVector3 previous_position_simulation){_previous_position_simulation = previous_position_simulation;}
+
     btVector3 _calculated_simulation_speed;
     //! error between the speed given by bullet and the speed obtained from calculation
     btScalar _speed_error;
+    btScalar _speed_error_2;
     btScalar _ticks;
+    btScalar _ticks_2;
 
     btVector3 get_shape() const ;
     void set_shape(const btVector3 &shape);
@@ -91,7 +101,7 @@ public:
     const QString& get_body_part() const {return _body_part;}
     void set_body_part(const QString& body_part){_body_part = body_part;}
 
-    InteractiveObject::t_energy_info getEnergyInformation() const {return _energy;}
+    InteractiveObject::t_part_info getEnergyInformation() const {return _energy;}
 
     btDefaultMotionState * get_motion_state(){
         if(!_motion_state)
@@ -106,6 +116,13 @@ public:
     btScalar get_mean_error() const {
         return _speed_error / _ticks ;
     }
+    btScalar get_mean_error_2() const {
+        return _speed_error_2 / _ticks_2 ;
+    }
+
+//    btVector3 get_animation_speed() const {return _animation_speed;}
+//    void set_animation_speed(btVector3 animation_speed){_animation_speed = animation_speed;}
+
 
 
 private:
@@ -114,6 +131,10 @@ private:
     //! temporaly disabled
     InteractiveObject(const InteractiveObject& object);
 
+    btVector3 _animation_speed;
+    btVector3 _previous_linear_velocity;
+    btVector3 _previous_position_simulation;
+    btVector3 _previous_position_simulation_2;
 
     btTransform _transform;
     // _shape needs to have a polymorphical behaviour so it is a pointer
@@ -124,7 +145,7 @@ private:
     btRigidBody * _body;
 
     bool _animated;
-    t_energy_info _energy;
+    t_part_info _energy;
 
     QString _body_part;
 

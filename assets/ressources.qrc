@@ -3,6 +3,7 @@
         <file alias="Bane_3.obj">models/Bane_3.obj</file>
         <file alias="cube.obj">models/cube.obj</file>
         <file alias="cylinder.obj">models/cylinder.obj</file>
+        <file alias="capsule.obj">models/capsule.obj</file>
     </qresource>
     <qresource prefix="/CSV/input">
         <file alias="values.csv">CSV/input/values.csv</file>

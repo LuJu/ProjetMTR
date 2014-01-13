@@ -17,13 +17,7 @@ public:
             part_list->addItem(_human->_parts[i]->get_body_part());
         }
     }
-    void update(){
-        int index = part_list->currentIndex();
-        InteractiveObject * part = _human->_parts[index];
-        speed_x->setText(QString::number(part->getEnergyInformation().animation_speed));
-
-
-    }
+    void update();
 };
 
 #endif // DEBBUGINGINTERFACE_H

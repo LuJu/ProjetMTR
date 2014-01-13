@@ -22,11 +22,15 @@ public slots :
 
 public:
     ~TestScene();
+//    TestScene(QWidget * parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 )
+//        : Viewer ( parent, shareWidget,f ){}
     virtual void draw();
     virtual void init();
     virtual void keyPressEvent(QKeyEvent *keyEvent);
     virtual void keyReleaseEvent(QKeyEvent *keyEvent);
+    virtual void closeEvent(QCloseEvent * event);
     virtual void display3DObjects();
+
 //    virtual void closeEvent(QCloseEvent * event);
     void saveCurrentStatus();
     void displayAnimation();
@@ -36,6 +40,7 @@ public:
 private:
     Mesh _cube_mesh;
     Mesh _cylinder_mesh;
+    Mesh _capsule_mesh;
 
     Simulation _simulation;
     btDiscreteDynamicsWorld * _world;
@@ -45,11 +50,12 @@ private:
     InteractiveObject * _small;
 
 
-    QWidget debugging;
-    static DebuggingInterface debugging_ui;
+    QWidget _debugging;
+    static DebuggingInterface _debugging_ui;
 
     static void customMessageHandler(QtMsgType type, const char *msg){
-        debugging_ui.console->append(msg);
+        _debugging_ui.console->append(msg);
+        Debugger::customMessageHandler(type,msg);
     }
 };
 

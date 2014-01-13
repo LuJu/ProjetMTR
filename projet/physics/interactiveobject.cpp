@@ -8,7 +8,9 @@ InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& s
     _local_inertia(btVector3(0,0,0)),
     _shape_type(type),
     _speed_error(0),
-    _ticks(0){
+    _speed_error_2(0),
+    _ticks(0),
+    _ticks_2(0){
     switch(type){
     case cube:
         _shape = new btBoxShape(shape);
@@ -91,34 +93,53 @@ void InteractiveObject::set_shape(const btVector3 &shape){
     _shape = new btBoxShape(shape);
 }
 
-const InteractiveObject::t_energy_info& InteractiveObject::update_energy_info(float elapsed,float diff,float gravity){
+const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
     btVector3 distance(_animation.translationVector(elapsed)-_previous_position);
     btVector3 simulation_distance = _body->getCenterOfMassPosition()-_previous_position_simulation;
-    btVector3 speed(distance/diff);
-    _animation_speed = speed*1000;
-    _calculated_simulation_speed = simulation_distance/diff;
+    btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
+    _animation_speed = speed_animation;
+
+
+/// Calculated simulation speed
+    _calculated_simulation_speed = simulation_distance/(diff/1000);
     _speed_error += absolute_value(_calculated_simulation_speed.length() - _body->getLinearVelocity().length());
     _previous_position = _animation.translationVector(elapsed);
+    _previous_position_simulation_2 = _previous_position_simulation;
+    _previous_position_simulation = _body->getCenterOfMassPosition();
 
-    _energy.animation_speed = speed.length()*1000;
-    _energy.simulation_speed = _body->getLinearVelocity().length();
+    btVector3 simulation_distance_2 = _body->getCenterOfMassPosition()-_previous_position_simulation_2;
+    btVector3 _calculated_simulation_speed_2 = simulation_distance_2 / (2*diff/1000);
+    _speed_error_2 += absolute_value(_calculated_simulation_speed_2.length() - _previous_linear_velocity.length());
+    _previous_linear_velocity = _body->getLinearVelocity();
+///
 
-    _energy.animation_ke = kinetic_energy(speed.length()*1000,_mass);
-    _energy.simulation_ke = kinetic_energy(_body->getLinearVelocity().length(),_mass);
+// There are 3 ways of getting the (simulation) speed of the part:
+// 1 - getting it from the getLinearVelocity() method of the body class
+// 2 - calculating it with the formula s = ( current_position - previous position ) / distance
+// 3 - formula s(-1) = ( current_position - previous previous position) / (distance*2)
+//    btVector3 speed_simulation =_body->getLinearVelocity(); // first method
+    btVector3 speed_simulation =_calculated_simulation_speed; // second method
+//    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
-    _energy.animation_pe = potential_energy(_mass,gravity,_animation.translationVector(elapsed).y());
-    _energy.simulation_pe = potential_energy(_mass,gravity,_body->getCenterOfMassPosition().y());
+    _energy.animation.speed = speed_animation.length();
+    _energy.simulation.speed = speed_simulation.length();
 
-    _energy.animation_ake = 0;
-    _energy.simulation_ake = 0;
+    _energy.animation.ke  = kinetic_energy( speed_animation.length(),                    _mass);
+    _energy.simulation.ke = kinetic_energy( speed_simulation.length(),_mass);
 
-    _energy.animation_x = _animation.translationVector(elapsed).x();
-    _energy.animation_y = _animation.translationVector(elapsed).y();
-    _energy.animation_z = _animation.translationVector(elapsed).z();
+    _energy.animation.pe  = potential_energy(_mass,-gravity,_animation.translationVector(elapsed).y());
+    _energy.simulation.pe = potential_energy(_mass,-gravity,_body->getCenterOfMassPosition().y()     );
 
-    _energy.simulation_x = _body->getCenterOfMassPosition().x();
-    _energy.simulation_y = _body->getCenterOfMassPosition().y();
-    _energy.simulation_z = _body->getCenterOfMassPosition().z();
+    _energy.animation.ake = 0;
+    _energy.simulation.ake = 0;
+
+    _energy.animation.x = _animation.translationVector(elapsed).x();
+    _energy.animation.y = _animation.translationVector(elapsed).y();
+    _energy.animation.z = _animation.translationVector(elapsed).z();
+
+    _energy.simulation.x = _body->getCenterOfMassPosition().x();
+    _energy.simulation.y = _body->getCenterOfMassPosition().y();
+    _energy.simulation.z = _body->getCenterOfMassPosition().z();
 
     _energy.part_name = _body_part;
     _animation_from_simulation.get_translation_curves()[0].insert(elapsed,_body->getCenterOfMassPosition().x());
@@ -127,10 +148,13 @@ const InteractiveObject::t_energy_info& InteractiveObject::update_energy_info(fl
 
 
     ++_ticks;
+    ++_ticks_2;
     _energy.mean_error = get_mean_error();
-    _curves[0].insert(elapsed,_energy.simulation_speed);
-    _curves[1].insert(elapsed,_energy.animation_ke);
-    _curves[2].insert(elapsed,_energy.animation_pe);
+    _energy.mean_error_2 = get_mean_error_2();
+
+    _curves[0].insert(elapsed,_energy.simulation.speed);
+    _curves[1].insert(elapsed,_energy.animation.ke);
+    _curves[2].insert(elapsed,_energy.animation.pe);
     _curves[3].insert(elapsed,_energy.mean_error);
     _curves[4].insert(elapsed,_energy.work);
     return _energy;
@@ -158,11 +182,16 @@ void InteractiveObject::setSimulationPosition(float time){
     set_transform(transform);
     shape =btVector3(_animation.scalingVector(time));
     set_shape(shape);
-
     buildMotion();
     if (time != 0) {
         btRigidBody& body = get_body();
         body.setLinearVelocity(_animation_speed);
+        _previous_linear_velocity = _animation_speed;
     }
+
+    _previous_position = translation;
+    _previous_position_simulation = translation;
+    _previous_position_simulation_2 = translation;
+//    get_body().setLinearVelocity(btVector3(0,9,0));
 
 }
