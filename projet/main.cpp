@@ -49,13 +49,17 @@ int main(int argc, char *argv[])
     gui_2->setWindowTitle("Stats");
     gui_2->move(500,0);
 
+    simulation->standard();
+    simulation->set_autoloop(true);
     gui->show();
     gui_2->show();
 
     _debugging_ui.setupUi(&_debugging);
     _debugging_ui._human=simulation->get_human();
     _debugging_ui.init();
-    _debugging.show();
+    if (GlobalConfig::is_enabled("automatic_start"))
+        simulation->startSimulation();
+//    _debugging.show();
 
 
 //    debugging.show();

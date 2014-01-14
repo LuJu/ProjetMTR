@@ -7,7 +7,8 @@ Simulation::Simulation():
     _going(false),
     _simulation_over(false),
     _timer_autoloop(NULL),
-    _timer_simulations(NULL)
+    _timer_simulations(NULL),
+    _timer_steps(NULL)
 {
 }
 
@@ -44,10 +45,10 @@ void Simulation::standard() {
     SimulationParameters params;
     params.set_gravity(btVector3(0,-9.8,0));
 //    params.set_gravity(btVector3(0,0,0));
-    params.set_coefficient(GlobalConfig::get_int("coefficient"));
-    params.set_duration(GlobalConfig::get_int("duration"));
-    params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
     params.set_ups(GlobalConfig::get_int("ups"));
+    params.set_coefficient(GlobalConfig::get_int("coefficient"));
+    params.set_duration(GlobalConfig::get_int("duration") * params.get_coefficient());
+    params.set_steps_duration(GlobalConfig::get_int("steps_duration") * params.get_coefficient());
     initiate(params);
     _human.set_mass(GlobalConfig::get_int("body_mass"));
     _human.loadObjects(GlobalConfig::get_string("input_location"));
@@ -76,10 +77,9 @@ void Simulation::initiate(const SimulationParameters& params){
 void Simulation::startSimulation(){
         _going=true;
         _world_filled = false;
-        int coeff = _params.get_coefficient();
         int duration = _params.get_duration();
         _timer_simulations= new QTimer();
-        _timer_simulations->setInterval(duration*coeff);
+        _timer_simulations->setInterval(duration);
         _timer_simulations->connect(_timer_simulations, SIGNAL(timeout()),this, SLOT(simulationOver()));
         _timer_simulations->start();
         resetStep();
@@ -90,8 +90,8 @@ void Simulation::startSimulation(){
         _clock.reset();
 
         qDebug()<<"Starting simulation";
-        qDebug()<<"Parameters : \n\tduration : "<<_params.get_duration()<<
-                               "\n\tCoeff    : "<<_params.get_coefficient();
+        qDebug()<<"Parameters : \n\tDuration      : "<<_params.get_duration()<<"ms simulation"<<
+                               "\n\tSpeed ratio   : 1/"<<_params.get_coefficient()<<"x";
 }
 
 void Simulation::resetStep(float time){
@@ -171,9 +171,10 @@ void Simulation::autoloopSteps(){
 
 void Simulation::update(){
     btScalar coeff = _params.get_coefficient();
-    _diff = _clock.getTimeMilliseconds()/coeff-_elapsed;
-//    _world->stepSimulation(1./(_params.get_ups()*coeff),0);
-    _world->stepSimulation(1./60.0,0);
+    btScalar ups = _params.get_ups();
+    _diff =  _clock.getTimeMilliseconds()/coeff-_elapsed;
     _elapsed=_clock.getTimeMilliseconds()/coeff;
+    _world->stepSimulation(1./(ups*coeff),0);
+//    _world->stepSimulation(1./60.0,0);
     _human.updateBodyInformations(_elapsed,_diff,_params.get_gravity().y());
 }

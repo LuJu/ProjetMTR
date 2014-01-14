@@ -6,13 +6,12 @@ TestScene::~TestScene(){
 
 void TestScene::draw(){
     Viewer::draw();
-//    _simulation.loop();
+//    _simulation->loop();
     display3DObjects();
-    if(_simulation.is_over() && GlobalConfig::is_enabled("automatic_close"))
+    if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close"))
         close();
     frameEnd();
 }
-
 
 void TestScene::displayAnimation(){
     QMatrix4x4 V = _ui->get_view();
@@ -20,9 +19,9 @@ void TestScene::displayAnimation(){
     QMatrix4x4 M;
     QMatrix4x4 pvm;
     btScalar matrix[16];
-    QList<InteractiveObject * >& display = _simulation.get_display_list();
+    QList<InteractiveObject * >& display = _simulation->get_display_list();
     for (int i = 0; i < display.size(); ++i) {
-        float elapsed = _simulation.get_time_simulation();
+        float elapsed = _simulation->get_time_simulation();
         InteractiveObject * obj = display.at(i);
         if (obj->get_animated()){
             btTransform transform;
@@ -69,7 +68,6 @@ void TestScene::displayAnimation(){
     _program->bind();
 }
 
-
 void TestScene::displaySimulation(){
     QMatrix4x4 V = _ui->get_view();
     QMatrix4x4 P = _ui->get_projection();
@@ -80,7 +78,7 @@ void TestScene::displaySimulation(){
     pvm = P*V*M;
     _program->setUniformValue("pvm",pvm);
     _program->setUniformValue("shininess",(GLfloat)1.0);
-    QList<InteractiveObject * >& display = _simulation.get_display_list();
+    QList<InteractiveObject * >& display = _simulation->get_display_list();
     for (int i = 0; i < display.size(); ++i) {
         InteractiveObject * obj = display.at(i);
         obj->get_motion_state()->m_graphicsWorldTrans.getOpenGLMatrix( matrix );
@@ -120,7 +118,7 @@ void TestScene::displayStats(){
     pvm = P*V*M;
     _program->setUniformValue("shininess",(GLfloat)1.0);
 
-    QList<InteractiveObject * >& display = _simulation.get_display_list();
+    QList<InteractiveObject * >& display = _simulation->get_display_list();
     float right,top,bottom,value;
     value = bottom = top = right = 0;
     for (int i = 0; i < display.size(); ++i) {
@@ -157,7 +155,7 @@ void TestScene::displayStats(){
         _program->setUniformValue("M",M);
         _program->setUniformValue("pvm",pvm);
         for (int j = 0; j < curves.size(); ++j) {
-//            const Curve& c = obj->_animation_from_simulation.get_translation_curves()[j];
+//            const Curve& c = obj->_animation_from_simulation->get_translation_curves()[j];
             Mesh::render(curves[j],curves[j].get_color(),i+2);
         }
     }
@@ -223,8 +221,6 @@ void TestScene::display3DObjects(){
 //    }
 }
 
-
-
 void TestScene::init(){
     Viewer::init();
     _background_activated=false;
@@ -238,17 +234,14 @@ void TestScene::init(){
     loadTexture(":/models/Bane3_Chest_D.png");
     _cylinder_mesh._texture=_textures[0];
 
-    _simulation.standard();
-    _simulation.set_autoloop(true);
-    if (GlobalConfig::is_enabled("automatic_start"))
-        _simulation.startSimulation();
+
 
 }
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)
 {
-    if(keyEvent->key()==Qt::Key_Space && !_simulation.is_going() && !_simulation.is_over()){
-        _simulation.startSimulation();
+    if(keyEvent->key()==Qt::Key_Space && !_simulation->is_going() && !_simulation->is_over()){
+        _simulation->startSimulation();
     } else {
         Viewer::keyPressEvent(keyEvent);
     }
