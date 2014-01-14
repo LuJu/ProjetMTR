@@ -58,9 +58,6 @@ void Simulation::standard() {
     _ground->set_mass(0); // no gravity
     _ground->get_transform().setOrigin(btVector3(0,-1,0));
     _display.append(_ground);
-    qDebug()<<" ueu"<<_display[0]->get_body().getLinearVelocity().y();
-
-
 }
 
 void Simulation::initiate(const SimulationParameters& params){

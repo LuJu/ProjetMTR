@@ -11,12 +11,33 @@ InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& s
     _speed_error_2(0),
     _ticks(0),
     _ticks_2(0){
+    __build(origin,shape,type);
+}
+
+InteractiveObject::InteractiveObject():
+    _mass(1),
+    _animated(false),
+    _body(NULL),
+    _motion_state(NULL),
+    _local_inertia(btVector3(0,0,0)),
+    _shape_type(cube),
+    _speed_error(0),
+    _speed_error_2(0),
+    _ticks(0),
+    _ticks_2(0){
+    __build(btVector3(0,0,0),btVector3(1,1,1),cube);
+}
+
+void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,shapetype type){
     switch(type){
     case cube:
         _shape = new btBoxShape(shape);
         break;
     case cylinder:
         _shape = new btCylinderShape(shape);
+        break;
+    case capsule:
+        _shape = new btCapsuleShape(shape.y(),shape.x());
         break;
     }
     _transform.setIdentity();
@@ -85,12 +106,37 @@ void InteractiveObject::buildMotion(){
 }
 
 btVector3 InteractiveObject::get_shape() const {
-    return ((btBoxShape *) _shape)->getHalfExtentsWithMargin();
+    switch (_shape_type){
+    case cube:
+        return ((btBoxShape *) _shape)->getHalfExtentsWithMargin();
+        break;
+    case cylinder:
+        return ((btCylinderShape *) _shape)->getHalfExtentsWithMargin();
+        break;
+    case capsule:
+        btVector3 shape;
+        shape.setX(((btCapsuleShape *)_shape)->getHalfHeight());
+        shape.setY(((btCapsuleShape *)_shape)->getRadius());
+        shape.setZ(((btCapsuleShape *)_shape)->getHalfHeight());
+        return shape;
+        break;
+    }
 }
 
 void InteractiveObject::set_shape(const btVector3 &shape){
     delete _shape;
-    _shape = new btBoxShape(shape);
+    switch (_shape_type){
+    case cube:
+        _shape = new btBoxShape(shape);
+        break;
+    case cylinder:
+        _shape = new btCylinderShape(shape);
+        break;
+    case capsule:
+        _shape = new btCapsuleShape(shape.y(),shape.x());
+        break;
+    }
+
 }
 
 const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){

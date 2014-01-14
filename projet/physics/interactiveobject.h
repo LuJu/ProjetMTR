@@ -42,8 +42,10 @@ public:
         capsule
     };
 
-    InteractiveObject(const btVector3 &origin=btVector3(0,0,0), const btVector3 &shape=btVector3(1,1,1),shapetype type=cube);
+    InteractiveObject(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),shapetype type=cube);
+    InteractiveObject();
     ~InteractiveObject();
+    void __build(const btVector3& origin, const btVector3& shape,shapetype type);
 
     //! brief
     /*!
@@ -128,7 +130,7 @@ public:
 private:
     void deleteMotion();
 
-    //! temporaly disabled
+    //! temporary disabled
     InteractiveObject(const InteractiveObject& object);
 
     btVector3 _animation_speed;
@@ -148,6 +150,7 @@ private:
     t_part_info _energy;
 
     QString _body_part;
+
 
 };
 

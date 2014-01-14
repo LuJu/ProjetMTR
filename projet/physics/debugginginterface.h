@@ -18,6 +18,7 @@ public:
         }
     }
     void update();
+
 };
 
 #endif // DEBBUGINGINTERFACE_H

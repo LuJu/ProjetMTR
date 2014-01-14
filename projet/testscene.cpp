@@ -1,7 +1,5 @@
 #include "testscene.h"
 
-DebuggingInterface TestScene::_debugging_ui;
-
 TestScene::~TestScene(){
 
 }
@@ -10,7 +8,6 @@ void TestScene::draw(){
     Viewer::draw();
 //    _simulation.loop();
     display3DObjects();
-    _debugging_ui.update();
     if(_simulation.is_over() && GlobalConfig::is_enabled("automatic_close"))
         close();
     frameEnd();
@@ -27,42 +24,45 @@ void TestScene::displayAnimation(){
     for (int i = 0; i < display.size(); ++i) {
         float elapsed = _simulation.get_time_simulation();
         InteractiveObject * obj = display.at(i);
-        btTransform transform;
-        transform.setIdentity();
-        btQuaternion quat;
-        btVector3 rotation_degrees = obj->get_animation().rotationVector(elapsed);
-        quat.setEuler(deg2rad(rotation_degrees.x()),
-                      deg2rad(rotation_degrees.y()),
-                      deg2rad(rotation_degrees.z()));
-        btVector3 translation(obj->get_animation().translationVector(elapsed));
-        transform.setRotation(quat);
-        transform.setOrigin(translation);
-        transform.getOpenGLMatrix(matrix);
-        M=QMatrix4x4(matrix[0] ,matrix[1] ,matrix[2] ,matrix[3],
-                     matrix[4] ,matrix[5] ,matrix[6] ,matrix[7],
-                     matrix[8] ,matrix[9] ,matrix[10],matrix[11],
-                     matrix[12],matrix[13],matrix[14],matrix[15]
-                );
-        M=M.transposed();
-        btVector3 local_scale =btVector3(obj->get_animation().scalingVector(elapsed));
+        if (obj->get_animated()){
+            btTransform transform;
+            transform.setIdentity();
+            btQuaternion quat;
+            btVector3 rotation_degrees = obj->get_animation().rotationVector(elapsed);
+            quat.setEuler(deg2rad(rotation_degrees.x()),
+                          deg2rad(rotation_degrees.y()),
+                          deg2rad(rotation_degrees.z()));
+            btVector3 translation(obj->get_animation().translationVector(elapsed));
+            transform.setRotation(quat);
+            transform.setOrigin(translation);
+            transform.getOpenGLMatrix(matrix);
+            M=QMatrix4x4(matrix[0] ,matrix[1] ,matrix[2] ,matrix[3],
+                         matrix[4] ,matrix[5] ,matrix[6] ,matrix[7],
+                         matrix[8] ,matrix[9] ,matrix[10],matrix[11],
+                         matrix[12],matrix[13],matrix[14],matrix[15]
+                    );
+            M=M.transposed();
+//            btVector3 local_scale =btVector3(obj->get_animation().scalingVector(elapsed));
+            btVector3 local_scale =obj->get_shape();
 
-        M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
-        _program->setUniformValue("M",M);
-        pvm = P*V*M;
-        _program->setUniformValue("pvm",pvm);
-        _program->setUniformValue("shininess",0.5f);
-        switch (obj->_shape_type) {
-        case InteractiveObject::cube:
-            _cube_mesh.render();
-            break;
-        case InteractiveObject::cylinder:
-            _cylinder_mesh.render();
-            break;
-        case InteractiveObject::capsule:
-            _capsule_mesh.render();
-            break;
-        default:
-            break;
+            M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
+            _program->setUniformValue("M",M);
+            pvm = P*V*M;
+            _program->setUniformValue("pvm",pvm);
+            _program->setUniformValue("shininess",0.5f);
+            switch (obj->_shape_type) {
+            case InteractiveObject::cube:
+                _cube_mesh.render();
+                break;
+            case InteractiveObject::cylinder:
+                _cylinder_mesh.render();
+                break;
+            case InteractiveObject::capsule:
+                _capsule_mesh.render();
+                break;
+            default:
+                break;
+            }
         }
     }
     _program->release();
@@ -167,19 +167,37 @@ void TestScene::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
 
-    if (GlobalConfig::is_enabled("viewport_fullscreen")) {
-        glViewport(0,0,width(),height());
-        if (GlobalConfig::is_enabled("display_second_viewport")){
-            displayStats();
-        } else {
-            if (GlobalConfig::is_enabled("display_simulation")){
-                displaySimulation();
-            }
-            if (GlobalConfig::is_enabled("display_animation")){
-                displayAnimation();
+    if (_type == 1){
+        if (GlobalConfig::is_enabled("viewport_fullscreen")) {
+            glViewport(0,0,width(),height());
+            if (GlobalConfig::is_enabled("display_second_viewport")){
+                displayStats();
+            } else {
+                if (GlobalConfig::is_enabled("display_simulation")){
+                    displaySimulation();
+                }
+                if (GlobalConfig::is_enabled("display_animation")){
+                    displayAnimation();
+                }
             }
         }
+    } else {
+        glViewport(0,0,width(),height());
+            displayStats();
     }
+//    if (GlobalConfig::is_enabled("viewport_fullscreen")) {
+//        glViewport(0,0,width(),height());
+//        if (GlobalConfig::is_enabled("display_second_viewport")){
+//            displayStats();
+//        } else {
+//            if (GlobalConfig::is_enabled("display_simulation")){
+//                displaySimulation();
+//            }
+//            if (GlobalConfig::is_enabled("display_animation")){
+//                displayAnimation();
+//            }
+//        }
+//    }
     _program->release();
 //    if (GlobalConfig::is_enabled("display_simulation")){
 //        displaySimulation();
@@ -205,13 +223,7 @@ void TestScene::display3DObjects(){
 //    }
 }
 
-void TestScene::installDebugger(){
-//    debugging.setParent(this);
-    _debugging_ui.setupUi(&_debugging);
-    _debugging.show();
 
-    qInstallMsgHandler(customMessageHandler);
-}
 
 void TestScene::init(){
     Viewer::init();
@@ -230,9 +242,7 @@ void TestScene::init(){
     _simulation.set_autoloop(true);
     if (GlobalConfig::is_enabled("automatic_start"))
         _simulation.startSimulation();
-    installDebugger();
-    _debugging_ui._human=_simulation.get_human();
-    _debugging_ui.init();
+
 }
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)
@@ -251,7 +261,6 @@ void TestScene::keyReleaseEvent(QKeyEvent *keyEvent)
 
 void TestScene::closeEvent(QCloseEvent * event){
     Viewer::closeEvent(event);
-    _debugging.close();
 //    QGLViewer::closeEvent(event);
 }
 

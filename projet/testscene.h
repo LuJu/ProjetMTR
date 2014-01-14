@@ -37,26 +37,23 @@ public:
     void displaySimulation();
     void displayStats();
     void installDebugger();
+
+    int _type;
+
+//    Simulation& get_simulation() {return _simulation;}
+    Simulation  * _simulation;
+
 private:
     Mesh _cube_mesh;
     Mesh _cylinder_mesh;
     Mesh _capsule_mesh;
 
-    Simulation _simulation;
     btDiscreteDynamicsWorld * _world;
 
 
     InteractiveObject _ground;
     InteractiveObject * _small;
 
-
-    QWidget _debugging;
-    static DebuggingInterface _debugging_ui;
-
-    static void customMessageHandler(QtMsgType type, const char *msg){
-        _debugging_ui.console->append(msg);
-        Debugger::customMessageHandler(type,msg);
-    }
 };
 
 #endif // TESTSCENE_H
