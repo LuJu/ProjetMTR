@@ -6,11 +6,7 @@ InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& s
     _body(NULL),
     _motion_state(NULL),
     _local_inertia(btVector3(0,0,0)),
-    _shape_type(type),
-    _speed_error(0),
-    _speed_error_2(0),
-    _ticks(0),
-    _ticks_2(0){
+    _shape_type(type){
     __build(origin,shape,type);
 }
 
@@ -20,11 +16,7 @@ InteractiveObject::InteractiveObject():
     _body(NULL),
     _motion_state(NULL),
     _local_inertia(btVector3(0,0,0)),
-    _shape_type(cube),
-    _speed_error(0),
-    _speed_error_2(0),
-    _ticks(0),
-    _ticks_2(0){
+    _shape_type(cube){
     __build(btVector3(0,0,0),btVector3(1,1,1),cube);
 }
 
@@ -67,6 +59,15 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
     c.set_color(QColor(0,255,255));
     c.set_label("work");
     _curves.append(c);
+    c=Curve();
+    c.set_color(QColor(0,0,255));
+    c.set_label("animation ake");
+    _curves.append(c);
+
+    _error_1._speed_error = 0;
+    _error_1._ticks= 0;
+    _error_2._speed_error = 0;
+    _error_2._ticks= 0;
 }
 
 //InteractiveObject::InteractiveObject(const InteractiveObject& object) :
@@ -140,23 +141,23 @@ void InteractiveObject::set_shape(const btVector3 &shape){
 }
 
 const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
-    btVector3 distance(_animation.translationVector(elapsed)-_previous_position);
-    btVector3 simulation_distance = _body->getCenterOfMassPosition()-_previous_position_simulation;
+    btVector3 distance(_animation.translationVector(elapsed)-_previous_data._position);
+    btVector3 simulation_distance = _body->getCenterOfMassPosition()-_previous_data._position_simulation;
     btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
     _animation_speed = speed_animation;
 
 
 /// Calculated simulation speed
     _calculated_simulation_speed = simulation_distance/(diff/1000);
-    _speed_error += absolute_value(_calculated_simulation_speed.length() - _body->getLinearVelocity().length());
-    _previous_position = _animation.translationVector(elapsed);
-    _previous_position_simulation_2 = _previous_position_simulation;
-    _previous_position_simulation = _body->getCenterOfMassPosition();
+    _error_1._speed_error += absolute_value(_calculated_simulation_speed.length() - _body->getLinearVelocity().length());
+    _previous_data._position = _animation.translationVector(elapsed);
+    _previous_data._position_simulation_2 = _previous_data._position_simulation;
+    _previous_data._position_simulation = _body->getCenterOfMassPosition();
 
-    btVector3 simulation_distance_2 = _body->getCenterOfMassPosition()-_previous_position_simulation_2;
+    btVector3 simulation_distance_2 = _body->getCenterOfMassPosition()-_previous_data._position_simulation_2;
     btVector3 _calculated_simulation_speed_2 = simulation_distance_2 / (2*diff/1000);
-    _speed_error_2 += absolute_value(_calculated_simulation_speed_2.length() - _previous_linear_velocity.length());
-    _previous_linear_velocity = _body->getLinearVelocity();
+    _error_2._speed_error += absolute_value(_calculated_simulation_speed_2.length() - _previous_data._linear_velocity.length());
+    _previous_data._linear_velocity = _body->getLinearVelocity();
 ///
 
 // There are 3 ways of getting the (simulation) speed of the part:
@@ -167,6 +168,7 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     btVector3 speed_simulation =_calculated_simulation_speed; // second method
 //    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
+    _previous_data._rotation_animation = _animation.rotationVector(elapsed);
     _energy.animation.speed = speed_animation.length();
     _energy.simulation.speed = speed_simulation.length();
 
@@ -176,8 +178,8 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     _energy.animation.pe  = potential_energy(_mass,-gravity,_animation.translationVector(elapsed).y());
     _energy.simulation.pe = potential_energy(_mass,-gravity,_body->getCenterOfMassPosition().y()     );
 
-    _energy.animation.ake = 0;
-    _energy.simulation.ake = 0;
+    _energy.animation.ake = get_angular_EC_animation();
+    _energy.simulation.ake = get_angular_EC_simulation();
 
     _energy.animation.x = _animation.translationVector(elapsed).x();
     _energy.animation.y = _animation.translationVector(elapsed).y();
@@ -187,14 +189,14 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     _energy.simulation.y = _body->getCenterOfMassPosition().y();
     _energy.simulation.z = _body->getCenterOfMassPosition().z();
 
-    _energy.part_name = _body_part;
+    _energy.part_name = _body_part_name;
     _animation_from_simulation.get_translation_curves()[0].insert(elapsed,_body->getCenterOfMassPosition().x());
     _animation_from_simulation.get_translation_curves()[1].insert(elapsed,_body->getCenterOfMassPosition().y());
     _animation_from_simulation.get_translation_curves()[2].insert(elapsed,_body->getCenterOfMassPosition().z());
 
 
-    ++_ticks;
-    ++_ticks_2;
+    ++_error_1._ticks;
+    ++_error_2._ticks;
     _energy.mean_error = get_mean_error();
     _energy.mean_error_2 = get_mean_error_2();
 
@@ -203,10 +205,8 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     _curves[2].insert(elapsed,_energy.animation.pe);
     _curves[3].insert(elapsed,_energy.mean_error);
     _curves[4].insert(elapsed,_energy.work);
+    _curves[5].insert(elapsed,_energy.animation.ake);
     return _energy;
-}
-
-void InteractiveObject::updateAnimationFromSimulation(float elapsed){
 }
 
 void InteractiveObject::setSimulationPosition(float time){
@@ -232,12 +232,12 @@ void InteractiveObject::setSimulationPosition(float time){
     if (time != 0) {
         btRigidBody& body = get_body();
         body.setLinearVelocity(_animation_speed);
-        _previous_linear_velocity = _animation_speed;
+        _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     }
 
-    _previous_position = translation;
-    _previous_position_simulation = translation;
-    _previous_position_simulation_2 = translation;
+    _previous_data._position = translation;
+    _previous_data._position_simulation = translation;
+    _previous_data._position_simulation_2 = translation;
 //    get_body().setLinearVelocity(btVector3(0,9,0));
 
 }

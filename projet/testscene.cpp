@@ -21,7 +21,7 @@ void TestScene::displayAnimation(){
     btScalar matrix[16];
     QList<InteractiveObject * >& display = _simulation->get_display_list();
     for (int i = 0; i < display.size(); ++i) {
-        float elapsed = _simulation->get_time_simulation();
+        float elapsed = _simulation->get_elapsed_milliseconds();
         InteractiveObject * obj = display.at(i);
         if (obj->get_animated()){
             btTransform transform;
@@ -49,7 +49,7 @@ void TestScene::displayAnimation(){
             pvm = P*V*M;
             _program->setUniformValue("pvm",pvm);
             _program->setUniformValue("shininess",0.5f);
-            switch (obj->_shape_type) {
+            switch (obj->get_shape_type()) {
             case InteractiveObject::cube:
                 _cube_mesh.render();
                 break;
@@ -93,7 +93,7 @@ void TestScene::displaySimulation(){
         pvm = P*V*M;
         _program->setUniformValue("M",M);
         _program->setUniformValue("pvm",pvm);
-        switch (obj->_shape_type) {
+        switch (obj->get_shape_type()) {
         case InteractiveObject::cube:
             _cube_mesh.render();
             break;
@@ -122,7 +122,7 @@ void TestScene::displayStats(){
     float right,top,bottom,value;
     value = bottom = top = right = 0;
     for (int i = 0; i < display.size(); ++i) {
-        const QList<Curve>& curves= display.at(i)->_curves;
+        const QList<Curve>& curves= display.at(i)->get_curves();
         for (int j = 0; j < curves.size(); ++j) {
             value = (curves[j].end()-1).key();
             if (right < value)
@@ -148,7 +148,7 @@ void TestScene::displayStats(){
 
     for (int i = 0; i < display.size(); ++i) {
         InteractiveObject * obj = display.at(i);
-        const QList<Curve>& curves= display.at(i)->_curves;
+        const QList<Curve>& curves= display.at(i)->get_curves();
         M = QMatrix4x4();
         V = QMatrix4x4();
         pvm = P*V*M;
@@ -164,61 +164,16 @@ void TestScene::displayStats(){
 void TestScene::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
-
+    glViewport(0,0,width(),height());
+    _simulation->_mutex.lock();
     if (_type == 1){
-        if (GlobalConfig::is_enabled("viewport_fullscreen")) {
-            glViewport(0,0,width(),height());
-            if (GlobalConfig::is_enabled("display_second_viewport")){
-                displayStats();
-            } else {
-                if (GlobalConfig::is_enabled("display_simulation")){
-                    displaySimulation();
-                }
-                if (GlobalConfig::is_enabled("display_animation")){
-                    displayAnimation();
-                }
-            }
-        }
+        if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
+        if (GlobalConfig::is_enabled("display_animation")) displayAnimation();
     } else {
-        glViewport(0,0,width(),height());
-            displayStats();
+        displayStats();
     }
-//    if (GlobalConfig::is_enabled("viewport_fullscreen")) {
-//        glViewport(0,0,width(),height());
-//        if (GlobalConfig::is_enabled("display_second_viewport")){
-//            displayStats();
-//        } else {
-//            if (GlobalConfig::is_enabled("display_simulation")){
-//                displaySimulation();
-//            }
-//            if (GlobalConfig::is_enabled("display_animation")){
-//                displayAnimation();
-//            }
-//        }
-//    }
+    _simulation->_mutex.unlock();
     _program->release();
-//    if (GlobalConfig::is_enabled("display_simulation")){
-//        displaySimulation();
-//    }
-//    if (GlobalConfig::is_enabled("display_animation")){
-//        displayAnimation();
-//    }
-//    if (GlobalConfig::is_enabled("display_second_viewport")){
-//        if (GlobalConfig::is_enabled("second_viewport_fullscreen")) {
-//            glViewport(0,0,width(),height());
-//            displayStats();
-//        } else {
-//            glViewport(0,height()/2,width(),height()/2);
-//            displayStats();
-//            glViewport(0,0,width(),height()/2);
-//        }
-//    }
-//    if (GlobalConfig::is_enabled("display_simulation")){
-//        displaySimulation();
-//    }
-//    if (GlobalConfig::is_enabled("display_animation")){
-//        displayAnimation();
-//    }
 }
 
 void TestScene::init(){
@@ -234,13 +189,11 @@ void TestScene::init(){
     loadTexture(":/models/Bane3_Chest_D.png");
     _cylinder_mesh._texture=_textures[0];
 
-
-
 }
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)
 {
-    if(keyEvent->key()==Qt::Key_Space && !_simulation->is_going() && !_simulation->is_over()){
+    if(keyEvent->key()==Qt::Key_Space && !_simulation->is_over()){
         _simulation->startSimulation();
     } else {
         Viewer::keyPressEvent(keyEvent);
@@ -254,6 +207,7 @@ void TestScene::keyReleaseEvent(QKeyEvent *keyEvent)
 
 void TestScene::closeEvent(QCloseEvent * event){
     Viewer::closeEvent(event);
+    QApplication::closeAllWindows();
 //    QGLViewer::closeEvent(event);
 }
 

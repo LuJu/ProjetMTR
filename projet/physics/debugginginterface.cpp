@@ -7,8 +7,10 @@ DebuggingInterface::DebuggingInterface()
 
 void DebuggingInterface::update(){
     int index = part_list->currentIndex();
+    _simulation->_mutex.lock();
     InteractiveObject * part = _human->_parts[index];
     InteractiveObject::t_part_info info = part->getEnergyInformation();
+    _simulation->_mutex.unlock();
     animation_position_x->setText(QString::number(info.animation.x));
     animation_position_y->setText(QString::number(info.animation.y));
     animation_position_z->setText(QString::number(info.animation.z));
@@ -26,6 +28,4 @@ void DebuggingInterface::update(){
     mass->setText(QString::number(part->get_mass()));
     mean_error->setText(QString::number(info.mean_error));
     mean_error_2->setText(QString::number(info.mean_error_2));
-
-
 }

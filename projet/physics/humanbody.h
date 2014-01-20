@@ -53,6 +53,17 @@ public:
         return _parts.end();
     }
 
+    QList<InteractiveObject * >::iterator findPartByBody(btRigidBody* body){
+        QList<InteractiveObject * >::iterator i;
+        InteractiveObject * value;
+        for (i = _parts.begin(); i != _parts.end(); ++i) {
+            value = *i;
+            btRigidBody* body2 = &(value->get_body()) ;
+            if (body2 == body) return i;
+        }
+        return _parts.end();
+    }
+
 protected:
     int _mass;
 

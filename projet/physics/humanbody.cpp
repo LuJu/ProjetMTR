@@ -32,7 +32,7 @@ void HumanBody::loadObjects(QString path){
                     else ignore = false;
                     if (!ignore){
                         object = new InteractiveObject();
-                        object->_shape_type=InteractiveObject::capsule;
+                        object->set_shape_type(InteractiveObject::cube);
                         object->set_body_part(temp.at(1));
 //                        object->set_mass(10);
                         object->set_mass(BodyInfo::mass(temp.at(1),_mass));
@@ -88,7 +88,7 @@ void HumanBody::loadObjects(QString path){
                 QList<InteractiveObject *>::iterator part1 = findPartByName(temp.at(2));
                 QList<InteractiveObject *>::iterator part2 = findPartByName(temp.at(3));
                 if (part1 != _parts.end() && part2 != _parts.end()){
-                    btPoint2PointConstraint * constraint= new btPoint2PointConstraint((*part1)->get_body(),(*part1)->get_body(),btVector3(0,0,0),btVector3(0,0,0));
+                    btPoint2PointConstraint * constraint= new btPoint2PointConstraint((*part1)->get_body(),(*part1)->get_body(),btVector3(0,1,0),btVector3(0,-1,0));
                     _constraints.append(constraint);
                 }
             }

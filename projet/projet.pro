@@ -1,7 +1,9 @@
 QT          += opengl xml widgets
 
 SOURCES     = \
-    main.cpp
+    main.cpp \
+    physics/debuggingwidget.cpp \
+    physics/debugtimer.cpp
 
 #   UTILS   ###############
 HEADERS     += \
@@ -12,7 +14,9 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/maths.h \
     /home/batman/Programmation/QtDee/utils/csvparser.h \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h
+    /home/batman/Programmation/QtDee/utils/curve.h \
+    physics/debuggingwidget.h \
+    physics/debugtimer.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \
@@ -112,6 +116,7 @@ OTHER_FILES += \
 CONFIG(debug,debug|release){
     QMAKE_CXXFLAGS += -std=c++0x
     QMAKE_CXXFLAGS_WARN_ON = -Wno-unused-parameter
+    QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder
 }
 
 FORMS += \

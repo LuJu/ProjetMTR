@@ -19,27 +19,22 @@
 #include "humanbody.h"
 #include "simulationparameters.h"
 #include "interactiveobject.h"
+#include "debugtimer.h"
 
 class Simulation : public QObject
 {
     Q_OBJECT
-public slots:
-    void simulationOver();
-    void autoloopSteps();
-    void stepOver();
-
 public:
 
     Simulation();
     ~Simulation();
     void standard();
-    void initiate(const SimulationParameters& params);
-    void update();
-    void loop();
-    void autoloopStart();
     void startSimulation();
+    void simulationOver();
+    void stepOver();
+    void initiate(const SimulationParameters& params);
+
     void resetStep(float time = 0);
-    void deleteTimer(QTimer * timer);
 
     //! function called each step, empties the world
     void cleanWorld();
@@ -50,23 +45,20 @@ public:
     QList<InteractiveObject * >& get_display_list() {return  _display;}
     btDiscreteDynamicsWorld * get_world() {return _world;}
 
-    bool is_going() const {return _going;}
     bool is_over() const {return _simulation_over;}
-    void set_autoloop(bool autoloop){_autoloop=autoloop;}
-
-    float get_elapsed() const {return _elapsed;}
-    float get_time_simulation() const {return _elapsed;}
-    float _diff;
+    float get_elapsed_microseconds() const {return _elapsed;}
+    float get_elapsed_milliseconds() const {return _elapsed/1000;}
 
     HumanBody * get_human() {return &_human;}
 
+    QThread * _thread;
+    QMutex _mutex;
+
+public slots:
+    void update();
 private:
+    void threadSystem();
 
-    bool is_autoloop() const {return _autoloop;}
-    void saveDataList();
-    void deleteData();
-
-    QList<InteractiveObject::part_info> _data_list;
     SimulationParameters _params;
 
     btDiscreteDynamicsWorld * _world;
@@ -74,26 +66,31 @@ private:
     btCollisionDispatcher *_dispatcher;
     btDefaultCollisionConfiguration *_collisionConfiguration;
     btSequentialImpulseConstraintSolver *_sequentialImpulseConstraintSolver;
+    InteractiveObject * _ground;
 
+    HumanBody _human;
     QList<InteractiveObject * > _display;
     QList<btPoint2PointConstraint *> _constraints;
-    InteractiveObject * _ground;
-    QTimer * _timer_simulations;
-    QTimer * _timer_autoloop;
-    QTimer * _timer_steps;
-    float _elapsed;
-    float _time_beginning;
 
+
+
+    btScalar _elapsed;
+    btScalar _diff;
+//    double _time_beginning;
+
+
+    btScalar _step_counter;
+    btScalar _end_counter;
+    btScalar _ups_counter;
+    btScalar _last_step_time;
+
+    int _updates_since_last_step;
 
 
     bool _simulation_over;
-    bool _going;
-    bool _autoloop;
-    bool _initiated;
     bool _world_filled;
     btClock _clock;
 
-    HumanBody _human;
 
 
 };
