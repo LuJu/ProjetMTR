@@ -32,7 +32,7 @@ signals:
     
 public slots:
     void update(){
-        _interface->update();
+//        _interface->update();
     }
     
 };

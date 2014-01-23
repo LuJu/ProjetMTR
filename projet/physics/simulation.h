@@ -46,13 +46,17 @@ public:
     btDiscreteDynamicsWorld * get_world() {return _world;}
 
     bool is_over() const {return _simulation_over;}
+    void stop(){_simulation_over = true;}
     float get_elapsed_microseconds() const {return _elapsed;}
     float get_elapsed_milliseconds() const {return _elapsed/1000;}
 
     HumanBody * get_human() {return &_human;}
 
     QThread * _thread;
-    QMutex _mutex;
+
+
+    QReadWriteLock* get_mutex() {return &_mutex;}
+
 
 public slots:
     void update();
@@ -60,6 +64,7 @@ private:
     void threadSystem();
 
     SimulationParameters _params;
+    QReadWriteLock _mutex;
 
     btDiscreteDynamicsWorld * _world;
     btBroadphaseInterface *_broadphase;

@@ -72,18 +72,21 @@ void Simulation::update(){
     while (_world && !_simulation_over){
         time_since_last_step = _clock.getTimeMilliseconds() - _last_step_time;
         if (time_since_last_step/1000 > 1./_params.get_ups()*_params.get_coefficient()){
-            _mutex.lock(); {
+            _mutex.lockForWrite(); {
                 time_since_last_step = 0;
                 _last_step_time = _clock.getTimeMilliseconds();
 
                 btScalar coeff = _params.get_coefficient();
                 btScalar ups = _params.get_ups();
+                btScalar product = ups*coeff;
+                btScalar divide = 1.0f/(ups*coeff);
                 btScalar progression = 1./(ups*coeff);
 
                 _diff =  _clock.getTimeMicroseconds()/coeff-_elapsed;
                 _elapsed=_clock.getTimeMicroseconds()/coeff;
 
                 _world->stepSimulation(progression,0);
+//                _world->stepSimulation(btScalar(0.025),0);
                 _step_counter+=progression*1000;
                 _end_counter+=progression*1000;
                 _ups_counter+=progression*1000;
@@ -103,12 +106,12 @@ void Simulation::update(){
 
 void Simulation::resetStep(float time){
     cleanWorld();
-//    _time_beginning = time;
-    qDebug()<<"updates :"<<_updates_since_last_step<<" / ";
-
-    _updates_since_last_step = 0;
     _human.setSimulationPosition(time);
     fillWorld();
+
+    qDebug()<<"updates :"<<_updates_since_last_step<<" / ";
+    _updates_since_last_step = 0;
+    //    _time_beginning = time;
 
     _step_counter = 0;
 
@@ -141,9 +144,9 @@ void Simulation::fillWorld(){
             _world->addRigidBody(body);
         }
         for (int i = 0; i < _constraints.size(); ++i) {
-            btPoint2PointConstraint * constraint= new btPoint2PointConstraint ((_display[0]->get_body()),(_display[1]->get_body()),btVector3(0,1,0),btVector3(1,0,0));
-//            _world->addConstraint(_constraints[i]);
-            _world->addConstraint(constraint);
+//            btPoint2PointConstraint * constraint= new btPoint2PointConstraint ((_display[0]->get_body()),(_display[1]->get_body()),btVector3(0,1,0),btVector3(1,0,0));
+            _world->addConstraint(_constraints[i]);
+//            _world->addConstraint(constraint);
         }
         _world_filled = true;
     } else qWarning()<<"Attempting to fill a full world" ;

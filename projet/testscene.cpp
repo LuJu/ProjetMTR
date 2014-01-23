@@ -7,9 +7,13 @@ TestScene::~TestScene(){
 void TestScene::draw(){
     Viewer::draw();
 //    _simulation->loop();
+    _simulation->get_mutex()->lockForRead();
     display3DObjects();
-    if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close"))
+    if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close")){
+        _simulation->get_mutex()->unlock();
         close();
+    }
+    _simulation->get_mutex()->unlock();
     frameEnd();
 }
 
@@ -165,14 +169,14 @@ void TestScene::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
     glViewport(0,0,width(),height());
-    _simulation->_mutex.lock();
+//    _simulation->_mutex.lock();
     if (_type == 1){
         if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
         if (GlobalConfig::is_enabled("display_animation")) displayAnimation();
     } else {
         displayStats();
     }
-    _simulation->_mutex.unlock();
+//    _simulation->_mutex.unlock();
     _program->release();
 }
 
@@ -207,6 +211,9 @@ void TestScene::keyReleaseEvent(QKeyEvent *keyEvent)
 
 void TestScene::closeEvent(QCloseEvent * event){
     Viewer::closeEvent(event);
+    _simulation->get_mutex()->lockForRead();
+    _simulation->stop();
+    _simulation->get_mutex()->unlock();
     QApplication::closeAllWindows();
 //    QGLViewer::closeEvent(event);
 }

@@ -22,7 +22,7 @@ void HumanBody::loadObjects(QString path){
     int i=0;
     InteractiveObject * object = NULL;
     bool ignore = false;
-
+    qDebug()<<path;
     while (list[i].at(0)!="parts_end"){
         for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
             temp= list[i];
@@ -88,6 +88,8 @@ void HumanBody::loadObjects(QString path){
                 QList<InteractiveObject *>::iterator part1 = findPartByName(temp.at(2));
                 QList<InteractiveObject *>::iterator part2 = findPartByName(temp.at(3));
                 if (part1 != _parts.end() && part2 != _parts.end()){
+                    qDebug()<<(*part1)->get_body_part();
+                    qDebug()<<(*part2)->get_body_part();
                     btPoint2PointConstraint * constraint= new btPoint2PointConstraint((*part1)->get_body(),(*part1)->get_body(),btVector3(0,1,0),btVector3(0,-1,0));
                     _constraints.append(constraint);
                 }

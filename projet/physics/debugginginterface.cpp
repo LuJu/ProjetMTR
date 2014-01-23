@@ -6,11 +6,14 @@ DebuggingInterface::DebuggingInterface()
 }
 
 void DebuggingInterface::update(){
+
+
+    _simulation->get_mutex()->lockForRead();
     int index = part_list->currentIndex();
-    _simulation->_mutex.lock();
-    InteractiveObject * part = _human->_parts[index];
+    InteractiveObject * part = _simulation->get_human()->_parts[index];
     InteractiveObject::t_part_info info = part->getEnergyInformation();
-    _simulation->_mutex.unlock();
+    _simulation->get_mutex()->unlock();
+
     animation_position_x->setText(QString::number(info.animation.x));
     animation_position_y->setText(QString::number(info.animation.y));
     animation_position_z->setText(QString::number(info.animation.z));
