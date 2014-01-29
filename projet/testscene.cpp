@@ -1,19 +1,21 @@
 #include "testscene.h"
 
 TestScene::~TestScene(){
-
 }
 
 void TestScene::draw(){
     Viewer::draw();
 //    _simulation->loop();
-    _simulation->get_mutex()->lockForRead();
-    display3DObjects();
+    _simulation->get_lock()->lockForRead();
+    display = _simulation->get_display_list();
+    _simulation->get_lock()->unlock();
     if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close")){
-        _simulation->get_mutex()->unlock();
+        _simulation->get_lock()->unlock();
         close();
+    } else {
+        display3DObjects();
     }
-    _simulation->get_mutex()->unlock();
+//    _simulation->get_mutex()->unlock();
     frameEnd();
 }
 
@@ -23,7 +25,7 @@ void TestScene::displayAnimation(){
     QMatrix4x4 M;
     QMatrix4x4 pvm;
     btScalar matrix[16];
-    QList<InteractiveObject * >& display = _simulation->get_display_list();
+//    const QList<InteractiveObject * >& display = _simulation->get_display_list();
     for (int i = 0; i < display.size(); ++i) {
         float elapsed = _simulation->get_elapsed_milliseconds();
         InteractiveObject * obj = display.at(i);
@@ -82,7 +84,7 @@ void TestScene::displaySimulation(){
     pvm = P*V*M;
     _program->setUniformValue("pvm",pvm);
     _program->setUniformValue("shininess",(GLfloat)1.0);
-    QList<InteractiveObject * >& display = _simulation->get_display_list();
+//    const QList<InteractiveObject * >& display = _simulation->get_display_list();
     for (int i = 0; i < display.size(); ++i) {
         InteractiveObject * obj = display.at(i);
         obj->get_motion_state()->m_graphicsWorldTrans.getOpenGLMatrix( matrix );
@@ -122,7 +124,7 @@ void TestScene::displayStats(){
     pvm = P*V*M;
     _program->setUniformValue("shininess",(GLfloat)1.0);
 
-    QList<InteractiveObject * >& display = _simulation->get_display_list();
+//    const QList<InteractiveObject * >& display = _simulation->get_display_list();
     float right,top,bottom,value;
     value = bottom = top = right = 0;
     for (int i = 0; i < display.size(); ++i) {
@@ -198,7 +200,7 @@ void TestScene::init(){
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)
 {
     if(keyEvent->key()==Qt::Key_Space && !_simulation->is_over()){
-        _simulation->startSimulation();
+        _simulation->start();
     } else {
         Viewer::keyPressEvent(keyEvent);
     }
@@ -211,9 +213,9 @@ void TestScene::keyReleaseEvent(QKeyEvent *keyEvent)
 
 void TestScene::closeEvent(QCloseEvent * event){
     Viewer::closeEvent(event);
-    _simulation->get_mutex()->lockForRead();
+    _simulation->get_lock()->lockForRead();
     _simulation->stop();
-    _simulation->get_mutex()->unlock();
+    _simulation->get_lock()->unlock();
     QApplication::closeAllWindows();
 //    QGLViewer::closeEvent(event);
 }

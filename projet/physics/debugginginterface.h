@@ -15,13 +15,13 @@ public:
 
     Simulation * _simulation;
     void init(){
-        part_list->clear();
-        _simulation->get_mutex()->lockForRead();
-        HumanBody * _human = _simulation->get_human();
-        for (int i = 0; i < _human->_parts.size(); ++i) {
-            part_list->addItem(_human->_parts[i]->get_body_part());
-        }
-        _simulation->get_mutex()->unlock();
+//        part_list->clear();
+//        _simulation->get_mutex()->lockForRead();
+//        HumanBody * _human = _simulation->get_human();
+//        for (int i = 0; i < _human->_parts.size(); ++i) {
+//            part_list->addItem(_human->_parts[i]->get_body_part());
+//        }
+//        _simulation->get_mutex()->unlock();
     }
     void log(const char * msg){
 //        console->setText(msg);

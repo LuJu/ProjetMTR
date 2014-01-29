@@ -20,10 +20,10 @@ public:
     }
 
     void init(){
-        _timer_update = new QTimer();
-        _timer_update->setInterval(100);
-        _timer_update->start();
-        connect(_timer_update,SIGNAL(timeout()),this,SLOT(update()));
+//        _timer_update = new QTimer();
+//        _timer_update->setInterval(100);
+//        _timer_update->start();
+//        connect(_timer_update,SIGNAL(timeout()),this,SLOT(update()));
     }
     QTimer * _timer_update;
     DebuggingInterface * _interface;

@@ -2,21 +2,25 @@
 
 Simulation::Simulation():
     _simulation_over(false),
+    _world_filled(false),
+    _initiated(false),
     _end_counter(0),
     _updates_since_last_step(0)
 {
 }
 
 Simulation::~Simulation(){
-    delete _world;
-    delete _sequentialImpulseConstraintSolver;
-    delete _broadphase;
-    delete _dispatcher;
-    delete _collisionConfiguration;
-    delete _ground;
+    if (_initiated){
+        delete _ground;
+        delete _world;
+        delete _sequentialImpulseConstraintSolver;
+        delete _broadphase;
+        delete _dispatcher;
+        delete _collisionConfiguration;
+    }
 }
 
-void Simulation::standard() {
+void Simulation::init() {
     SimulationParameters params;
     params.set_gravity(btVector3(0,-9.8,0));
 //    params.set_gravity(btVector3(0,0,0));
@@ -24,7 +28,7 @@ void Simulation::standard() {
     params.set_coefficient(GlobalConfig::get_int("coefficient"));
     params.set_duration(GlobalConfig::get_int("duration") * params.get_coefficient());
     params.set_steps_duration(GlobalConfig::get_int("steps_duration") * params.get_coefficient());
-    initiate(params);
+    allocateWorld(params);
     _human.set_mass(GlobalConfig::get_int("body_mass"));
     _human.loadObjects(GlobalConfig::get_string("input_location"));
     _display = _human._parts;
@@ -34,9 +38,10 @@ void Simulation::standard() {
     _ground->set_mass(0); // no gravity
     _ground->get_transform().setOrigin(btVector3(0,-1,0));
     _display.append(_ground);
+    _initiated = true;
 }
 
-void Simulation::initiate(const SimulationParameters& params){
+void Simulation::allocateWorld(const SimulationParameters& params){
     _params = params;
     _collisionConfiguration = new btDefaultCollisionConfiguration();
     _dispatcher = new btCollisionDispatcher(_collisionConfiguration);
@@ -47,61 +52,53 @@ void Simulation::initiate(const SimulationParameters& params){
     _world->setGravity(params.get_gravity());
 }
 
-void Simulation::threadSystem(){
-    _thread = new QThread();
-    moveToThread(_thread);
-    if (!connect(_thread, SIGNAL(started()), this, SLOT(update()))) qWarning()<<"Thread cannot be connected";
-    _thread->start();
-}
-
-void Simulation::startSimulation(){
-        _world_filled = false;
-        int duration = _params.get_duration();
+void Simulation::start(){
         resetStep();
-        threadSystem();
         _clock.reset();
-
+        _thread = new QThread();
+        moveToThread(_thread);
+        if (!connect(_thread, SIGNAL(started()), this, SLOT(loop()))) qWarning()<<"Thread cannot be connected";
         qDebug()<<"Starting simulation";
         qDebug()<<"Parameters : \n\tDuration      : "<<_params.get_duration()<<"ms simulation"<<
                                "\n\tSpeed ratio   : 1/"<<_params.get_coefficient()<<"x";
+        _thread->start();
 }
 
-void Simulation::update(){
+void Simulation::loop(){
     double time_since_last_step = 0;
     _last_step_time = _clock.getTimeMilliseconds();
     while (_world && !_simulation_over){
         time_since_last_step = _clock.getTimeMilliseconds() - _last_step_time;
-        if (time_since_last_step/1000 > 1./_params.get_ups()*_params.get_coefficient()){
-            _mutex.lockForWrite(); {
-                time_since_last_step = 0;
-                _last_step_time = _clock.getTimeMilliseconds();
-
-                btScalar coeff = _params.get_coefficient();
-                btScalar ups = _params.get_ups();
-                btScalar product = ups*coeff;
-                btScalar divide = 1.0f/(ups*coeff);
-                btScalar progression = 1./(ups*coeff);
-
-                _diff =  _clock.getTimeMicroseconds()/coeff-_elapsed;
-                _elapsed=_clock.getTimeMicroseconds()/coeff;
-
-                _world->stepSimulation(progression,0);
-//                _world->stepSimulation(btScalar(0.025),0);
-                _step_counter+=progression*1000;
-                _end_counter+=progression*1000;
-                _ups_counter+=progression*1000;
-            //    _world->stepSimulation(1./60.0,0);
-                _human.updateBodyInformations(_elapsed/1000,_diff/1000,_params.get_gravity().y());
-
+        if (time_since_last_step/1000 > 1./(_params.get_ups()*_params.get_coefficient())){
+            time_since_last_step = 0;
+            _lock.lockForWrite(); {
+                update();
                 if (_step_counter > _params.get_steps_duration())
                     stepOver();
                 if (_end_counter > _params.get_duration())
                     simulationOver();
-            //    if (_ups_counter > })
                 _updates_since_last_step++;
-            } _mutex.unlock();
+            } _lock.unlock();
         }
     }
+}
+
+void Simulation::update(){
+
+    _last_step_time = _clock.getTimeMilliseconds();
+
+    btScalar coeff = _params.   get_coefficient();
+    btScalar ups = _params.get_ups();
+    btScalar progression = 1./(ups*coeff);
+
+    _diff =  _clock.getTimeMicroseconds()/coeff-_elapsed;
+    _elapsed=_clock.getTimeMicroseconds()/coeff;
+
+    _world->stepSimulation(progression,0);
+    _step_counter+=progression*1000;
+    _end_counter+=progression*1000;
+    _ups_counter+=progression*1000;
+    _human.updateBodyInformations(_elapsed/1000,_diff/1000,_params.get_gravity().y());
 }
 
 void Simulation::resetStep(float time){
@@ -111,8 +108,6 @@ void Simulation::resetStep(float time){
 
     qDebug()<<"updates :"<<_updates_since_last_step<<" / ";
     _updates_since_last_step = 0;
-    //    _time_beginning = time;
-
     _step_counter = 0;
 
 }
@@ -144,9 +139,7 @@ void Simulation::fillWorld(){
             _world->addRigidBody(body);
         }
         for (int i = 0; i < _constraints.size(); ++i) {
-//            btPoint2PointConstraint * constraint= new btPoint2PointConstraint ((_display[0]->get_body()),(_display[1]->get_body()),btVector3(0,1,0),btVector3(1,0,0));
             _world->addConstraint(_constraints[i]);
-//            _world->addConstraint(constraint);
         }
         _world_filled = true;
     } else qWarning()<<"Attempting to fill a full world" ;

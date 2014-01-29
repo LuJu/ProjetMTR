@@ -28,43 +28,35 @@ public:
 
     Simulation();
     ~Simulation();
-    void standard();
-    void startSimulation();
+    void init();
+    void start();
+    void stop(){_simulation_over = true;}
+
+    const QList<InteractiveObject * >& get_display_list() {return  _display;}
+    bool is_over() const {return _simulation_over;}
+    float get_elapsed_microseconds() const {return _elapsed;}
+    float get_elapsed_milliseconds() const {return _elapsed/1000;}
+    HumanBody * get_human() {return &_human;}
+    QReadWriteLock* get_lock() {return &_lock;}
+
+
+public slots:
+    void loop();
+private:
+    void update();
+    void allocateWorld(const SimulationParameters& params);
     void simulationOver();
     void stepOver();
-    void initiate(const SimulationParameters& params);
 
     void resetStep(float time = 0);
-
     //! function called each step, empties the world
     void cleanWorld();
 
     //! fills the world with all the objects of the simulation
     void fillWorld();
 
-    QList<InteractiveObject * >& get_display_list() {return  _display;}
-    btDiscreteDynamicsWorld * get_world() {return _world;}
-
-    bool is_over() const {return _simulation_over;}
-    void stop(){_simulation_over = true;}
-    float get_elapsed_microseconds() const {return _elapsed;}
-    float get_elapsed_milliseconds() const {return _elapsed/1000;}
-
-    HumanBody * get_human() {return &_human;}
-
-    QThread * _thread;
-
-
-    QReadWriteLock* get_mutex() {return &_mutex;}
-
-
-public slots:
-    void update();
-private:
-    void threadSystem();
-
     SimulationParameters _params;
-    QReadWriteLock _mutex;
+    QReadWriteLock _lock;
 
     btDiscreteDynamicsWorld * _world;
     btBroadphaseInterface *_broadphase;
@@ -73,6 +65,7 @@ private:
     btSequentialImpulseConstraintSolver *_sequentialImpulseConstraintSolver;
     InteractiveObject * _ground;
 
+    QThread * _thread;
     HumanBody _human;
     QList<InteractiveObject * > _display;
     QList<btPoint2PointConstraint *> _constraints;
@@ -96,7 +89,7 @@ private:
     bool _world_filled;
     btClock _clock;
 
-
+    bool _initiated;
 
 };
 

@@ -19,7 +19,7 @@ void speedTest(){
 
 
 
-DebuggingWidget * _debugging;
+QWidget * _debugging;
 DebuggingInterface * _debugging_ui;
 
 void customMessageHandler(QtMsgType type, const char *msg)
@@ -96,8 +96,8 @@ void parseArguments(int argc, char *argv[]){
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    Viewer * gui;
-    Viewer * gui_2;
+    TestScene gui;
+    TestScene stats;
 
     int ret=0;
 //    qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
@@ -112,46 +112,40 @@ int main(int argc, char *argv[])
     Simulation * simulation = new Simulation();
 
 
-    gui = new TestScene();
-    ((TestScene*) gui)->_type = 1;
-    ((TestScene*) gui)->_simulation = simulation;
-    gui->setWindowTitle("Physics simulation");
-    gui->move(0,0);
+    gui._type = 1;
+    gui._simulation = simulation;
+    gui.setWindowTitle("Physics simulation");
+    gui.move(0,0);
 
+//    stats._type = 2;
+//    stats._simulation = simulation;
+//    stats.setWindowTitle("Stats");
+//    stats.move(gui.width(),0);
 
-//    gui_2 = new TestScene();
-//    ((TestScene*)gui_2)->_type = 2;
-//    ((TestScene*)gui_2)->_simulation = simulation;
-//    gui_2->setWindowTitle("Stats");
-//    gui_2->move(gui->width(),0);
+    simulation->init();
 
-    simulation->standard();
-
-//    _debugging_ui = NULL;
+    _debugging_ui = NULL;
 //    _debugging = new DebuggingWidget();
-//    _debugging_ui = new DebuggingInterface();
+    _debugging = new QWidget();
+    _debugging_ui = new DebuggingInterface();
 //    _debugging->_interface = _debugging_ui;
 //    _debugging->init();
-//    _debugging_ui->setupUi(_debugging);
-//    _debugging_ui->_simulation=simulation;
-//    _debugging->move(0,gui->height());
+    _debugging_ui->setupUi(_debugging);
+    _debugging_ui->_simulation=simulation;
+    _debugging->move(0,gui.height());
 
 //    qInstallMsgHandler(customMessageHandler);
 //    _debugging_ui->init();
 
 
 
-//    _debugging->show();
-    gui->show();
-//    gui_2->show();
+    _debugging->show();
+    gui.show();
+//    stats.show();
 
-
-//    debugging.show();
     if (GlobalConfig::is_enabled("automatic_start"))
-        simulation->startSimulation();
+        simulation->start();
     ret=app.exec();
-    delete gui;
-    delete gui_2;
     delete simulation;
     delete _debugging;
     delete _debugging_ui;

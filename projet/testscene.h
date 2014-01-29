@@ -48,11 +48,13 @@ private:
     Mesh _cylinder_mesh;
     Mesh _capsule_mesh;
 
-    btDiscreteDynamicsWorld * _world;
+//    btDiscreteDynamicsWorld * _world;
 
 
     InteractiveObject _ground;
     InteractiveObject * _small;
+
+    QList<InteractiveObject * > display;
 
 };
 
