@@ -96,8 +96,10 @@ void parseArguments(int argc, char *argv[]){
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    QGLFormat b;
+    QGLContext context(b);
     TestScene gui;
-    TestScene stats;
+    TestScene stats(&context);
 
     int ret=0;
 //    qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
@@ -117,10 +119,10 @@ int main(int argc, char *argv[])
     gui.setWindowTitle("Physics simulation");
     gui.move(0,0);
 
-//    stats._type = 2;
-//    stats._simulation = simulation;
-//    stats.setWindowTitle("Stats");
-//    stats.move(gui.width(),0);
+    stats._type = 2;
+    stats._simulation = simulation;
+    stats.setWindowTitle("Stats");
+    stats.move(gui.width(),0);
 
     simulation->init();
 
@@ -141,7 +143,7 @@ int main(int argc, char *argv[])
 
     _debugging->show();
     gui.show();
-//    stats.show();
+    stats.show();
 
     if (GlobalConfig::is_enabled("automatic_start"))
         simulation->start();

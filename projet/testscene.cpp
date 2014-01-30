@@ -3,6 +3,15 @@
 TestScene::~TestScene(){
 }
 
+TestScene::TestScene(QGLContext *context):
+    Viewer(context){
+
+}
+TestScene::TestScene():
+    Viewer(){
+
+}
+
 void TestScene::draw(){
     Viewer::draw();
 //    _simulation->loop();

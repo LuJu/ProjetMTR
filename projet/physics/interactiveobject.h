@@ -40,6 +40,13 @@ public:
     void setSimulationPosition(float time);
 
 
+    btVector3 getTopPosition(){
+        btVector3 center = get_body().getCenterOfMassPosition();
+//        btTransform transform = get_body().getan
+        btQuaternion orientation = get_body().getOrientation();
+        btVector3 position = orientation.getAxis() * get_shape().getY();
+    }
+
 
 
     InteractiveObject(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),shapetype type=cube);
