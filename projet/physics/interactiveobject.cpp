@@ -228,7 +228,7 @@ void InteractiveObject::setSimulationPosition(float time){
     set_transform(transform);
     shape =btVector3(_animation.scalingVector(time));
     set_shape(shape);
-    buildMotion();
+//    buildMotion();
     if (time != 0) {
         btRigidBody& body = get_body();
         body.setLinearVelocity(_animation_speed);

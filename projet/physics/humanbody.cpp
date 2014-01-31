@@ -90,7 +90,13 @@ void HumanBody::loadObjects(QString path){
                 if (part1 != _parts.end() && part2 != _parts.end()){
                     qDebug()<<(*part1)->get_body_part();
                     qDebug()<<(*part2)->get_body_part();
-                    btPoint2PointConstraint * constraint= new btPoint2PointConstraint((*part1)->get_body(),(*part1)->get_body(),btVector3(0,1,0),btVector3(0,-1,0));
+                    btPoint2PointConstraint * constraint= new btPoint2PointConstraint(
+                                (*part1)->get_body(),
+                                (*part2)->get_body(),
+                                btVector3(1,1,4),
+                                btVector3(5,-1,3));
+
+//                    btPoint2PointConstraint * constraint= new btPoint2PointConstraint((*part1)->get_body(),(*part1)->get_body(),btVector3(0,(*part1)->get_shape().y(),0),btVector3(0,(*part2)->get_shape().y(),0));
                     _constraints.append(constraint);
                 }
             }

@@ -1,6 +1,7 @@
 #include "simulation.h"
 
 Simulation::Simulation():
+    _world(NULL),
     _simulation_over(false),
     _world_filled(false),
     _initiated(false),
@@ -120,19 +121,19 @@ void Simulation::stepOver(){
 void Simulation::cleanWorld(){
     btRigidBody * body;
     if (_world_filled){
+        for (int i = 0; i < _constraints.size(); ++i) {
+            _world->removeConstraint(_constraints[i]);
+        }
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
             _world->removeRigidBody(body);
-        }
-        for (int i = 0; i < _constraints.size(); ++i) {
-            _world->removeConstraint(_constraints[i]);
         }
         _world_filled = false; //indicates that the world is now empty
     } else qWarning()<<"Attempting to clean an empty world" ;
 }
 
 void Simulation::fillWorld(){
-    btRigidBody * body;
+    btRigidBody * body = NULL;
     if (!_world_filled){
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());

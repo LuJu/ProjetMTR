@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     QGLFormat b;
     QGLContext context(b);
     TestScene gui;
-    TestScene stats(&context);
+//    TestScene stats(&context);
 
     int ret=0;
 //    qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
@@ -119,31 +119,31 @@ int main(int argc, char *argv[])
     gui.setWindowTitle("Physics simulation");
     gui.move(0,0);
 
-    stats._type = 2;
-    stats._simulation = simulation;
-    stats.setWindowTitle("Stats");
-    stats.move(gui.width(),0);
+//    stats._type = 2;
+//    stats._simulation = simulation;
+//    stats.setWindowTitle("Stats");
+//    stats.move(gui.width(),0);
 
     simulation->init();
 
     _debugging_ui = NULL;
 //    _debugging = new DebuggingWidget();
-    _debugging = new QWidget();
-    _debugging_ui = new DebuggingInterface();
+//    _debugging = new QWidget();
+//    _debugging_ui = new DebuggingInterface();
 //    _debugging->_interface = _debugging_ui;
 //    _debugging->init();
-    _debugging_ui->setupUi(_debugging);
-    _debugging_ui->_simulation=simulation;
-    _debugging->move(0,gui.height());
+//    _debugging_ui->setupUi(_debugging);
+//    _debugging_ui->_simulation=simulation;
+//    _debugging->move(0,gui.height());
 
 //    qInstallMsgHandler(customMessageHandler);
 //    _debugging_ui->init();
 
 
 
-    _debugging->show();
+//    _debugging->show();
     gui.show();
-    stats.show();
+//    stats.show();
 
     if (GlobalConfig::is_enabled("automatic_start"))
         simulation->start();
