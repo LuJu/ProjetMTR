@@ -20,6 +20,7 @@
 #include "simulationparameters.h"
 #include "interactiveobject.h"
 #include "debugtimer.h"
+#include "joint.h"
 
 class Simulation : public QObject
 {
@@ -68,7 +69,7 @@ private:
     QThread * _thread;
     HumanBody _human;
     QList<InteractiveObject * > _display;
-    QList<btPoint2PointConstraint *> _constraints;
+    QList<Joint> _constraints;
 
 
 

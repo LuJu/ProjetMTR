@@ -122,8 +122,9 @@ void Simulation::cleanWorld(){
     btRigidBody * body;
     if (_world_filled){
         for (int i = 0; i < _constraints.size(); ++i) {
-            _world->removeConstraint(_constraints[i]);
+            _world->removeConstraint(_constraints[i]._constraint);
         }
+        btTypedConstraint * auie= _world->getConstraint(0);
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
             _world->removeRigidBody(body);
@@ -140,7 +141,24 @@ void Simulation::fillWorld(){
             _world->addRigidBody(body);
         }
         for (int i = 0; i < _constraints.size(); ++i) {
-            _world->addConstraint(_constraints[i]);
+            if (_constraints[i]._constraint == NULL)
+                delete _constraints[i]._constraint;
+            btPoint2PointConstraint * constraint;
+            if (_constraints[i]._parts.second != NULL){
+                constraint= new btPoint2PointConstraint(
+                    _constraints[i]._parts.first->get_body(),
+                    _constraints[i]._parts.second->get_body(),
+                    btVector3(0,-_constraints[i]._parts.first->get_shape().y() -0.1,0),
+                    btVector3(0,_constraints[i]._parts.first->get_shape().y() +0.1,0));
+            } else {
+                constraint= new btPoint2PointConstraint(
+                    _constraints[i]._parts.first->get_body(),
+                    btVector3(0,_constraints[i]._parts.first->get_shape().y() -0.1,0));
+            }
+                _constraints[i]._constraint = constraint;
+//            btPoint2PointConstraint * constraint= new btPoint2PointConstraint((*part1)->get_body(),(*part1)->get_body(),btVector3(0,(*part1)->get_shape().y(),0),btVector3(0,(*part2)->get_shape().y(),0));
+//            _constraints.append(joint);
+            _world->addConstraint(constraint);
         }
         _world_filled = true;
     } else qWarning()<<"Attempting to fill a full world" ;

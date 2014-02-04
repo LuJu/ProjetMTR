@@ -24,6 +24,7 @@ public:
     ~TestScene();
     TestScene(QGLContext * context);
     TestScene();
+    TestScene(QWidget * parent);
 //    TestScene(QWidget * parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 )
 //        : Viewer ( parent, shareWidget,f ){}
     virtual void draw();

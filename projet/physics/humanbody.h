@@ -14,6 +14,7 @@
 
 #include "interactiveobject.h"
 #include "bodyinfo.h"
+#include "joint.h"
 
 class HumanBody
 {
@@ -22,7 +23,7 @@ public:
     ~HumanBody();
 
     QList<InteractiveObject * > _parts;
-    QList<btPoint2PointConstraint *> _constraints;
+    QList<Joint> _constraints;
 
     void loadObjects(QString path);
     void calculateWork();

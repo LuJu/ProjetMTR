@@ -10,7 +10,7 @@ HumanBody::~HumanBody(){
         delete _parts[i];
     }
     for (int i = 0; i < _constraints.size(); ++i) {
-        delete _constraints[i];
+        delete _constraints[i]._constraint;
     }
 }
 
@@ -78,33 +78,51 @@ void HumanBody::loadObjects(QString path){
         i++;
     }
     ignore = false;
-    while (list[i].at(0)!="constraints_end"){
-        temp= list[i];
-        if (temp.at(0) == "constraint"){
-            if (temp.at(1) == "ignore") ignore = true;
-            else ignore = false;
+//    while (list[i].at(0)!="constraints_end"){
+//        temp= list[i];
+//        if (temp.at(0) == "constraint"){
+//            if (temp.at(1) == "ignore") ignore = true;
+//            else ignore = false;
 
-            if (!ignore){
-                QList<InteractiveObject *>::iterator part1 = findPartByName(temp.at(2));
-                QList<InteractiveObject *>::iterator part2 = findPartByName(temp.at(3));
-                if (part1 != _parts.end() && part2 != _parts.end()){
-                    qDebug()<<(*part1)->get_body_part();
-                    qDebug()<<(*part2)->get_body_part();
-                    btPoint2PointConstraint * constraint= new btPoint2PointConstraint(
-                                (*part1)->get_body(),
-                                (*part2)->get_body(),
-                                btVector3(1,1,4),
-                                btVector3(5,-1,3));
+//            if (!ignore){
+//                QList<InteractiveObject *>::iterator part1 = findPartByName(temp.at(2));
+//                QList<InteractiveObject *>::iterator part2 = findPartByName(temp.at(3));
+//                if (part1 != _parts.end() && part2 != _parts.end()){
+//                    qDebug()<<(*part1)->get_body_part();
+//                    qDebug()<<(*part2)->get_body_part();
+//                    Joint joint;
+//                    joint._parts.first = *part1;
+//                    joint._parts.second= *part2;
 
-//                    btPoint2PointConstraint * constraint= new btPoint2PointConstraint((*part1)->get_body(),(*part1)->get_body(),btVector3(0,(*part1)->get_shape().y(),0),btVector3(0,(*part2)->get_shape().y(),0));
-                    _constraints.append(constraint);
-                }
-            }
+//                    _constraints.append(joint);
+//                    Joint joint2;
+//                    joint2._parts.first = *part1;
+//                    _constraints.append(joint2);
+
+//                }
+//            }
+//        }
+//        ++i;
+//    }
+
+    QList<QPair<QString,QString> > list2 = BodyInfo::jointList();
+    for (int i = 0; i < list2.size(); ++i) {
+        QList<InteractiveObject *>::iterator part1 = findPartByName(list2.at(i).first);
+        QList<InteractiveObject *>::iterator part2 = findPartByName(list2.at(i).second);
+        if (part1 != _parts.end() && part2 != _parts.end()){
+            qDebug()<<(*part1)->get_body_part();
+            qDebug()<<(*part2)->get_body_part();
+            Joint joint;
+            joint._parts.first = *part1;
+            joint._parts.second= *part2;
+
+            _constraints.append(joint);
+//            Joint joint2;
+//            joint2._parts.first = *part1;
+//            _constraints.append(joint2);
         }
-        ++i;
+
     }
-
-
 }
 
 void HumanBody::calculateWork(){

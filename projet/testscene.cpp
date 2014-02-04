@@ -7,6 +7,10 @@ TestScene::TestScene(QGLContext *context):
     Viewer(context){
 
 }
+TestScene::TestScene(QWidget *parent):
+    Viewer(parent){
+
+}
 TestScene::TestScene():
     Viewer(){
 

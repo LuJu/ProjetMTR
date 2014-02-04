@@ -3,7 +3,8 @@ QT          += opengl xml widgets
 SOURCES     = \
     main.cpp \
     physics/debuggingwidget.cpp \
-    physics/debugtimer.cpp
+    physics/debugtimer.cpp \
+    physics/joint.cpp
 
 #   UTILS   ###############
 HEADERS     += \
@@ -16,7 +17,8 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
     /home/batman/Programmation/QtDee/utils/curve.h \
     physics/debuggingwidget.h \
-    physics/debugtimer.h
+    physics/debugtimer.h \
+    physics/joint.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \

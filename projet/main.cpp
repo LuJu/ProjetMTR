@@ -19,7 +19,7 @@ void speedTest(){
 
 
 
-QWidget * _debugging;
+DebuggingWidget * _debugging;
 DebuggingInterface * _debugging_ui;
 
 void customMessageHandler(QtMsgType type, const char *msg)
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     QGLFormat b;
     QGLContext context(b);
     TestScene gui;
-//    TestScene stats(&context);
+    TestScene stats(&gui);
 
     int ret=0;
 //    qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
@@ -116,34 +116,36 @@ int main(int argc, char *argv[])
 
     gui._type = 1;
     gui._simulation = simulation;
+    stats.setWindowFlags(Qt::Window);
     gui.setWindowTitle("Physics simulation");
     gui.move(0,0);
 
-//    stats._type = 2;
-//    stats._simulation = simulation;
-//    stats.setWindowTitle("Stats");
-//    stats.move(gui.width(),0);
+    stats._type = 2;
+    stats.setWindowFlags( Qt::Window);
+    stats._simulation = simulation;
+    stats.setWindowTitle("Stats");
+    stats.move(gui.width(),0);
 
     simulation->init();
 
     _debugging_ui = NULL;
-//    _debugging = new DebuggingWidget();
-//    _debugging = new QWidget();
-//    _debugging_ui = new DebuggingInterface();
-//    _debugging->_interface = _debugging_ui;
-//    _debugging->init();
-//    _debugging_ui->setupUi(_debugging);
-//    _debugging_ui->_simulation=simulation;
-//    _debugging->move(0,gui.height());
+    _debugging = new DebuggingWidget(&gui);
+    _debugging_ui = new DebuggingInterface();
+    _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
+    _debugging_ui->setupUi(_debugging);
+    _debugging->_interface = _debugging_ui;
+    _debugging_ui->_simulation=simulation;
+    _debugging->move(0,gui.height());
 
-//    qInstallMsgHandler(customMessageHandler);
-//    _debugging_ui->init();
+    qInstallMsgHandler(customMessageHandler);
 
 
 
-//    _debugging->show();
+    _debugging_ui->init();
+    _debugging->init();
     gui.show();
-//    stats.show();
+    stats.show();
+    _debugging->show();
 
     if (GlobalConfig::is_enabled("automatic_start"))
         simulation->start();
