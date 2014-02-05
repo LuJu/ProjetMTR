@@ -28,7 +28,9 @@ public:
     void loadObjects(QString path);
     void calculateWork();
     QList<InteractiveObject::part_info> _data_list;
+    QList<InteractiveObject::part_info> _full_data_list;
     void saveDataList();
+    void saveFullDataList();
     void setSimulationPosition(float time);
     void updateBodyInformations(float elapsed,float diff,float gravity);
     btScalar computeWork(btScalar ke_simulation , btScalar ke_animation , btScalar ake_simulation , btScalar ake_animation , btScalar pe_simulation , btScalar pe_animation);

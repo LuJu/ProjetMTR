@@ -74,6 +74,7 @@ void Simulation::loop(){
             time_since_last_step = 0;
             _lock.lockForWrite(); {
                 update();
+//                qDebug()<<time_since_last_step;
                 if (_step_counter > _params.get_steps_duration())
                     stepOver();
                 if (_end_counter > _params.get_duration())

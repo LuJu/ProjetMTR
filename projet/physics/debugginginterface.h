@@ -25,7 +25,7 @@ public:
     }
     void log(const char * msg){
 //        console->setText(msg);
-        console->append(QString(msg));
+//        console->append(QString(msg));
     }
 
     void update();

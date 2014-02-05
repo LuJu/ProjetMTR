@@ -126,12 +126,21 @@ void HumanBody::loadObjects(QString path){
 }
 
 void HumanBody::calculateWork(){
+    InteractiveObject::part_info full_data;
     for (int i = 0; i < _parts.size(); ++i) {
         InteractiveObject * object = _parts[i];
         InteractiveObject::part_info energy = object->getEnergyInformation();
         btScalar work = computeWork( energy.simulation.ke , energy.animation.ke , energy.simulation.ake , energy.animation.ake,  energy.simulation.pe, energy.animation.pe);
         energy.work = work;
         _data_list.append(energy);
+        full_data.simulation.ake += energy.simulation.ake;
+        full_data.simulation.ke += energy.simulation.ke;
+        full_data.simulation.ake += energy.simulation.pe;
+        full_data.animation.ake += energy.animation.ake;
+        full_data.animation.ke += energy.animation.ke;
+        full_data.animation.ake += energy.animation.pe;
+        full_data.work += energy.work;
+        _full_data_list.append(full_data);
     }
 }
 
@@ -182,6 +191,53 @@ void HumanBody::saveDataList(){
                     save.animation.speed<<","<<save.animation.ke<<","<<save.animation.ake<<","<<save.animation.pe<<","<<
                     save.simulation.speed<<","<<save.simulation.ke<<","<<save.simulation.ake<<","<<save.animation.pe<<","<<
                     save.work<<","<<save.mean_error<<"\n";
+        }
+        file.close();
+        qDebug()<<"File successfully written : "<<file.fileName();
+    }
+}
+
+void HumanBody::saveFullDataList(){
+    QString path = "output/";
+#ifdef DEECORE
+    QString name=GlobalConfig::get_date_time()+"_output_full";
+#else
+    QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
+    name = name +"_output";
+#endif
+    QString oldname=name;
+    QString ext="csv";
+
+    InteractiveObject::part_info save;
+    QFile file;
+    file.setFileName(name+"."+ext);
+    int i = 1;
+    if (QDir::setCurrent(path))
+        qDebug()<<"path set";
+    else {
+        qDebug()<<"path not set "<<path;
+    }
+    while (file.exists()){
+        qWarning()<<"File already exists";
+        name = oldname+" ("+QString::number(i)+")";
+        file.setFileName(name+"."+ext);
+        ++i;
+    }
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qWarning()<<"Couldn't write file "<<path;
+        exit(0);
+    } else {
+        QTextStream stream(&file);
+        stream<<"id,"<<
+                "EC animation,ECA animation,EP animation,"<<
+                "EC simulation,ECA simulation,EP simulation,"<<
+                "travail\n";
+        for (int i = 0; i < _full_data_list.size(); ++i) {
+            save=_full_data_list.at(i);
+            stream<<i<<","<<
+                    save.animation.ke<<","<<save.animation.ake<<","<<save.animation.pe<<","<<
+                    save.simulation.ke<<","<<save.simulation.ake<<","<<save.animation.pe<<","<<
+                    save.work<<"\n";
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();
