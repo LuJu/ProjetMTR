@@ -6,3 +6,7 @@ Joint::Joint():
     _parts.first = NULL;
     _parts.second= NULL;
 }
+
+Joint::~Joint(){
+    if (_constraint) delete _constraint;
+}

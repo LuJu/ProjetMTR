@@ -33,7 +33,7 @@ void Simulation::init() {
     _human.set_mass(GlobalConfig::get_int("body_mass"));
     _human.loadObjects(GlobalConfig::get_string("input_location"));
     _display = _human._parts;
-    _constraints = _human._constraints;
+    _joints = _human._constraints;
     _ground = new InteractiveObject();
     _ground->set_shape(btVector3(3,1,3));
     _ground->set_mass(0); // no gravity
@@ -122,10 +122,9 @@ void Simulation::stepOver(){
 void Simulation::cleanWorld(){
     btRigidBody * body;
     if (_world_filled){
-        for (int i = 0; i < _constraints.size(); ++i) {
-            _world->removeConstraint(_constraints[i]._constraint);
+        for (int i = 0; i < _joints.size(); ++i) {
+            _world->removeConstraint(_joints[i]._constraint);
         }
-        btTypedConstraint * auie= _world->getConstraint(0);
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
             _world->removeRigidBody(body);
@@ -141,26 +140,22 @@ void Simulation::fillWorld(){
             body = &(_display[i]->get_body());
             _world->addRigidBody(body);
         }
-        for (int i = 0; i < _constraints.size(); ++i) {
-            if (_constraints[i]._constraint != NULL)
-                delete _constraints[i]._constraint;
+        for (int i = 0; i < _joints.size(); ++i) {
+            if (_joints[i]._constraint != NULL)
+                delete _joints[i]._constraint;
             btPoint2PointConstraint * constraint;
-            if (_constraints[i]._parts.second != NULL){
-
-                qDebug();
+            if (_joints[i]._parts.second != NULL){
                 constraint= new btPoint2PointConstraint(
-                    _constraints[i]._parts.first->get_body(),
-                    _constraints[i]._parts.second->get_body(),
-                    btVector3(0,-_constraints[i]._parts.first->get_shape().y() -0.1,0),
-                    btVector3(0,_constraints[i]._parts.first->get_shape().y() +0.1,0));
+                    _joints[i]._parts.first->get_body(),
+                    _joints[i]._parts.second->get_body(),
+                    btVector3(0,_joints[i]._parts.first->get_shape().y(),0),
+                    btVector3(0,-_joints[i]._parts.second->get_shape().y(),0));
             } else {
                 constraint= new btPoint2PointConstraint(
-                    _constraints[i]._parts.first->get_body(),
-                    btVector3(0,_constraints[i]._parts.first->get_shape().y() -0.1,0));
+                    _joints[i]._parts.first->get_body(),
+                    btVector3(0,_joints[i]._parts.first->get_shape().y(),0));
             }
-                _constraints[i]._constraint = constraint;
-//            btPoint2PointConstraint * constraint= new btPoint2PointConstraint((*part1)->get_body(),(*part1)->get_body(),btVector3(0,(*part1)->get_shape().y(),0),btVector3(0,(*part2)->get_shape().y(),0));
-//            _constraints.append(joint);
+                _joints[i]._constraint = constraint;
             _world->addConstraint(constraint);
         }
         _world_filled = true;

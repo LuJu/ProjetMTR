@@ -69,7 +69,7 @@ private:
     QThread * _thread;
     HumanBody _human;
     QList<InteractiveObject * > _display;
-    QList<Joint> _constraints;
+    QList<Joint> _joints;
 
 
 

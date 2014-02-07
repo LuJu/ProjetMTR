@@ -32,7 +32,7 @@ void HumanBody::loadObjects(QString path){
                     else ignore = false;
                     if (!ignore){
                         object = new InteractiveObject();
-                        object->set_shape_type(InteractiveObject::cube);
+                        object->set_shape_type(InteractiveObject::cylinder);
                         object->set_body_part(temp.at(1));
 //                        object->set_mass(10);
                         object->set_mass(BodyInfo::mass(temp.at(1),_mass));
@@ -109,17 +109,13 @@ void HumanBody::loadObjects(QString path){
     for (int i = 0; i < list2.size(); ++i) {
         QList<InteractiveObject *>::iterator part1 = findPartByName(list2.at(i).first);
         QList<InteractiveObject *>::iterator part2 = findPartByName(list2.at(i).second);
-        if (part1 != _parts.end() && part2 != _parts.end()){
-            qDebug()<<(*part1)->get_body_part();
-            qDebug()<<(*part2)->get_body_part();
+        if (part1 != _parts.end() && ( part2 != _parts.end() || list2.at(i).second == "none")){
             Joint joint;
             joint._parts.first = *part1;
-            joint._parts.second= *part2;
-
+            if (part2 != _parts.end())
+                joint._parts.second= *part2;
+            else joint._parts.second=NULL;
             _constraints.append(joint);
-//            Joint joint2;
-//            joint2._parts.first = *part1;
-//            _constraints.append(joint2);
         }
 
     }

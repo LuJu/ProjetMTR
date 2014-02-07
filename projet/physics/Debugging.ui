@@ -696,7 +696,7 @@
       <item>
        <widget class="QLabel" name="simulation_speed_2">
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </widget>
       </item>
@@ -754,6 +754,39 @@
        </widget>
       </item>
      </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_6">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>40</y>
+     <width>281</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_11">
+    <item>
+     <widget class="QLabel" name="label_47">
+      <property name="text">
+       <string>length :</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="length">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_48">
+      <property name="text">
+       <string>m</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

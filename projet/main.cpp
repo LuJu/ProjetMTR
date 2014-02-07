@@ -14,13 +14,14 @@
 #include "ui_Debugging.h"
 #include "physics/debuggingwidget.h"
 
-void speedTest(){
-}
-
-
-
 DebuggingWidget * _debugging;
 DebuggingInterface * _debugging_ui;
+
+
+
+void speedTest(){
+
+}
 
 void customMessageHandler(QtMsgType type, const char *msg)
 {
@@ -35,10 +36,8 @@ void customMessageHandler(QtMsgType type, const char *msg)
 }
 
 void firstConfiguration(){
-    GlobalConfig::defaultValue("rotate_x",QVariant(0));
-    GlobalConfig::defaultValue("rotate_y",QVariant(0));
-    GlobalConfig::defaultValue("rotate_z",QVariant(0));
     GlobalConfig::defaultValue("zoom",QVariant(1));
+    qDebug()<<GlobalConfig::get_int("zoom");
 
     GlobalConfig::defaultValue("duration",QVariant(10000));
     GlobalConfig::defaultValue("steps_duration",QVariant(100));
@@ -105,6 +104,7 @@ int main(int argc, char *argv[])
 //    qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
     qDebug()<<"LAUNCHING PROGRAM";
     GlobalConfig::loadConfiguration("Windel","ETS");
+    int zoom = GlobalConfig::get_int("zoom");
     firstConfiguration();
     parseArguments(argc,argv);
     GlobalConfig::saveConfiguration();
@@ -119,12 +119,14 @@ int main(int argc, char *argv[])
     stats.setWindowFlags(Qt::Window);
     gui.setWindowTitle("Physics simulation");
     gui.move(0,0);
+    gui._main_viewer = true;
 
     stats._type = 2;
     stats.setWindowFlags( Qt::Window);
     stats._simulation = simulation;
     stats.setWindowTitle("Stats");
     stats.move(gui.width(),0);
+    stats._main_viewer = false;
 
     simulation->init();
 
@@ -135,7 +137,7 @@ int main(int argc, char *argv[])
     _debugging_ui->setupUi(_debugging);
     _debugging->_interface = _debugging_ui;
     _debugging_ui->_simulation=simulation;
-    _debugging->move(0,gui.height());
+    _debugging->move(gui.width(),gui.height());
 
     qInstallMsgHandler(customMessageHandler);
 
@@ -150,6 +152,7 @@ int main(int argc, char *argv[])
     if (GlobalConfig::is_enabled("automatic_start"))
         simulation->start();
     ret=app.exec();
+
     delete simulation;
     delete _debugging;
     delete _debugging_ui;

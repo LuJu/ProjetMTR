@@ -176,6 +176,20 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     btVector3 speed_simulation =_calculated_simulation_speed; // second method
 //    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
+    _angular_speed_rotation = (_animation.rotationVector(elapsed) - _previous_data._rotation_animation) / (diff/1000) ;
+    qDebug()<<"rotation :";
+    qDebug()<<_animation.rotationVector(elapsed).x();
+    qDebug()<<_animation.rotationVector(elapsed).y();
+    qDebug()<<_animation.rotationVector(elapsed).z();
+    qDebug();
+    qDebug()<<_previous_data._rotation_animation.x();
+    qDebug()<<_previous_data._rotation_animation.y();
+    qDebug()<<_previous_data._rotation_animation.z();
+    qDebug();
+    qDebug()<<_angular_speed_rotation.x();
+              qDebug()<<_angular_speed_rotation.y();
+              qDebug()<<_angular_speed_rotation.z();
+
     _previous_data._rotation_animation = _animation.rotationVector(elapsed);
     _energy.animation.speed = speed_animation.length();
     _energy.simulation.speed = speed_simulation.length();
@@ -215,12 +229,12 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
         _curves[0].insert(elapsed,_energy.simulation.speed);
     if (GlobalConfig::is_enabled("display_error"))
         _curves[3].insert(elapsed,_energy.mean_error);
-    if (GlobalConfig::is_enabled("display_animation")) {
+    if (GlobalConfig::is_enabled("display_animation_stats")) {
         _curves[1].insert(elapsed,_energy.animation.ke);
         _curves[2].insert(elapsed,_energy.animation.pe);
         _curves[4].insert(elapsed,_energy.animation.ake);
     }
-    if (GlobalConfig::is_enabled("display_simulation")) ;
+    if (GlobalConfig::is_enabled("display_simulation_stats")) {}
     if (GlobalConfig::is_enabled("display_diff")) {
         _curves[5].insert(elapsed,_energy.ake_diff);
         _curves[6].insert(elapsed,_energy.ke_diff);
@@ -257,6 +271,10 @@ void InteractiveObject::setSimulationPosition(float time){
     if (time != 0) {
         btRigidBody& body = get_body();
         body.setLinearVelocity(_animation_speed);
+        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
+                                          deg2rad(_angular_speed_rotation.x()),
+                                          deg2rad(_angular_speed_rotation.z())));
+        qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     }
 

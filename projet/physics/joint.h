@@ -10,6 +10,7 @@ class Joint
 {
 public:
     explicit Joint();
+    ~Joint();
     QPair<InteractiveObject* ,InteractiveObject* > _parts;
     btPoint2PointConstraint * _constraint;
     

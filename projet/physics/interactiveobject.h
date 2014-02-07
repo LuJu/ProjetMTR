@@ -26,6 +26,7 @@ public:
 
     typedef struct part_info{
         QString part_name;
+        float length;
         t_energy_info animation, simulation;
         float ake_diff;
         float ke_diff;
@@ -152,7 +153,7 @@ public:
     }
 
     btScalar get_angular_EC_animation(){
-        return _angular_speed.length() * _angular_speed.length() * get_moment() / 2;
+        return _angular_speed_rotation.length() * _angular_speed_rotation.length() * get_moment() / 2;
     }
 
 
@@ -187,6 +188,7 @@ private:
     btVector3 _calculated_simulation_speed;
     btVector3 _animation_speed;
     btVector3 _angular_speed;
+    btVector3 _angular_speed_rotation;
     btScalar _angular_speed_y;
 
     btVector3 _local_inertia;
