@@ -26,7 +26,7 @@ public:
     QList<Joint> _constraints;
 
     void loadObjects(QString path);
-    void calculateWork();
+    void recordStatus();
     QList<InteractiveObject::part_info> _data_list;
     QList<InteractiveObject::part_info> _full_data_list;
     void saveDataList();
@@ -41,7 +41,7 @@ public:
     float get_total_work() const{
         float work = 0;
         for (int i = 0; i < _parts.size(); ++i) {
-            work+=_parts[i]->getEnergyInformation().work;
+            work+=_parts[i]->getEnergyInformation().ake_diff;
         }
         return work;
     }

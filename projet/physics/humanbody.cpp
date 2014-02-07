@@ -125,28 +125,43 @@ void HumanBody::loadObjects(QString path){
     }
 }
 
-void HumanBody::calculateWork(){
+void HumanBody::recordStatus(){
     InteractiveObject::part_info full_data;
+    full_data.simulation.ake = 0;
+    full_data.simulation.ke = 0;
+    full_data.simulation.ake = 0;
+
+    full_data.animation.ake = 0;
+    full_data.animation.ke = 0;
+    full_data.animation.ake = 0;
+
+    full_data.ake_diff = 0;
+    full_data.ke_diff = 0;
+    full_data.pe_diff = 0;
+
     for (int i = 0; i < _parts.size(); ++i) {
         InteractiveObject * object = _parts[i];
         InteractiveObject::part_info energy = object->getEnergyInformation();
-        btScalar work = computeWork( energy.simulation.ke , energy.animation.ke , energy.simulation.ake , energy.animation.ake,  energy.simulation.pe, energy.animation.pe);
-        energy.work = work;
+//        btScalar work = computeWork( energy.simulation.ke , energy.animation.ke , energy.simulation.ake , energy.animation.ake,  energy.simulation.pe, energy.animation.pe);
+//        energy.ake_diff = work;
         _data_list.append(energy);
+
         full_data.simulation.ake += energy.simulation.ake;
         full_data.simulation.ke += energy.simulation.ke;
-        full_data.simulation.ake += energy.simulation.pe;
+        full_data.simulation.pe += energy.simulation.pe;
+
         full_data.animation.ake += energy.animation.ake;
         full_data.animation.ke += energy.animation.ke;
-        full_data.animation.ake += energy.animation.pe;
-        full_data.work += energy.work;
-        _full_data_list.append(full_data);
+        full_data.animation.pe += energy.animation.pe;
+
+        full_data.ake_diff += energy.ake_diff;
+        full_data.ke_diff += energy.ke_diff;
+        full_data.pe_diff += energy.pe_diff;
+
     }
+    _full_data_list.append(full_data);
 }
 
-btScalar HumanBody::computeWork(btScalar ke_simulation , btScalar ke_animation , btScalar ake_simulation , btScalar ake_animation , btScalar pe_simulation , btScalar pe_animation){
-    return (ke_simulation - ke_animation)+ (ake_simulation - ake_animation ) + (pe_simulation - pe_animation) ;
-}
 
 void HumanBody::saveDataList(){
     QString path = "output/";
@@ -182,7 +197,7 @@ void HumanBody::saveDataList(){
         stream<<"id,x animation,y animation,z animation,x simulation, y simulation,z simulation,"<<
                 "vitesse animation,EC animation,ECA animation,EP animation,"<<
                 "vitesse simulation,EC simulation,ECA simulation,EP simulation,"<<
-                "travail,erreur\n";
+                "EC difference,ECA difference,EP difference,erreur\n";
         for (int i = 0; i < _data_list.size(); ++i) {
             save=_data_list.at(i);
             stream<<save.part_name<<","<<
@@ -190,7 +205,7 @@ void HumanBody::saveDataList(){
                     save.simulation.x<<","<<save.simulation.y<<","<<save.simulation.z<<","<<
                     save.animation.speed<<","<<save.animation.ke<<","<<save.animation.ake<<","<<save.animation.pe<<","<<
                     save.simulation.speed<<","<<save.simulation.ke<<","<<save.simulation.ake<<","<<save.animation.pe<<","<<
-                    save.work<<","<<save.mean_error<<"\n";
+                    save.ke_diff<<","<<save.ake_diff<<","<<save.pe_diff<<","<<save.mean_error<<"\n";
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();
@@ -231,13 +246,13 @@ void HumanBody::saveFullDataList(){
         stream<<"id,"<<
                 "EC animation,ECA animation,EP animation,"<<
                 "EC simulation,ECA simulation,EP simulation,"<<
-                "travail\n";
+                "EC difference,ECA difference,EP difference,erreur\n";
         for (int i = 0; i < _full_data_list.size(); ++i) {
             save=_full_data_list.at(i);
             stream<<i<<","<<
                     save.animation.ke<<","<<save.animation.ake<<","<<save.animation.pe<<","<<
-                    save.simulation.ke<<","<<save.simulation.ake<<","<<save.animation.pe<<","<<
-                    save.work<<"\n";
+                    save.simulation.ke<<","<<save.simulation.ake<<","<<save.simulation.pe<<","<<
+                    save.ke_diff<<","<<save.ake_diff<<","<<save.pe_diff<<"\n";
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();

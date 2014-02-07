@@ -31,4 +31,8 @@ void DebuggingInterface::update(){
     mass->setText(QString::number(part->get_mass()));
     mean_error->setText(QString::number(info.mean_error));
     mean_error_2->setText(QString::number(info.mean_error_2));
+    diff_aKe->setText(QString::number(info.ake_diff));
+    diff_Ke->setText(QString::number(info.ke_diff));
+    diff_Pe->setText(QString::number(info.pe_diff));
+
 }

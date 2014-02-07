@@ -11,6 +11,8 @@
 #include "utils/maths.h"
 #include "utils/curve.h"
 
+#include "core/globalconfig.h"
+
 #include "animationdata.h"
 
 class InteractiveObject
@@ -25,7 +27,9 @@ public:
     typedef struct part_info{
         QString part_name;
         t_energy_info animation, simulation;
-        float work;
+        float ake_diff;
+        float ke_diff;
+        float pe_diff;
         float mean_error;
         float mean_error_2;
     }t_part_info;

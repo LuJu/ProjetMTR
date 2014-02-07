@@ -115,7 +115,7 @@ void Simulation::resetStep(float time){
 }
 
 void Simulation::stepOver(){
-    _human.calculateWork();
+    _human.recordStatus();
     resetStep(_elapsed/1000);
 }
 
@@ -142,10 +142,12 @@ void Simulation::fillWorld(){
             _world->addRigidBody(body);
         }
         for (int i = 0; i < _constraints.size(); ++i) {
-            if (_constraints[i]._constraint == NULL)
+            if (_constraints[i]._constraint != NULL)
                 delete _constraints[i]._constraint;
             btPoint2PointConstraint * constraint;
             if (_constraints[i]._parts.second != NULL){
+
+                qDebug();
                 constraint= new btPoint2PointConstraint(
                     _constraints[i]._parts.first->get_body(),
                     _constraints[i]._parts.second->get_body(),
@@ -169,6 +171,7 @@ void Simulation::fillWorld(){
 void Simulation::simulationOver()
 {
      _human.saveDataList();
+     _human.saveFullDataList();
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";
 }
