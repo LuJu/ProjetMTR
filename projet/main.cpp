@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
     stats._simulation = simulation;
     stats.setWindowTitle("Stats");
     stats.move(gui.width(),0);
+    stats.setGeometry(gui.width(),0,700,300);
     stats._main_viewer = false;
 
     simulation->init();
@@ -137,7 +138,6 @@ int main(int argc, char *argv[])
     _debugging_ui->setupUi(_debugging);
     _debugging->_interface = _debugging_ui;
     _debugging_ui->_simulation=simulation;
-    _debugging->move(gui.width(),gui.height());
 
     qInstallMsgHandler(customMessageHandler);
 
@@ -147,6 +147,7 @@ int main(int argc, char *argv[])
     _debugging->init();
     gui.show();
     stats.show();
+    _debugging->move(gui.width(),600);
     _debugging->show();
 
     if (GlobalConfig::is_enabled("automatic_start"))

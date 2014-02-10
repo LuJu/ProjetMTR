@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>590</height>
+    <height>321</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,10 @@
    <property name="font">
     <font>
      <family>Courier</family>
-     <pointsize>10</pointsize>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
     </font>
    </property>
   </widget>
@@ -49,6 +52,14 @@
      <width>201</width>
      <height>27</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <item>
     <property name="text">
@@ -67,8 +78,16 @@
      <x>10</x>
      <y>70</y>
      <width>501</width>
-     <height>101</height>
+     <height>61</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
@@ -77,6 +96,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QLabel" name="animation_speed_label">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Position</string>
           </property>
@@ -84,6 +111,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>x :</string>
           </property>
@@ -91,6 +126,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_2">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>y :</string>
           </property>
@@ -98,6 +141,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>z :</string>
           </property>
@@ -109,6 +160,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QLabel" name="label_9">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -116,6 +175,14 @@
         </item>
         <item>
          <widget class="QLabel" name="animation_position_x">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -123,6 +190,14 @@
         </item>
         <item>
          <widget class="QLabel" name="animation_position_y">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -130,6 +205,14 @@
         </item>
         <item>
          <widget class="QLabel" name="animation_position_z">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -141,6 +224,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_9">
         <item>
          <widget class="QLabel" name="label_17">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -148,6 +239,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_18">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>m</string>
           </property>
@@ -155,6 +254,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_19">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>m</string>
           </property>
@@ -162,6 +269,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_20">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>m</string>
           </property>
@@ -173,6 +288,14 @@
     </item>
     <item>
      <spacer name="verticalSpacer">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -190,6 +313,14 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Vitesse :</string>
           </property>
@@ -197,6 +328,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_5">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Ec :</string>
           </property>
@@ -204,6 +343,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_6">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Ecr :</string>
           </property>
@@ -211,6 +358,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_7">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Ep :</string>
           </property>
@@ -222,6 +377,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <widget class="QLabel" name="animation_speed">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -229,6 +392,14 @@
         </item>
         <item>
          <widget class="QLabel" name="animation_Ke">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -236,6 +407,14 @@
         </item>
         <item>
          <widget class="QLabel" name="animation_aKe">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -243,6 +422,14 @@
         </item>
         <item>
          <widget class="QLabel" name="animation_Pe">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -254,6 +441,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_12">
         <item>
          <widget class="QLabel" name="label_29">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>m/s</string>
           </property>
@@ -261,6 +456,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_30">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>J</string>
           </property>
@@ -268,6 +471,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_31">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>J</string>
           </property>
@@ -275,6 +486,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_32">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>J</string>
           </property>
@@ -295,6 +514,14 @@
      <height>17</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="text">
     <string>Animation :</string>
    </property>
@@ -303,10 +530,18 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>200</y>
+     <y>170</y>
      <width>501</width>
-     <height>101</height>
+     <height>61</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_4">
     <item>
@@ -315,6 +550,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QLabel" name="animation_speed_label_2">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Position</string>
           </property>
@@ -322,6 +565,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_8">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>x :</string>
           </property>
@@ -329,6 +580,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_10">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>y :</string>
           </property>
@@ -336,6 +595,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_11">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>z :</string>
           </property>
@@ -347,6 +614,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
          <widget class="QLabel" name="label_12">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -354,6 +629,14 @@
         </item>
         <item>
          <widget class="QLabel" name="simulation_position_x">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -361,6 +644,14 @@
         </item>
         <item>
          <widget class="QLabel" name="simulation_position_y">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -368,6 +659,14 @@
         </item>
         <item>
          <widget class="QLabel" name="simulation_position_z">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -379,6 +678,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_10">
         <item>
          <widget class="QLabel" name="label_21">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -386,6 +693,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_22">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>m</string>
           </property>
@@ -393,6 +708,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_23">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>m</string>
           </property>
@@ -400,6 +723,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_24">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>m</string>
           </property>
@@ -411,6 +742,14 @@
     </item>
     <item>
      <spacer name="verticalSpacer_2">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -428,6 +767,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
          <widget class="QLabel" name="label_13">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Vitesse :</string>
           </property>
@@ -435,6 +782,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_14">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Ec :</string>
           </property>
@@ -442,6 +797,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_15">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Ecr :</string>
           </property>
@@ -449,6 +812,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_16">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>Ep :</string>
           </property>
@@ -460,6 +831,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
          <widget class="QLabel" name="simulation_speed">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -467,6 +846,14 @@
         </item>
         <item>
          <widget class="QLabel" name="simulation_Ke">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -474,6 +861,14 @@
         </item>
         <item>
          <widget class="QLabel" name="simulation_aKe">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -481,6 +876,14 @@
         </item>
         <item>
          <widget class="QLabel" name="simulation_Pe">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>TextLabel</string>
           </property>
@@ -492,6 +895,14 @@
        <layout class="QVBoxLayout" name="verticalLayout_11">
         <item>
          <widget class="QLabel" name="label_25">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>m/s</string>
           </property>
@@ -499,6 +910,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_26">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>J</string>
           </property>
@@ -506,6 +925,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_27">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>J</string>
           </property>
@@ -513,6 +940,14 @@
         </item>
         <item>
          <widget class="QLabel" name="label_28">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
           <property name="text">
            <string>J</string>
           </property>
@@ -528,10 +963,18 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>180</y>
+     <y>150</y>
      <width>91</width>
      <height>17</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="text">
     <string>Simulation :</string>
@@ -540,11 +983,19 @@
   <widget class="Line" name="line">
    <property name="geometry">
     <rect>
-     <x>7</x>
-     <y>170</y>
+     <x>10</x>
+     <y>130</y>
      <width>501</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -555,13 +1006,29 @@
     <rect>
      <x>230</x>
      <y>10</y>
-     <width>281</width>
+     <width>181</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_7">
     <item>
      <widget class="QLabel" name="label_34">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>mass :</string>
       </property>
@@ -569,6 +1036,14 @@
     </item>
     <item>
      <widget class="QLabel" name="mass">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>TextLabel</string>
       </property>
@@ -576,6 +1051,14 @@
     </item>
     <item>
      <widget class="QLabel" name="label_35">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>kg</string>
       </property>
@@ -586,15 +1069,31 @@
   <widget class="QWidget" name="horizontalLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>440</y>
+     <x>200</x>
+     <y>270</y>
      <width>281</width>
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout_8">
     <item>
      <widget class="QLabel" name="label_36">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>mean error     :</string>
       </property>
@@ -602,6 +1101,14 @@
     </item>
     <item>
      <widget class="QLabel" name="mean_error">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>TextLabel</string>
       </property>
@@ -609,6 +1116,14 @@
     </item>
     <item>
      <widget class="QLabel" name="label_37">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>m/s</string>
       </property>
@@ -619,15 +1134,31 @@
   <widget class="QWidget" name="horizontalLayoutWidget_5">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>410</y>
+     <x>200</x>
+     <y>240</y>
      <width>281</width>
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout_9">
     <item>
      <widget class="QLabel" name="label_38">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>mean error 2 :</string>
       </property>
@@ -635,6 +1166,14 @@
     </item>
     <item>
      <widget class="QLabel" name="mean_error_2">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>TextLabel</string>
       </property>
@@ -642,6 +1181,14 @@
     </item>
     <item>
      <widget class="QLabel" name="label_39">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>m/s</string>
       </property>
@@ -653,16 +1200,32 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>310</y>
+     <y>240</y>
      <width>170</width>
-     <height>90</height>
+     <height>61</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_10">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_13">
       <item>
        <widget class="QLabel" name="label_33">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Diff</string>
         </property>
@@ -670,6 +1233,14 @@
       </item>
       <item>
        <widget class="QLabel" name="label_40">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Ec :</string>
         </property>
@@ -677,6 +1248,14 @@
       </item>
       <item>
        <widget class="QLabel" name="label_41">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Ecr :</string>
         </property>
@@ -684,6 +1263,14 @@
       </item>
       <item>
        <widget class="QLabel" name="label_42">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Ep :</string>
         </property>
@@ -695,6 +1282,14 @@
      <layout class="QVBoxLayout" name="verticalLayout_14">
       <item>
        <widget class="QLabel" name="simulation_speed_2">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -702,6 +1297,14 @@
       </item>
       <item>
        <widget class="QLabel" name="diff_Ke">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -709,6 +1312,14 @@
       </item>
       <item>
        <widget class="QLabel" name="diff_aKe">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -716,6 +1327,14 @@
       </item>
       <item>
        <widget class="QLabel" name="diff_Pe">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -727,6 +1346,14 @@
      <layout class="QVBoxLayout" name="verticalLayout_15">
       <item>
        <widget class="QLabel" name="label_43">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -734,6 +1361,14 @@
       </item>
       <item>
        <widget class="QLabel" name="label_44">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>J</string>
         </property>
@@ -741,6 +1376,14 @@
       </item>
       <item>
        <widget class="QLabel" name="label_45">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>J</string>
         </property>
@@ -748,6 +1391,14 @@
       </item>
       <item>
        <widget class="QLabel" name="label_46">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>J</string>
         </property>
@@ -762,13 +1413,29 @@
     <rect>
      <x>230</x>
      <y>40</y>
-     <width>281</width>
+     <width>181</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_11">
     <item>
      <widget class="QLabel" name="label_47">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>length :</string>
       </property>
@@ -776,6 +1443,14 @@
     </item>
     <item>
      <widget class="QLabel" name="length">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>TextLabel</string>
       </property>
@@ -783,6 +1458,14 @@
     </item>
     <item>
      <widget class="QLabel" name="label_48">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>m</string>
       </property>

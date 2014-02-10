@@ -40,6 +40,7 @@ public:
     HumanBody * get_human() {return &_human;}
     QReadWriteLock* get_lock() {return &_lock;}
 
+    bool is_started() const {return _started;}
 
 public slots:
     void loop();
@@ -88,6 +89,7 @@ private:
 
     bool _simulation_over;
     bool _world_filled;
+    bool _started;
     btClock _clock;
 
     bool _initiated;

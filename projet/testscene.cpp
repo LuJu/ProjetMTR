@@ -19,13 +19,15 @@ TestScene::TestScene():
 void TestScene::draw(){
     Viewer::draw();
 //    _simulation->loop();
+    bool started;
     _simulation->get_lock()->lockForRead();
     display = _simulation->get_display_list();
+    started = _simulation->is_started();
     _simulation->get_lock()->unlock();
     if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close")){
         _simulation->get_lock()->unlock();
         close();
-    } else {
+    } else if (started) {
         display3DObjects();
     }
 //    _simulation->get_mutex()->unlock();
@@ -205,7 +207,7 @@ void TestScene::init(){
 //    _cylinder_mesh.loadFromFile(":/models/Bane_3.obj");
 //    _cube_mesh.loadFromFile(":assets/models/cube.obj");
 //    _cylinder_mesh.loadFromFile(":assets/models/Bane_3.obj");
-    loadTexture(":/models/Bane3_Chest_D.png");
+    loadTexture(":/textures/models/Bane3_Chest_D.png");
     _cylinder_mesh._texture=_textures[0];
 
 }

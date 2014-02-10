@@ -6,7 +6,8 @@ Simulation::Simulation():
     _world_filled(false),
     _initiated(false),
     _end_counter(0),
-    _updates_since_last_step(0)
+    _updates_since_last_step(0),
+    _started(false)
 {
 }
 
@@ -30,6 +31,7 @@ void Simulation::init() {
     params.set_duration(GlobalConfig::get_int("duration") * params.get_coefficient());
     params.set_steps_duration(GlobalConfig::get_int("steps_duration") * params.get_coefficient());
     allocateWorld(params);
+    _initiated = true;
     _human.set_mass(GlobalConfig::get_int("body_mass"));
     _human.loadObjects(GlobalConfig::get_string("input_location"));
     _display = _human._parts;
@@ -39,7 +41,6 @@ void Simulation::init() {
     _ground->set_mass(0); // no gravity
     _ground->get_transform().setOrigin(btVector3(0,-1,0));
     _display.append(_ground);
-    _initiated = true;
 }
 
 void Simulation::allocateWorld(const SimulationParameters& params){
@@ -63,6 +64,7 @@ void Simulation::start(){
         qDebug()<<"Parameters : \n\tDuration      : "<<_params.get_duration()<<"ms simulation"<<
                                "\n\tSpeed ratio   : 1/"<<_params.get_coefficient()<<"x";
         _thread->start();
+        _started = true;
 }
 
 void Simulation::loop(){
@@ -136,6 +138,7 @@ void Simulation::cleanWorld(){
 void Simulation::fillWorld(){
     btRigidBody * body = NULL;
     if (!_world_filled){
+        qDebug()<<_display.size();
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
             _world->addRigidBody(body);

@@ -7,10 +7,17 @@
     </qresource>
     <qresource prefix="/CSV/input">
         <file alias="values.csv">CSV/input/values.csv</file>
+        <file alias="1axe">CSV/input/1 axe.csv</file>
+        <file alias="2axes">CSV/input/2 axes.csv</file>
+        <file alias="translation">CSV/input/translation.csv</file>
+        <file alias="jointure">CSV/input/jointure.csv</file>
     </qresource>
     <qresource prefix="/shaders">
         <file alias="vshader.glsl">shaders/vshader.glsl</file>
         <file alias="fshader.glsl">shaders/fshader.glsl</file>
         <file alias="gshader.glsl">shaders/gshader.glsl</file>
+    </qresource>
+    <qresource prefix="/textures">
+        <file>models/Bane3_Chest_D.png</file>
     </qresource>
 </RCC>
