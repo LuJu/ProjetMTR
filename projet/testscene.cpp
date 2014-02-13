@@ -35,8 +35,8 @@ void TestScene::draw(){
 }
 
 void TestScene::displayAnimation(){
-    QMatrix4x4 V = _ui->get_view();
-    QMatrix4x4 P = _ui->get_projection();
+    QMatrix4x4 V = _ui->get_camera().get_view_matrix();
+    QMatrix4x4 P = _ui->get_camera().get_projection_matrix();
     QMatrix4x4 M;
     QMatrix4x4 pvm;
     btScalar matrix[16];
@@ -64,24 +64,30 @@ void TestScene::displayAnimation(){
             M=M.transposed();
 //            btVector3 local_scale =btVector3(obj->get_animation().scalingVector(elapsed));
             btVector3 local_scale =obj->get_shape();
-
-            M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
-            _program->setUniformValue("M",M);
-            pvm = P*V*M;
-            _program->setUniformValue("pvm",pvm);
             _program->setUniformValue("shininess",0.5f);
+            Mesh c;
             switch (obj->get_shape_type()) {
             case InteractiveObject::cube:
+                M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
+                _program->setUniformValue("M",M);
+                pvm = P*V*M;
+                _program->setUniformValue("pvm",pvm);
                 _cube_mesh.render();
                 break;
             case InteractiveObject::cylinder:
+                M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
+                _program->setUniformValue("M",M);
+                pvm = P*V*M;
+                _program->setUniformValue("pvm",pvm);
                 _cylinder_mesh.render();
                 break;
             case InteractiveObject::capsule:
-                _capsule_mesh.render();
-                break;
-            default:
-                break;
+    //            M.scale(1,1,1);
+                _program->setUniformValue("M",M);
+                pvm = P*V*M;
+                _program->setUniformValue("pvm",pvm);
+                c.fromCapsuleShape(local_scale.y(),0.2);
+                c.render();
             }
         }
     }
@@ -90,8 +96,8 @@ void TestScene::displayAnimation(){
 }
 
 void TestScene::displaySimulation(){
-    QMatrix4x4 V = _ui->get_view();
-    QMatrix4x4 P = _ui->get_projection();
+    QMatrix4x4 V = _ui->get_camera().get_view_matrix();
+    QMatrix4x4 P = _ui->get_camera().get_projection_matrix();
     QMatrix4x4 M;
     QMatrix4x4 pvm;
     btScalar matrix[16];
@@ -110,19 +116,30 @@ void TestScene::displaySimulation(){
                 );
         M=M.transposed();
         btVector3 local_scale =obj->get_shape();
-        M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
-        pvm = P*V*M;
-        _program->setUniformValue("M",M);
-        _program->setUniformValue("pvm",pvm);
+        Mesh c;
         switch (obj->get_shape_type()) {
         case InteractiveObject::cube:
+            M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
+            _program->setUniformValue("M",M);
+            pvm = P*V*M;
+            _program->setUniformValue("pvm",pvm);
             _cube_mesh.render();
             break;
         case InteractiveObject::cylinder:
+            M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
+            _program->setUniformValue("M",M);
+            pvm = P*V*M;
+            _program->setUniformValue("pvm",pvm);
             _cylinder_mesh.render();
             break;
         case InteractiveObject::capsule:
-            _capsule_mesh.render();
+//            M.scale(1,1,1);
+            _program->setUniformValue("M",M);
+            pvm = P*V*M;
+            _program->setUniformValue("pvm",pvm);
+            c.fromCapsuleShape(local_scale.y(),0.2);
+            c.render();
+//_cylinder_mesh.render();
             break;
         default:
             break;
@@ -199,11 +216,14 @@ void TestScene::display3DObjects(){
 
 void TestScene::init(){
     Viewer::init();
+    _ui->activateProgressiveZoom(60);
     _background_activated=false;
 
+//    _cube_mesh.capsule(1,2);
     _cube_mesh.loadFromFile(":/models/cube.obj");
     _cylinder_mesh.loadFromFile(":/models/cylinder.obj");
-    _capsule_mesh.loadFromFile(":/models/capsule.obj");
+
+    _capsule_mesh.fromCapsuleShape(1,1);
 //    _cylinder_mesh.loadFromFile(":/models/Bane_3.obj");
 //    _cube_mesh.loadFromFile(":assets/models/cube.obj");
 //    _cylinder_mesh.loadFromFile(":assets/models/Bane_3.obj");

@@ -32,7 +32,7 @@ void HumanBody::loadObjects(QString path){
                     else ignore = false;
                     if (!ignore){
                         object = new InteractiveObject();
-                        object->set_shape_type(InteractiveObject::cylinder);
+                        object->set_shape_type(InteractiveObject::capsule);
                         object->set_body_part(temp.at(1));
 //                        object->set_mass(10);
                         object->set_mass(BodyInfo::mass(temp.at(1),_mass));
@@ -41,12 +41,23 @@ void HumanBody::loadObjects(QString path){
                 else if (!ignore){
                     if (temp.at(0)=="scaling") {
                         if (!ignore) {
-                            for (int k=0; k<3;k++) {
-                                QStringList values = list[i+1+k] ;
+                            QStringList values = list[i+2] ;
                                 for (int j=1; j<values.size()-1;j+=2){
-                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_scaling_curves()[0].insert(0,.3);
                                 }
-                            }
+                                for (int j=1; j<values.size()-1;j+=2){
+                                    object->get_animation().get_scaling_curves()[1].insert(values[j].toFloat(),values[j+1].toFloat());
+                                }
+                                for (int j=1; j<values.size()-1;j+=2){
+                                    object->get_animation().get_scaling_curves()[2].insert(0,.3);
+                                }
+
+//                            for (int k=0; k<3;k++) {
+//                                QStringList values = list[i+1+k] ;
+//                                for (int j=1; j<values.size()-1;j+=2){
+//                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+//                                }
+//                            }
                         }
                     } else if (temp.at(0)=="translation") {
                         if (!ignore) {
@@ -106,18 +117,20 @@ void HumanBody::loadObjects(QString path){
 //    }
 
     QList<QPair<QString,QString> > list2 = BodyInfo::jointList();
-    for (int i = 0; i < list2.size(); ++i) {
-        QList<InteractiveObject *>::iterator part1 = findPartByName(list2.at(i).first);
-        QList<InteractiveObject *>::iterator part2 = findPartByName(list2.at(i).second);
-        if (part1 != _parts.end() && ( part2 != _parts.end() || list2.at(i).second == "none")){
-            Joint joint;
-            joint._parts.first = *part1;
-            if (part2 != _parts.end())
-                joint._parts.second= *part2;
-            else joint._parts.second=NULL;
-            _constraints.append(joint);
-        }
+    if (GlobalConfig::is_enabled("constraints_activated")){
+        for (int i = 0; i < list2.size(); ++i) {
+            QList<InteractiveObject *>::iterator part1 = findPartByName(list2.at(i).first);
+            QList<InteractiveObject *>::iterator part2 = findPartByName(list2.at(i).second);
+            if (part1 != _parts.end() && ( part2 != _parts.end() || list2.at(i).second == "none")){
+                Joint joint;
+                joint._parts.first = *part1;
+                if (part2 != _parts.end())
+                    joint._parts.second= *part2;
+                else joint._parts.second=NULL;
+                _constraints.append(joint);
+            }
 
+        }
     }
 }
 

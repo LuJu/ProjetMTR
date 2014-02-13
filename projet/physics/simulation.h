@@ -82,7 +82,7 @@ private:
     btScalar _step_counter;
     btScalar _end_counter;
     btScalar _ups_counter;
-    btScalar _last_step_time;
+    btScalar _last_update_time;
 
     int _updates_since_last_step;
 

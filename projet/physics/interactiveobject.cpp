@@ -29,7 +29,7 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
         _shape = new btCylinderShape(shape);
         break;
     case capsule:
-        _shape = new btCapsuleShape(shape.y(),shape.x());
+        _shape = new btCapsuleShape(shape.x(),shape.y());
         break;
     }
     _transform.setIdentity();
@@ -153,9 +153,9 @@ btVector3 InteractiveObject::get_shape() const {
         break;
     case capsule:
         btVector3 shape;
-        shape.setX(((btCapsuleShape *)_shape)->getHalfHeight());
-        shape.setY(((btCapsuleShape *)_shape)->getRadius());
-        shape.setZ(((btCapsuleShape *)_shape)->getHalfHeight());
+        shape.setX(((btCapsuleShape *)_shape)->getRadius());
+        shape.setY(((btCapsuleShape *)_shape)->getHalfHeight()*2);
+        shape.setZ(((btCapsuleShape *)_shape)->getRadius());
         return shape;
         break;
     }
@@ -171,7 +171,7 @@ void InteractiveObject::set_shape(const btVector3 &shape){
         _shape = new btCylinderShape(shape);
         break;
     case capsule:
-        _shape = new btCapsuleShape(shape.y(),shape.x());
+        _shape = new btCapsuleShape(shape.x(),shape.y());
         break;
     }
 
@@ -206,18 +206,18 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 //    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
     _angular_speed_rotation = (_animation.rotationVector(elapsed) - _previous_data._rotation_animation) / (diff/1000) ;
-    qDebug()<<"rotation :";
-    qDebug()<<_animation.rotationVector(elapsed).x();
-    qDebug()<<_animation.rotationVector(elapsed).y();
-    qDebug()<<_animation.rotationVector(elapsed).z();
-    qDebug();
-    qDebug()<<_previous_data._rotation_animation.x();
-    qDebug()<<_previous_data._rotation_animation.y();
-    qDebug()<<_previous_data._rotation_animation.z();
-    qDebug();
-    qDebug()<<_angular_speed_rotation.x();
-              qDebug()<<_angular_speed_rotation.y();
-              qDebug()<<_angular_speed_rotation.z();
+//    qDebug()<<"rotation :";
+//    qDebug()<<_animation.rotationVector(elapsed).x();
+//    qDebug()<<_animation.rotationVector(elapsed).y();
+//    qDebug()<<_animation.rotationVector(elapsed).z();
+//    qDebug();
+//    qDebug()<<_previous_data._rotation_animation.x();
+//    qDebug()<<_previous_data._rotation_animation.y();
+//    qDebug()<<_previous_data._rotation_animation.z();
+//    qDebug();
+//    qDebug()<<_angular_speed_rotation.x();
+//              qDebug()<<_angular_speed_rotation.y();
+//              qDebug()<<_angular_speed_rotation.z();
 
     _previous_data._rotation_animation = _animation.rotationVector(elapsed);
     _energy.animation.speed = speed_animation.length();
