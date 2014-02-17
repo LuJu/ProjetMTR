@@ -40,7 +40,8 @@ void Simulation::init() {
     _ground->set_shape(btVector3(3,1,3));
     _ground->set_mass(0); // no gravity
     _ground->get_transform().setOrigin(btVector3(0,-1,0));
-    _display.append(_ground);
+    _ground->set_shape_type(InteractiveObject::cylinder);
+//    _display.append(_ground);
 }
 
 void Simulation::allocateWorld(const SimulationParameters& params){
@@ -116,8 +117,8 @@ void Simulation::update(){
     _end_counter+=progression*1000;
     _ups_counter+=progression*1000;
     _human.updateBodyInformations(_elapsed/1000,_diff/1000,_params.get_gravity().y());
-    qDebug()<<"elapsed" <<_elapsed / 1000;
-    qDebug()<<"counter" <<_step_counter;
+//    qDebug()<<"elapsed" <<_elapsed / 1000;
+//    qDebug()<<"counter" <<_step_counter;
 }
 
 void Simulation::resetStep(float time){

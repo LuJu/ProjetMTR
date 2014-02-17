@@ -234,8 +234,15 @@ void TestScene::init(){
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)
 {
-    if(keyEvent->key()==Qt::Key_Space && !_simulation->is_over()){
+    bool simulation_started = false;
+    _simulation->get_lock()->lockForRead();
+    simulation_started = _simulation->is_started();
+    _simulation->get_lock()->unlock();
+
+    if(keyEvent->key()==Qt::Key_Space && !simulation_started){
+        _simulation->get_lock()->lockForRead();
         _simulation->start();
+        _simulation->get_lock()->unlock();
     } else {
         Viewer::keyPressEvent(keyEvent);
     }
