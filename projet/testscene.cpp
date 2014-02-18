@@ -137,7 +137,7 @@ void TestScene::displaySimulation(){
             _program->setUniformValue("M",M);
             pvm = P*V*M;
             _program->setUniformValue("pvm",pvm);
-            c.fromCapsuleShape(local_scale.y(),0.2);
+            c.fromCapsuleShape(local_scale.y(),local_scale.x());
             c.render();
 //_cylinder_mesh.render();
             break;
