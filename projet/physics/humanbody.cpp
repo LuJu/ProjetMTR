@@ -41,16 +41,13 @@ void HumanBody::loadObjects(QString path){
                 else if (!ignore){
                     if (temp.at(0)=="scaling") {
                         if (!ignore) {
-                            QStringList values = list[i+2] ;
+
+                            for (int k=0; k<2;k++) {
+                                QStringList values = list[i+1+k] ;
                                 for (int j=1; j<values.size()-1;j+=2){
-                                    object->get_animation().get_scaling_curves()[0].insert(0,.3);
+                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                                 }
-                                for (int j=1; j<values.size()-1;j+=2){
-                                    object->get_animation().get_scaling_curves()[1].insert(values[j].toFloat(),values[j+1].toFloat());
-                                }
-                                for (int j=1; j<values.size()-1;j+=2){
-                                    object->get_animation().get_scaling_curves()[2].insert(0,.3);
-                                }
+                            }
 
 //                            for (int k=0; k<3;k++) {
 //                                QStringList values = list[i+1+k] ;
