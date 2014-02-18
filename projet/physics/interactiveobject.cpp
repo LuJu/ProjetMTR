@@ -307,7 +307,16 @@ void InteractiveObject::setSimulationPosition(float time){
         body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
                                           deg2rad(_angular_speed_rotation.x()),
                                           deg2rad(_angular_speed_rotation.z())));
-        qDebug()<<" rotation "<<_angular_speed_rotation.length();
+//        qDebug()<<" rotation "<<_angular_speed_rotation.length();
+        _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
+    } else {
+        btRigidBody& body = get_body();
+        initialSpeed();
+        body.setLinearVelocity(_animation_speed);
+//        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
+//                                          deg2rad(_angular_speed_rotation.x()),
+//                                          deg2rad(_angular_speed_rotation.z())));
+//        qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     }
 
@@ -316,4 +325,15 @@ void InteractiveObject::setSimulationPosition(float time){
     _previous_data._position_simulation_2 = translation;
 //    get_body().setLinearVelocity(btVector3(0,9,0));
 
+}
+
+btVector3 InteractiveObject::initialSpeed(){
+    _animation.get_translation_curves();
+    btVector3 init_position = _animation.translationVector(0);
+    btScalar diff = _animation.get_translation_curves()[0].keys()[1];
+    btVector3 second = _animation.translationVector(diff);
+    btVector3 distance(second-init_position);
+    btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
+    _animation_speed = speed_animation;
+    return _animation_speed;
 }

@@ -162,7 +162,7 @@ public:
 
     shapetype get_shape_type() const {return _shape_type;}
     void set_shape_type(shapetype shape_type){_shape_type = shape_type;}
-
+    btVector3 initialSpeed();
 private:
     void deleteMotion();
 
