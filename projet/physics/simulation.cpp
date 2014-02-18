@@ -41,7 +41,7 @@ void Simulation::init() {
     _ground->set_mass(0); // no gravity
     _ground->get_transform().setOrigin(btVector3(0,-1,0));
     _ground->set_shape_type(InteractiveObject::cylinder);
-//    _display.append(_ground);
+    _display.append(_ground);
 }
 
 void Simulation::allocateWorld(const SimulationParameters& params){

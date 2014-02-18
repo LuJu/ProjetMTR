@@ -12,7 +12,7 @@ varying float intensity;
 
 void main(void)
 {
-  bool test = true;
+  bool test = false;
   vec3 lightDir = vec3(1.0,0.0,0.0);
 
   if (test){
@@ -28,6 +28,7 @@ void main(void)
         color = vec4(0.0,1.0,0.0,1.0);
       else
         color = vec4(1.0,0.0,0.0,1.0);
+    color = color * intensity;
 
 //      if (intensity > 0.95)
 //        color = vec4(1.0,0.5,0.5,1.0);
@@ -41,7 +42,7 @@ void main(void)
     gl_FrontColor = color;
     //    gl_BackColor = vec4(0,0,0,1);
     //    gl_FrontColor = gl_Color;
-    gl_BackColor = color;
+    gl_BackColor = gl_Color;
 
   } else {
   //    gl_Position = gl_Vertex * pvm;
@@ -52,6 +53,7 @@ void main(void)
   //    gl_BackColor = vec4(0,0,0,1);
   //    gl_FrontColor = gl_Color;
     gl_BackColor = gl_Color;
+    gl_Position =  pvm * gl_Vertex;
   }
 
 }
