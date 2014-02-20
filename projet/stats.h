@@ -1,5 +1,5 @@
-#ifndef TESTSCENE_H
-#define TESTSCENE_H
+#ifndef STATS_H
+#define STATS_H
 
 #include <QObject>
 #include <QVector>
@@ -14,18 +14,18 @@
 #include "physics/debugginginterface.h"
 #include "utils/maths.h"
 #include "utils/csvparser.h"
-class TestScene : public Viewer
+class Stats : public Viewer
 {
     Q_OBJECT
 public slots :
 //void simulationOver();
 
 public:
-    ~TestScene();
-    TestScene(QGLContext * context);
-    TestScene();
-    TestScene(QWidget * parent);
-//    TestScene(QWidget * parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 )
+    ~Stats();
+    Stats(QGLContext * context);
+    Stats();
+    Stats(QWidget * parent);
+//    Stats(QWidget * parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 )
 //        : Viewer ( parent, shareWidget,f ){}
     virtual void draw();
     virtual void init();
@@ -34,17 +34,15 @@ public:
     virtual void closeEvent(QCloseEvent * event);
     virtual void display3DObjects();
 
-    void displayAnimation();
-    void displaySimulation();
+//    virtual void closeEvent(QCloseEvent * event);
+    void displayStats();
+    void installDebugger();
+//    Simulation& get_simulation() {return _simulation;}
     Simulation  * _simulation;
 
 private:
-    Mesh _cube_mesh;
-    Mesh _cylinder_mesh;
-    Mesh _capsule_mesh;
-
     QList<InteractiveObject * > _display;
 
 };
 
-#endif // TESTSCENE_H
+#endif // STATS_H

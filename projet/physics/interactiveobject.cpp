@@ -78,6 +78,45 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
     c.set_label("pe diff");
     _curves.append(c);
 
+    c=Curve();
+    c.set_color(QColor(255,0,0));
+    c.set_label("Animation KE");
+    _curves_steps.append(c);
+    c=Curve();
+    c.set_color(QColor(0,0,255));
+    c.set_label("animation ake");
+    _curves_steps.append(c);
+    c=Curve();
+    c.set_color(QColor(255,255,255));
+    c.set_label("animation_pe");
+    _curves_steps.append(c);
+
+    c=Curve();
+    c.set_color(QColor(255,0,0));
+    c.set_label("Simulation KE");
+    _curves_steps.append(c);
+    c=Curve();
+    c.set_color(QColor(0,0,255));
+    c.set_label("Simulation ake");
+    _curves_steps.append(c);
+    c=Curve();
+    c.set_color(QColor(255,255,255));
+    c.set_label("Simulation pe");
+    _curves_steps.append(c);
+
+    c=Curve();
+    c.set_color(QColor(255,0,255));
+    c.set_label("ke diff");
+    _curves_steps.append(c);
+    c=Curve();
+    c.set_color(QColor(0,255,255)); // cyan
+    c.set_label("ake diff");
+    _curves_steps.append(c);
+    c=Curve();
+    c.set_color(QColor(255,255,0)); // yellow
+    c.set_label("pe diff");
+    _curves_steps.append(c);
+
     _error_1._speed_error = 0;
     _error_1._ticks= 0;
     _error_2._speed_error = 0;
@@ -259,19 +298,19 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 //    if (GlobalConfig::is_enabled("display_error"))
 //        _curves[3].insert(elapsed,_energy.mean_error);
     if (GlobalConfig::is_enabled("display_animation_stats")) {
-        _curves[0].insert(elapsed,_energy.animation.ke);
-        _curves[1].insert(elapsed,_energy.animation.ake);
-        _curves[2].insert(elapsed,_energy.animation.pe);
+//        _curves[0].insert(elapsed,_energy.animation.ke);
+//        _curves[1].insert(elapsed,_energy.animation.ake);
+//        _curves[2].insert(elapsed,_energy.animation.pe);
     }
     if (GlobalConfig::is_enabled("display_simulation_stats")) {
-        _curves[3].insert(elapsed,_energy.simulation.ke);
-        _curves[4].insert(elapsed,_energy.simulation.ake);
-        _curves[5].insert(elapsed,_energy.simulation.pe);
+//        _curves[3].insert(elapsed,_energy.simulation.ke);
+//        _curves[4].insert(elapsed,_energy.simulation.ake);
+//        _curves[5].insert(elapsed,_energy.simulation.pe);
     }
     if (GlobalConfig::is_enabled("display_diff")) {
-        _curves[6].insert(elapsed,_energy.ke_diff);
+//        _curves[6].insert(elapsed,_energy.ke_diff);
         _curves[7].insert(elapsed,_energy.ake_diff);
-        _curves[8].insert(elapsed,_energy.pe_diff);
+//        _curves[8].insert(elapsed,_energy.pe_diff);
     }
     return _energy;
 }
@@ -282,6 +321,23 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 
 
 void InteractiveObject::setSimulationPosition(float time){
+
+    if (GlobalConfig::is_enabled("display_animation_stats")) {
+        _curves_steps[0].insert(time,_energy.animation.ke);
+        _curves_steps[1].insert(time,_energy.animation.ake);
+        _curves_steps[2].insert(time,_energy.animation.pe);
+    }
+    if (GlobalConfig::is_enabled("display_simulation_stats")) {
+        _curves_steps[3].insert(time,_energy.simulation.ke);
+        _curves_steps[4].insert(time,_energy.simulation.ake);
+        _curves_steps[5].insert(time,_energy.simulation.pe);
+    }
+    if (GlobalConfig::is_enabled("display_diff")) {
+        _curves_steps[6].insert(time,_energy.ke_diff);
+        _curves_steps[7].insert(time,_energy.ake_diff);
+        _curves_steps[8].insert(time,_energy.pe_diff);
+    }
+
 
     btVector3 shape,translation,rotation;
     btQuaternion quat;

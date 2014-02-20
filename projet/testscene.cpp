@@ -21,7 +21,7 @@ void TestScene::draw(){
 //    _simulation->loop();
     bool started;
     _simulation->get_lock()->lockForRead();
-    display = _simulation->get_display_list();
+    _display = _simulation->get_display_list();
     started = _simulation->is_started();
     _simulation->get_lock()->unlock();
     if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close")){
@@ -41,9 +41,9 @@ void TestScene::displayAnimation(){
     QMatrix4x4 pvm;
     btScalar matrix[16];
 //    const QList<InteractiveObject * >& display = _simulation->get_display_list();
-    for (int i = 0; i < display.size(); ++i) {
+    for (int i = 0; i < _display.size(); ++i) {
         float elapsed = _simulation->get_elapsed_milliseconds();
-        InteractiveObject * obj = display.at(i);
+        InteractiveObject * obj = _display.at(i);
         if (obj->get_animated()){
             btTransform transform;
             transform.setIdentity();
@@ -106,8 +106,8 @@ void TestScene::displaySimulation(){
     _program->setUniformValue("pvm",pvm);
     _program->setUniformValue("shininess",(GLfloat)1.0);
 //    const QList<InteractiveObject * >& display = _simulation->get_display_list();
-    for (int i = 0; i < display.size(); ++i) {
-        InteractiveObject * obj = display.at(i);
+    for (int i = 0; i < _display.size(); ++i) {
+        InteractiveObject * obj = _display.at(i);
         obj->get_motion_state()->m_graphicsWorldTrans.getOpenGLMatrix( matrix );
         M=QMatrix4x4(matrix[0] ,matrix[1] ,matrix[2] ,matrix[3],
                      matrix[4] ,matrix[5] ,matrix[6] ,matrix[7],
@@ -147,69 +147,14 @@ void TestScene::displaySimulation(){
     }
 }
 
-void TestScene::displayStats(){
-    QMatrix4x4 M;
-    QMatrix4x4 V;
-    QMatrix4x4 P;
-    QMatrix4x4 pvm;
-    QRect window;
-    pvm = P*V*M;
-    _program->setUniformValue("shininess",(GLfloat)1.0);
-
-//    const QList<InteractiveObject * >& display = _simulation->get_display_list();
-    float right,top,bottom,value;
-    value = bottom = top = right = 0;
-    for (int i = 0; i < display.size(); ++i) {
-        const QList<Curve>& curves= display.at(i)->get_curves();
-        for (int j = 0; j < curves.size(); ++j) {
-            value = (curves[j].end()-1).key();
-            if (right < value)
-                right = value;
-            value = curves[j].get_max();
-            if (top < value)
-                top = value;
-            value = curves[j].get_min();
-            if (bottom > value)
-                bottom = value;
-        }
-    }
-    window.setY(_ui->get_zoom()/10+1);
-    window.setHeight((-(_ui->get_zoom()/5)+1));
-    window.setX(right-width()*4);
-    window.setWidth(width()*4);
-
-//    QRect window(0,top ,right,absolute_value(top-(bottom)));
-//    QRect window(0,top+1,right+10,top+1-(bottom-1));
-//        P.ortho(-100,100,-100,100,-100,100);
-    P.ortho(window);
-    Mesh::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
-
-    for (int i = 0; i < display.size(); ++i) {
-        InteractiveObject * obj = display.at(i);
-        const QList<Curve>& curves= display.at(i)->get_curves();
-        M = QMatrix4x4();
-        V = QMatrix4x4();
-        pvm = P*V*M;
-        _program->setUniformValue("M",M);
-        _program->setUniformValue("pvm",pvm);
-        for (int j = 0; j < curves.size(); ++j) {
-//            const Curve& c = obj->_animation_from_simulation->get_translation_curves()[j];
-            Mesh::render(curves[j],curves[j].get_color(),i+2);
-        }
-    }
-}
 
 void TestScene::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
     glViewport(0,0,width(),height());
 //    _simulation->_mutex.lock();
-    if (_type == 1){
         if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
         if (GlobalConfig::is_enabled("display_animation")) displayAnimation();
-    } else {
-        displayStats();
-    }
 //    _simulation->_mutex.unlock();
     _program->release();
 }
