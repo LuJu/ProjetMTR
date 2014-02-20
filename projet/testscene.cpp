@@ -86,7 +86,7 @@ void TestScene::displayAnimation(){
                 _program->setUniformValue("M",M);
                 pvm = P*V*M;
                 _program->setUniformValue("pvm",pvm);
-                c.fromCapsuleShape(local_scale.y(),0.2);
+                c.fromCapsuleShape(local_scale.y(),local_scale.x());
                 c.render();
             }
         }
@@ -104,7 +104,6 @@ void TestScene::displaySimulation(){
     M.scale(10,1,10);
     pvm = P*V*M;
     _program->setUniformValue("pvm",pvm);
-    _program->setUniformValue("shininess",(GLfloat)1.0);
 //    const QList<InteractiveObject * >& display = _simulation->get_display_list();
     for (int i = 0; i < _display.size(); ++i) {
         InteractiveObject * obj = _display.at(i);
@@ -154,6 +153,7 @@ void TestScene::display3DObjects(){
     glViewport(0,0,width(),height());
 //    _simulation->_mutex.lock();
         if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
+        _program->setUniformValue("shininess",(GLfloat).5);
         if (GlobalConfig::is_enabled("display_animation")) displayAnimation();
 //    _simulation->_mutex.unlock();
     _program->release();

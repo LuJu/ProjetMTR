@@ -111,8 +111,8 @@ void Simulation::update(){
 
 
 //    _world->stepSimulation(progression / coeff,1);
-    _world->stepSimulation(progression,0);
-//    _world->stepSimulation(progression ,1,btScalar(1.0/(ups)));
+//    _world->stepSimulation(progression,0);
+    _world->stepSimulation(progression ,1,btScalar(1.0/(ups)));
     _step_counter+=progression*1000; // conversion from seconds to ms
     _end_counter+=progression*1000;
     _ups_counter+=progression*1000;
@@ -167,12 +167,12 @@ void Simulation::fillWorld(){
                 constraint= new btPoint2PointConstraint(
                     _joints[i]._parts.first->get_body(),
                     _joints[i]._parts.second->get_body(),
-                    btVector3(0,_joints[i]._parts.first->get_shape().y(),0),
-                    btVector3(0,-_joints[i]._parts.second->get_shape().y(),0));
+                    btVector3(0,_joints[i]._parts.first->get_shape().y()/2 +_joints[i]._parts.first->get_shape().x() ,0),
+                    btVector3(0,-_joints[i]._parts.second->get_shape().y()/2 -_joints[i]._parts.second->get_shape().x() ,0));
             } else {
                 constraint= new btPoint2PointConstraint(
                     _joints[i]._parts.first->get_body(),
-                    btVector3(0,_joints[i]._parts.first->get_shape().y(),0));
+                    btVector3(0,_joints[i]._parts.first->get_shape().y()/2 +_joints[i]._parts.first->get_shape().x(),0));
             }
                 _joints[i]._constraint = constraint;
             _world->addConstraint(constraint);

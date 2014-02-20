@@ -298,19 +298,19 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 //    if (GlobalConfig::is_enabled("display_error"))
 //        _curves[3].insert(elapsed,_energy.mean_error);
     if (GlobalConfig::is_enabled("display_animation_stats")) {
-//        _curves[0].insert(elapsed,_energy.animation.ke);
-//        _curves[1].insert(elapsed,_energy.animation.ake);
-//        _curves[2].insert(elapsed,_energy.animation.pe);
+        _curves[0].insert(elapsed,_energy.animation.ke);
+        _curves[1].insert(elapsed,_energy.animation.ake);
+        _curves[2].insert(elapsed,_energy.animation.pe);
     }
     if (GlobalConfig::is_enabled("display_simulation_stats")) {
-//        _curves[3].insert(elapsed,_energy.simulation.ke);
-//        _curves[4].insert(elapsed,_energy.simulation.ake);
-//        _curves[5].insert(elapsed,_energy.simulation.pe);
+        _curves[3].insert(elapsed,_energy.simulation.ke);
+        _curves[4].insert(elapsed,_energy.simulation.ake);
+        _curves[5].insert(elapsed,_energy.simulation.pe);
     }
     if (GlobalConfig::is_enabled("display_diff")) {
-//        _curves[6].insert(elapsed,_energy.ke_diff);
+        _curves[6].insert(elapsed,_energy.ke_diff);
         _curves[7].insert(elapsed,_energy.ake_diff);
-//        _curves[8].insert(elapsed,_energy.pe_diff);
+        _curves[8].insert(elapsed,_energy.pe_diff);
     }
     return _energy;
 }
