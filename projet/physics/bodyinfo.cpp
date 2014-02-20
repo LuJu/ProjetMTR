@@ -49,5 +49,6 @@ QList<QPair<QString,QString> > BodyInfo::jointList(){
     list.append(QPair<QString,QString>("thorax","head"));
     list.append(QPair<QString,QString>("head","pelvis"));
     list.append(QPair<QString,QString>("head","none"));
+    list.append(QPair<QString,QString>("thorax","none"));
     return list;
 }

@@ -158,6 +158,7 @@ public:
 
 
     QList<Curve>& get_curves() {return _curves;}
+    QList<Curve>& get_curves_steps() {return _curves_steps;}
 
 
     shapetype get_shape_type() const {return _shape_type;}
@@ -176,6 +177,7 @@ private:
 
     // Curves used to display data on screen
     QList<Curve> _curves;
+    QList<Curve> _curves_steps;
     AnimationData _animation;
     AnimationData _animation_from_simulation;
     QString _body_part_name;
@@ -207,6 +209,7 @@ private:
         btScalar _speed_error;
         btScalar _ticks;
     }_error_1,_error_2;
+
 
 
 

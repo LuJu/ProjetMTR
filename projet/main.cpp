@@ -4,6 +4,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "testscene.h"
+#include "stats.h"
 #include "core/core.h"
 #include "utils/geometry.h"
 #include "utils/typedefinitions.h"
@@ -98,13 +99,12 @@ int main(int argc, char *argv[])
     QGLFormat b;
     QGLContext context(b);
     TestScene gui;
-    TestScene stats(&gui);
+    Stats stats(&gui);
 
     int ret=0;
 //    qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
     qDebug()<<"LAUNCHING PROGRAM";
     GlobalConfig::loadConfiguration("Windel","ETS");
-    int zoom = GlobalConfig::get_int("zoom");
     firstConfiguration();
     parseArguments(argc,argv);
     GlobalConfig::saveConfiguration();
@@ -113,15 +113,13 @@ int main(int argc, char *argv[])
 
     Simulation * simulation = new Simulation();
 
-
-    gui._type = 1;
     gui._simulation = simulation;
     stats.setWindowFlags(Qt::Window);
     gui.setWindowTitle("Physics simulation");
     gui.move(0,0);
     gui._main_viewer = true;
 
-    stats._type = 2;
+    if (GlobalConfig::is_enabled("display_stats"))
     stats.setWindowFlags( Qt::Window);
     stats._simulation = simulation;
     stats.setWindowTitle("Stats");
@@ -131,15 +129,16 @@ int main(int argc, char *argv[])
 
     simulation->init();
 
-    _debugging_ui = NULL;
-    _debugging = new DebuggingWidget(&gui);
-    _debugging_ui = new DebuggingInterface();
-    _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
-    _debugging_ui->setupUi(_debugging);
-    _debugging->_interface = _debugging_ui;
-    _debugging_ui->_simulation=simulation;
-
-    qInstallMsgHandler(customMessageHandler);
+    if (GlobalConfig::is_enabled("debugging")){
+        _debugging_ui = NULL;
+        _debugging = new DebuggingWidget(&gui);
+        _debugging_ui = new DebuggingInterface();
+        _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
+        _debugging_ui->setupUi(_debugging);
+        _debugging->_interface = _debugging_ui;
+        _debugging_ui->_simulation=simulation;
+        qInstallMsgHandler(customMessageHandler);
+    }
 
 
 

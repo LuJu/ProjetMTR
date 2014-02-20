@@ -34,16 +34,8 @@ public:
     virtual void closeEvent(QCloseEvent * event);
     virtual void display3DObjects();
 
-//    virtual void closeEvent(QCloseEvent * event);
-    void saveCurrentStatus();
     void displayAnimation();
     void displaySimulation();
-    void displayStats();
-    void installDebugger();
-
-    int _type;
-
-//    Simulation& get_simulation() {return _simulation;}
     Simulation  * _simulation;
 
 private:
@@ -51,13 +43,7 @@ private:
     Mesh _cylinder_mesh;
     Mesh _capsule_mesh;
 
-//    btDiscreteDynamicsWorld * _world;
-
-
-    InteractiveObject _ground;
-    InteractiveObject * _small;
-
-    QList<InteractiveObject * > display;
+    QList<InteractiveObject * > _display;
 
 };
 
