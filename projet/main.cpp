@@ -87,6 +87,9 @@ void parseArguments(int argc, char *argv[]){
             GlobalConfig::set_int("coefficient",value);
             break ;
         case 5:
+            GlobalConfig::set_int("steps_duration",value);
+            break ;
+        case 6:
             break ;
         }
     }
@@ -97,7 +100,6 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QGLFormat b;
-    QGLContext context(b);
     TestScene gui;
     Stats stats(&gui);
 
@@ -119,14 +121,14 @@ int main(int argc, char *argv[])
     gui.move(0,0);
     gui._main_viewer = true;
 
-    if (GlobalConfig::is_enabled("display_stats"))
-    stats.setWindowFlags( Qt::Window);
-    stats._simulation = simulation;
-    stats.setWindowTitle("Stats");
-    stats.move(gui.width(),0);
-    stats.setGeometry(gui.width(),0,700,300);
-    stats._main_viewer = false;
-
+    if (GlobalConfig::is_enabled("display_stats")) {
+        stats.setWindowFlags( Qt::Window);
+        stats._simulation = simulation;
+        stats.setWindowTitle("Stats");
+        stats.move(gui.width(),0);
+        stats.setGeometry(gui.width(),0,700,300);
+        stats._main_viewer = false;
+    }
     simulation->init();
 
     if (GlobalConfig::is_enabled("debugging")){
@@ -138,24 +140,26 @@ int main(int argc, char *argv[])
         _debugging->_interface = _debugging_ui;
         _debugging_ui->_simulation=simulation;
         qInstallMsgHandler(customMessageHandler);
+        _debugging_ui->init();
+        _debugging->init();
+        gui.show();
+        stats.show();
+        _debugging->move(gui.width(),600);
+        _debugging->show();
+    } else {
+        gui.show();
+        stats.show();
     }
-
-
-
-    _debugging_ui->init();
-    _debugging->init();
-    gui.show();
-    stats.show();
-    _debugging->move(gui.width(),600);
-    _debugging->show();
 
     if (GlobalConfig::is_enabled("automatic_start"))
         simulation->start();
     ret=app.exec();
 
     delete simulation;
-    delete _debugging;
-    delete _debugging_ui;
+    if (GlobalConfig::is_enabled("debugging")){
+        delete _debugging;
+        delete _debugging_ui;
+    }
     return ret;
 }
 

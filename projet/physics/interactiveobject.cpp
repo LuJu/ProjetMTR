@@ -220,6 +220,7 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     btVector3 distance(_animation.translationVector(elapsed)-_previous_data._position);
     btVector3 simulation_distance = _body->getCenterOfMassPosition()-_previous_data._position_simulation;
     btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
+//    qDebug()<<"diff"<<diff;
     _animation_speed = speed_animation;
 
 
@@ -359,10 +360,10 @@ void InteractiveObject::setSimulationPosition(float time){
     buildMotion();
     if (time != 0) {
         btRigidBody& body = get_body();
-        body.setLinearVelocity(_animation_speed);
-        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
-                                          deg2rad(_angular_speed_rotation.x()),
-                                          deg2rad(_angular_speed_rotation.z())));
+//        body.setLinearVelocity(_animation_speed);
+//        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
+//                                          deg2rad(_angular_speed_rotation.x()),
+//                                          deg2rad(_angular_speed_rotation.z())));
 //        qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     } else {

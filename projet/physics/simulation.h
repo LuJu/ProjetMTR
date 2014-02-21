@@ -75,6 +75,7 @@ private:
 
 
     btScalar _elapsed;
+    btScalar _elapsed2;
     btScalar _diff;
 //    double _time_beginning;
 
