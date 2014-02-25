@@ -26,12 +26,14 @@ HEADERS += \
     /home/batman/Programmation/QtDee/3d/vertex.h \
     /home/batman/Programmation/QtDee/3d/transform.h \
     /home/batman/Programmation/QtDee/3d/movementpath.h \
+    /home/batman/Programmation/QtDee/3d/material.h \
     /home/batman/Programmation/QtDee/3d/mesh.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/3d/graphicobject3d.cpp \
     /home/batman/Programmation/QtDee/3d/vertex.cpp \
     /home/batman/Programmation/QtDee/3d/transform.cpp \
     /home/batman/Programmation/QtDee/3d/movementpath.cpp \
+    /home/batman/Programmation/QtDee/3d/material.cpp \
     /home/batman/Programmation/QtDee/3d/mesh.cpp
 ############################
 

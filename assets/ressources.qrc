@@ -21,4 +21,9 @@
     <qresource prefix="/textures">
         <file>models/Bane3_Chest_D.png</file>
     </qresource>
+    <qresource prefix="/materials">
+        <file alias="capsule.mtl">models/capsule.mtl</file>
+        <file alias="cylinder.mtl">models/cylinder.mtl</file>
+        <file alias="cube.mtl">models/cube.mtl</file>
+    </qresource>
 </RCC>

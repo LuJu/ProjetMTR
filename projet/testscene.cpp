@@ -173,7 +173,7 @@ void TestScene::init(){
 //    _cube_mesh.loadFromFile(":assets/models/cube.obj");
 //    _cylinder_mesh.loadFromFile(":assets/models/Bane_3.obj");
     loadTexture(":/textures/models/Bane3_Chest_D.png");
-    _cylinder_mesh._texture=_textures[0];
+//    _cylinder_mesh._texture=_textures[0];
 
 }
 
