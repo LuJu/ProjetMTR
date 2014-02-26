@@ -113,6 +113,9 @@ int main(int argc, char *argv[])
 
     Simulation * simulation = new Simulation();
 
+    gui._main_viewer = true;
+    stats._main_viewer = false;
+
     if (GlobalConfig::is_enabled("display_simulationg_window"))
     {
         gui._simulation = simulation;

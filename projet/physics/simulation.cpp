@@ -194,4 +194,5 @@ void Simulation::simulationOver()
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";
 //     if (GlobalConfig::is_enabled("automatic_close"))
+     QApplication::exit();
 }
