@@ -26,14 +26,12 @@ void speedTest(){
 
 void customMessageHandler(QtMsgType type, const char *msg)
 {
-//    if (_debugging_ui == NULL){
-//        int a = 4;
-//    } else {
-//        QString mes = msg;
         _debugging_ui->log(msg);
         Debugger::customMessageHandler(type,msg);
-
-//    }
+}
+void customMessageHandler2(QtMsgType type, const char *msg)
+{
+    Debugger::customMessageHandler(type,msg);
 }
 
 void firstConfiguration(){
@@ -115,46 +113,47 @@ int main(int argc, char *argv[])
 
     Simulation * simulation = new Simulation();
 
-    gui._simulation = simulation;
-    stats.setWindowFlags(Qt::Window);
-    gui.setWindowTitle("Physics simulation");
-    gui.move(0,0);
-    gui._main_viewer = true;
-
-    if (GlobalConfig::is_enabled("display_stats")) {
-        stats.setWindowFlags( Qt::Window);
-        stats._simulation = simulation;
-        stats.setWindowTitle("Stats");
-        stats.move(gui.width(),0);
-        stats.setGeometry(gui.width(),0,700,300);
-        stats._main_viewer = false;
+    if (GlobalConfig::is_enabled("display_simulationg_window"))
+    {
+        gui._simulation = simulation;
+        gui.setWindowTitle("Physics simulation");
+        gui.move(0,0);
+        gui._main_viewer = true;
+        if (GlobalConfig::is_enabled("display_stats")) {
+            stats.setWindowFlags( Qt::Window);
+            stats._simulation = simulation;
+            stats.setWindowTitle("Stats");
+            stats.move(gui.width(),0);
+            stats.setGeometry(gui.width(),0,700,300);
+            stats._main_viewer = false;
+            stats.show();
+        }
+        if (GlobalConfig::is_enabled("debugging")){
+            _debugging_ui = NULL;
+            _debugging = new DebuggingWidget(&gui);
+            _debugging_ui = new DebuggingInterface();
+            _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
+            _debugging_ui->setupUi(_debugging);
+            _debugging->_interface = _debugging_ui;
+            _debugging_ui->_simulation=simulation;
+            qInstallMsgHandler(customMessageHandler);
+            _debugging_ui->init();
+            _debugging->init();
+            gui.show();
+            _debugging->move(gui.width(),600);
+            _debugging->show();
+        } else {
+            qInstallMsgHandler(customMessageHandler2);
+        }
+        gui.show();
     }
+
     simulation->init();
 
-    if (GlobalConfig::is_enabled("debugging")){
-        _debugging_ui = NULL;
-        _debugging = new DebuggingWidget(&gui);
-        _debugging_ui = new DebuggingInterface();
-        _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
-        _debugging_ui->setupUi(_debugging);
-        _debugging->_interface = _debugging_ui;
-        _debugging_ui->_simulation=simulation;
-        qInstallMsgHandler(customMessageHandler);
-        _debugging_ui->init();
-        _debugging->init();
-        gui.show();
-        stats.show();
-        _debugging->move(gui.width(),600);
-        _debugging->show();
-    } else {
-        gui.show();
-        stats.show();
-    }
 
     if (GlobalConfig::is_enabled("automatic_start"))
         simulation->start();
     ret=app.exec();
-
     delete simulation;
     if (GlobalConfig::is_enabled("debugging")){
         delete _debugging;
