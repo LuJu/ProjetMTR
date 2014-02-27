@@ -26,8 +26,8 @@ void speedTest(){
 
 void customMessageHandler(QtMsgType type, const char *msg)
 {
-        _debugging_ui->log(msg);
-        Debugger::customMessageHandler(type,msg);
+//    _debugging_ui->log(msg);
+//    Debugger::customMessageHandler(type,msg);
 }
 void customMessageHandler2(QtMsgType type, const char *msg)
 {
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     gui._main_viewer = true;
     stats._main_viewer = false;
 
-    if (GlobalConfig::is_enabled("display_simulationg_window"))
+    if (GlobalConfig::is_enabled("display_simulation_window"))
     {
         gui._simulation = simulation;
         gui.setWindowTitle("Physics simulation");
@@ -129,7 +129,6 @@ int main(int argc, char *argv[])
             stats.move(gui.width(),0);
             stats.setGeometry(gui.width(),0,700,300);
             stats._main_viewer = false;
-            stats.show();
         }
         if (GlobalConfig::is_enabled("debugging")){
             _debugging_ui = NULL;
@@ -140,15 +139,10 @@ int main(int argc, char *argv[])
             _debugging->_interface = _debugging_ui;
             _debugging_ui->_simulation=simulation;
             qInstallMsgHandler(customMessageHandler);
-            _debugging_ui->init();
-            _debugging->init();
-            gui.show();
-            _debugging->move(gui.width(),600);
-            _debugging->show();
+
         } else {
             qInstallMsgHandler(customMessageHandler2);
         }
-        gui.show();
     }
 
     simulation->init();
@@ -156,6 +150,21 @@ int main(int argc, char *argv[])
 
     if (GlobalConfig::is_enabled("automatic_start"))
         simulation->start();
+
+    if (GlobalConfig::is_enabled("display_simulation_window"))
+    {
+        gui.show();
+        if (GlobalConfig::is_enabled("display_stats")) {
+            stats.show();
+        }
+        if (GlobalConfig::is_enabled("debugging")){
+            _debugging->show();
+            _debugging_ui->init();
+            _debugging->init();
+            _debugging->move(gui.width(),600);
+        }
+    }
+
     ret=app.exec();
     delete simulation;
     if (GlobalConfig::is_enabled("debugging")){

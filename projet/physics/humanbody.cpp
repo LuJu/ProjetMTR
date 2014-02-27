@@ -34,7 +34,6 @@ void HumanBody::loadObjects(QString path){
                         object = new InteractiveObject();
                         object->set_shape_type(InteractiveObject::capsule);
                         object->set_body_part(temp.at(1));
-//                        object->set_mass(10);
                         object->set_mass(BodyInfo::mass(temp.at(1),_mass));
                     }
                 }
@@ -49,12 +48,6 @@ void HumanBody::loadObjects(QString path){
                                 }
                             }
 
-//                            for (int k=0; k<3;k++) {
-//                                QStringList values = list[i+1+k] ;
-//                                for (int j=1; j<values.size()-1;j+=2){
-//                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-//                                }
-//                            }
                         }
                     } else if (temp.at(0)=="translation") {
                         if (!ignore) {
@@ -148,8 +141,6 @@ void HumanBody::recordStatus(){
     for (int i = 0; i < _parts.size(); ++i) {
         InteractiveObject * object = _parts[i];
         InteractiveObject::part_info energy = object->getEnergyInformation();
-//        btScalar work = computeWork( energy.simulation.ke , energy.animation.ke , energy.simulation.ake , energy.animation.ake,  energy.simulation.pe, energy.animation.pe);
-//        energy.ake_diff = work;
         _data_list.append(energy);
 
         full_data.simulation.ake += energy.simulation.ake;
