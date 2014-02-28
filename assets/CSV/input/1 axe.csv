@@ -1,8 +1,8 @@
-body;100;;;;;;;
-object;thorax;display;;;;;;
+body;70;;;;;;;
+object;right_leg;display;;;;;;
 scaling;;;;;;;;
 x;0.0;0.1;
-y;0.0;1.2;
+y;0.0;0.2;
 z;0.0;0.1;
 translation;;;;;;;;
 x;0.0;0.0;5000;0;

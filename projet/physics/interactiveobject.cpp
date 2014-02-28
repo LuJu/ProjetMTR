@@ -263,7 +263,7 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     _energy.animation.speed = speed_animation.length();
     _energy.simulation.speed = speed_simulation.length();
 
-    _energy.animation.ke  = kinetic_energy( speed_animation.length(),                    _mass);
+    _energy.animation.ke  = kinetic_energy( speed_animation.length(),_mass);
     _energy.simulation.ke = kinetic_energy( speed_simulation.length(),_mass);
 
     _energy.animation.pe  = potential_energy(_mass,-gravity,_animation.translationVector(elapsed).y());
@@ -360,20 +360,20 @@ void InteractiveObject::setSimulationPosition(float time){
     buildMotion();
     if (time != 0) {
         btRigidBody& body = get_body();
-//        body.setLinearVelocity(_animation_speed);
-//        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
-//                                          deg2rad(_angular_speed_rotation.x()),
-//                                          deg2rad(_angular_speed_rotation.z())));
-//        qDebug()<<" rotation "<<_angular_speed_rotation.length();
+        body.setLinearVelocity(_animation_speed);
+        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
+                                          deg2rad(_angular_speed_rotation.x()),
+                                          deg2rad(_angular_speed_rotation.z())));
+        qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     } else {
         btRigidBody& body = get_body();
         initialSpeed();
         body.setLinearVelocity(_animation_speed);
-//        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
-//                                          deg2rad(_angular_speed_rotation.x()),
-//                                          deg2rad(_angular_speed_rotation.z())));
-//        qDebug()<<" rotation "<<_angular_speed_rotation.length();
+        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
+                                          deg2rad(_angular_speed_rotation.x()),
+                                          deg2rad(_angular_speed_rotation.z())));
+        qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     }
 
@@ -393,4 +393,36 @@ btVector3 InteractiveObject::initialSpeed(){
     btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
     _animation_speed = speed_animation;
     return _animation_speed;
+}
+
+btScalar InteractiveObject::get_volume(){
+    // for capsule : volume of cylinder of radius R and height H + volume of sphere of radius R
+    // = pi.R^2.h + 4/3.pi.R^3
+    btScalar r = get_shape().x();
+    btScalar h = get_shape().y();
+    btScalar sphere_volume = (4/3) * M_PI * pow(r,3);
+    btScalar cylinder_volume =  M_PI * pow(r,2) * h;
+    return cylinder_volume+sphere_volume;
+}
+
+
+
+//thin cylinder (mass m , length h) rotating with the axis on one of the extremities
+// = 1/3.m.h
+btScalar InteractiveObject::get_moment(){
+    btScalar moment = pow(get_shape().y(),2)*
+            _mass/3;
+    qDebug()<<"moment : "<<moment;
+    return moment;
+}
+
+btScalar InteractiveObject::get_angular_EC_simulation(){
+    qDebug()<<"simulation velocity: "<<rad2deg(_body->getAngularVelocity().length());
+    return _body->getAngularVelocity().length() * _body->getAngularVelocity().length() * get_moment() / 2;
+
+}
+
+btScalar InteractiveObject::get_angular_EC_animation(){
+    qDebug()<<"animation velocity: "<<_angular_speed_rotation.length();
+    return _angular_speed_rotation.length() * _angular_speed_rotation.length() * get_moment() / 2;
 }

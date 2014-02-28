@@ -172,7 +172,7 @@ void Simulation::fillWorld(){
                 constraint= new btPoint2PointConstraint(
                     _joints[i]._parts.first->get_body(),
                     _joints[i]._parts.second->get_body(),
-                    btVector3(0,_joints[i]._parts.first->get_shape().y()/2 +_joints[i]._parts.first->get_shape().x() ,0),
+                    btVector3(0, _joints[i]._parts.first->get_shape().y()/2  +_joints[i]._parts.first->get_shape().x()  ,0),
                     btVector3(0,-_joints[i]._parts.second->get_shape().y()/2 -_joints[i]._parts.second->get_shape().x() ,0));
             } else {
                 constraint= new btPoint2PointConstraint(

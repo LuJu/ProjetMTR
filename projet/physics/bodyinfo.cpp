@@ -20,16 +20,16 @@ float BodyInfo::mass(const QString& body_part, float total_mass){
     segments.insert("right forearm",1.87);
 
     segments.insert("hand",0.65);
-    segments.insert("left hand",0.65);
-    segments.insert("right hand",0.65);
+    segments.insert("left_hand",0.65);
+    segments.insert("right_hand",0.65);
 
-    segments.insert("forearm & hand",2.52);
-    segments.insert("total leg",16.68);
+    segments.insert("forearm_&_hand",2.52);
+    segments.insert("total_leg",16.68);
     segments.insert("thigh",10.5);
 
     segments.insert("leg",4.75);
-    segments.insert("left leg",4.75);
-    segments.insert("right leg",4.75);
+    segments.insert("left_leg",4.75);
+    segments.insert("right_leg",4.75);
 
     segments.insert("foot",1.43);
     segments.insert("left foot",1.43);
@@ -45,6 +45,15 @@ float BodyInfo::mass(const QString& body_part, float total_mass){
 }
 
 QList<QPair<QString,QString> > BodyInfo::jointList(){
+    QList<QPair<QString,QString> > list;
+    list.append(QPair<QString,QString>("thorax","head"));
+    list.append(QPair<QString,QString>("head","pelvis"));
+    list.append(QPair<QString,QString>("head","none"));
+    list.append(QPair<QString,QString>("thorax","none"));
+    return list;
+}
+
+QList<QPair<QString,QString> > BodyInfo::angularCalculationList(){
     QList<QPair<QString,QString> > list;
     list.append(QPair<QString,QString>("thorax","head"));
     list.append(QPair<QString,QString>("head","pelvis"));

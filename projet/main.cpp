@@ -27,7 +27,7 @@ void speedTest(){
 void customMessageHandler(QtMsgType type, const char *msg)
 {
 //    _debugging_ui->log(msg);
-//    Debugger::customMessageHandler(type,msg);
+    Debugger::customMessageHandler(type,msg);
 }
 void customMessageHandler2(QtMsgType type, const char *msg)
 {
@@ -42,7 +42,7 @@ void firstConfiguration(){
     GlobalConfig::defaultValue("steps_duration",QVariant(100));
     GlobalConfig::defaultValue("coefficient",QVariant(1));
     GlobalConfig::defaultValue("ups",QVariant(30));
-    GlobalConfig::defaultValue("body_mass",QVariant(100),true);
+    GlobalConfig::defaultValue("body_mass",QVariant(70));
     GlobalConfig::defaultValue("input_location",QVariant("values.csv"));
 
     GlobalConfig::defaultValue("output_fps",QVariant("true"));

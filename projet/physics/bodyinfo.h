@@ -9,6 +9,7 @@ class BodyInfo
 public:
     static float mass(const QString& body_part, float total_mass);
     static QList<QPair<QString,QString> > jointList();
+    static QList<QPair<QString,QString> > angularCalculationList();
 private:
     virtual void abstract() = 0;
 };

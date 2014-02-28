@@ -45,6 +45,8 @@ void HumanBody::loadObjects(QString path){
                                 QStringList values = list[i+1+k] ;
                                 for (int j=1; j<values.size()-1;j+=2){
                                     object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                    qDebug()<<"scale"<< values[j+1];
+                                    qDebug();
                                 }
                             }
 

@@ -29,7 +29,7 @@ void DebuggingInterface::update(){
     simulation_aKe->setText(QString::number(info.simulation.ake));
     simulation_Pe->setText(QString::number(info.simulation.pe));
     mass->setText(QString::number(part->get_mass()));
-    length->setText(QString::number(part->get_shape().y()*2));
+    length->setText(QString::number(part->get_shape().y()));
     mean_error->setText(QString::number(info.mean_error));
     mean_error_2->setText(QString::number(info.mean_error_2));
     diff_aKe->setText(QString::number(info.ake_diff));

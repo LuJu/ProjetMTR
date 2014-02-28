@@ -128,33 +128,13 @@ public:
     btScalar get_density(){
         return _mass / get_volume();
     }
-    btScalar get_volume(){
-        return M_PI * _shape->getLocalScaling().y()*2*_shape->getLocalScaling().x()*_shape->getLocalScaling().x();
-//        return _shape->getLocalScaling().x()*
-//                _shape->getLocalScaling().y()*
-//                _shape->getLocalScaling().z();
-    }
 
+    btScalar get_volume();
+    btScalar get_moment();
 
+    btScalar get_angular_EC_simulation();
 
-    btScalar get_moment(){
-        // = ( pi x ro x L x R^4 ) / 2
-        return _shape->getLocalScaling().y()  *
-                _shape->getLocalScaling().x() *
-                _shape->getLocalScaling().x() *
-                _shape->getLocalScaling().x() *
-                _shape->getLocalScaling().x() *
-                get_density() *
-                M_PI;
-    }
-
-    btScalar get_angular_EC_simulation(){
-        return _body->getAngularVelocity().length() * _body->getAngularVelocity().length() * get_moment() / 2;
-    }
-
-    btScalar get_angular_EC_animation(){
-        return _angular_speed_rotation.length() * _angular_speed_rotation.length() * get_moment() / 2;
-    }
+    btScalar get_angular_EC_animation();
 
 
     QList<Curve>& get_curves() {return _curves;}
@@ -209,6 +189,9 @@ private:
         btScalar _speed_error;
         btScalar _ticks;
     }_error_1,_error_2;
+
+    btVector3 _rotation_axis_animation;
+    btVector3 _rotation_axis_simulation;
 
 
 
