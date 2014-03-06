@@ -86,7 +86,7 @@ void TestScene::displayAnimation(){
                 _program->setUniformValue("M",M);
                 pvm = P*V*M;
                 _program->setUniformValue("pvm",pvm);
-                c.fromCapsuleShape(local_scale.y(),local_scale.x());
+                MeshUtils::addCapsuleShape(&c,local_scale.y(),local_scale.x());
                 c.render();
             }
         }
@@ -136,7 +136,7 @@ void TestScene::displaySimulation(){
             _program->setUniformValue("M",M);
             pvm = P*V*M;
             _program->setUniformValue("pvm",pvm);
-            c.fromCapsuleShape(local_scale.y(),local_scale.x());
+            MeshUtils::addCapsuleShape(&c,local_scale.y(),local_scale.x());
             c.render();
 //_cylinder_mesh.render();
             break;
@@ -168,7 +168,6 @@ void TestScene::init(){
     _cube_mesh.loadFromFile(":/models/cube.obj");
     _cylinder_mesh.loadFromFile(":/models/cylinder.obj");
 
-    _capsule_mesh.fromCapsuleShape(1,1);
 //    _cylinder_mesh.loadFromFile(":/models/Bane_3.obj");
 //    _cube_mesh.loadFromFile(":assets/models/cube.obj");
 //    _cylinder_mesh.loadFromFile(":assets/models/Bane_3.obj");

@@ -67,6 +67,8 @@ public:
         return _parts.end();
     }
 
+    void exportSimulationToAnimation();
+
 protected:
     int _mass;
 

@@ -14,6 +14,7 @@
 #include "physics/debugginginterface.h"
 #include "utils/maths.h"
 #include "utils/csvparser.h"
+#include "3d/meshutils.h"
 class Stats : public Viewer
 {
     Q_OBJECT

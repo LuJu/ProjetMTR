@@ -281,9 +281,13 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     _energy.simulation.z = _body->getCenterOfMassPosition().z();
 
     _energy.part_name = _body_part_name;
-    _animation_from_simulation.get_translation_curves()[0].insert(elapsed,_body->getCenterOfMassPosition().x());
-    _animation_from_simulation.get_translation_curves()[1].insert(elapsed,_body->getCenterOfMassPosition().y());
-    _animation_from_simulation.get_translation_curves()[2].insert(elapsed,_body->getCenterOfMassPosition().z());
+
+//    _animation_from_simulation.get_translation_curves()[0].insert(elapsed,_body->getCenterOfMassPosition().x());
+//    _animation_from_simulation.get_translation_curves()[1].insert(elapsed,_body->getCenterOfMassPosition().y());
+//    _animation_from_simulation.get_translation_curves()[2].insert(elapsed,_body->getCenterOfMassPosition().z());
+//    _animation_from_simulation.get_rotation_curves()[0].insert(elapsed,rot_x(_body->getOrientation()));
+//    _animation_from_simulation.get_rotation_curves()[1].insert(elapsed,rot_y(_body->getOrientation()));
+//    _animation_from_simulation.get_rotation_curves()[2].insert(elapsed,rot_z(_body->getOrientation()));
 
     _energy.ake_diff = _energy.animation.ake - _energy.simulation.ake;
     _energy.ke_diff = _energy.animation.ke - _energy.simulation.ke;
@@ -367,14 +371,27 @@ void InteractiveObject::setSimulationPosition(float time){
         qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     } else {
+
+
+
         btRigidBody& body = get_body();
-        initialSpeed();
+        _animation_from_simulation.get_translation_curves()[0].insert(time,_body->getCenterOfMassPosition().x());
+        _animation_from_simulation.get_translation_curves()[1].insert(time,_body->getCenterOfMassPosition().y());
+        _animation_from_simulation.get_translation_curves()[2].insert(time,_body->getCenterOfMassPosition().z());
+        _animation_from_simulation.get_rotation_curves()[0].insert(time,rot_x(_body->getOrientation()));
+        _animation_from_simulation.get_rotation_curves()[1].insert(time,rot_y(_body->getOrientation()));
+        _animation_from_simulation.get_rotation_curves()[2].insert(time,rot_z(_body->getOrientation()));
+        speedAtTime();
         body.setLinearVelocity(_animation_speed);
         body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
                                           deg2rad(_angular_speed_rotation.x()),
                                           deg2rad(_angular_speed_rotation.z())));
         qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
+
+
+
+
     }
 
     _previous_data._position = translation;
@@ -384,7 +401,7 @@ void InteractiveObject::setSimulationPosition(float time){
 
 }
 
-btVector3 InteractiveObject::initialSpeed(){
+btVector3 InteractiveObject::speedAtTime(float time){
     _animation.get_translation_curves();
     btVector3 init_position = _animation.translationVector(0);
     btScalar diff = _animation.get_translation_curves()[0].keys()[1];
@@ -412,17 +429,85 @@ btScalar InteractiveObject::get_volume(){
 btScalar InteractiveObject::get_moment(){
     btScalar moment = pow(get_shape().y(),2)*
             _mass/3;
-    qDebug()<<"moment : "<<moment;
+//    qDebug()<<"moment : "<<moment;
     return moment;
 }
 
 btScalar InteractiveObject::get_angular_EC_simulation(){
-    qDebug()<<"simulation velocity: "<<rad2deg(_body->getAngularVelocity().length());
+//    qDebug()<<"simulation velocity: "<<rad2deg(_body->getAngularVelocity().length());
     return _body->getAngularVelocity().length() * _body->getAngularVelocity().length() * get_moment() / 2;
 
 }
 
 btScalar InteractiveObject::get_angular_EC_animation(){
-    qDebug()<<"animation velocity: "<<_angular_speed_rotation.length();
+//    qDebug()<<"animation velocity: "<<_angular_speed_rotation.length();
     return _angular_speed_rotation.length() * _angular_speed_rotation.length() * get_moment() / 2;
 }
+
+QString InteractiveObject::exportSimulationToAnimation(){
+    QString outstring;
+    QTextStream output(&outstring);
+    QChar c(';');
+    QChar nl('\n');
+    QChar chars[3] = {'x','y','z'};
+
+    output<<"object"<<c<<_body_part_name<<c<<"display"<<nl;
+
+    output<<"scaling"<<c<<nl;
+    output<<"radius"<<c<<0.0<<c<<get_shape().x()<<c<<nl;
+    output<<"length"<<c<<0.0<<c<<get_shape().y()<<c<<nl;
+
+    output<<"translation"<<c<<nl;
+    for (int j = 0; j < 3; ++j) {
+        Curve curve = _animation_from_simulation.get_translation_curves()[j];
+        output<<chars[j]<<c;
+        for (int i = 0; i < curve.size(); ++i) {
+            output<<curve.keys()[i]<<c<<curve.value(curve.keys()[i])<<c;
+        }
+        output<<nl;
+    }
+    output<<"rotation"<<c<<nl;
+    for (int j = 0; j < 3; ++j) {
+        Curve curve = _animation_from_simulation.get_rotation_curves()[j];
+        output<<chars[j]<<c;
+        for (int i = 0; i < curve.size(); ++i) {
+            output<<curve.keys()[i]<<c<<curve.value(curve.keys()[i])<<c;
+        }
+        output<<nl;
+    }
+    output<<"end"<<nl;
+    return outstring;
+}
+
+
+float InteractiveObject::rot_x(btQuaternion q) const
+{
+    float m_x = q.x();
+    float m_y = q.y();
+    float m_z = q.z();
+    float m_w = q.w();
+    float rotx = atan2(2*((m_w * m_x) + (m_y * m_z)), 1 - (2 * ((m_x* m_x) + (m_y * m_y))));
+    return rad2deg(rotx);
+}
+
+float InteractiveObject::rot_y(btQuaternion q) const
+{
+    float m_x = q.x();
+    float m_y = q.y();
+    float m_z = q.z();
+    float m_w = q.w();
+    float roty = asin(2 * ((m_w * m_y) - (m_z * m_x)));
+    return rad2deg(roty);
+}
+
+
+float InteractiveObject::rot_z(btQuaternion q) const
+{
+    float m_x = q.x();
+    float m_y = q.y();
+    float m_z = q.z();
+    float m_w = q.w();
+    float rotz = atan2(2 * ((m_w * m_z) + (m_x * m_y)), 1 - (2 * ((m_y * m_y) + (m_z * m_z))));
+    return rad2deg(rotz);
+}
+

@@ -191,6 +191,7 @@ void Simulation::simulationOver()
 {
      _human.saveDataList();
      _human.saveFullDataList();
+     _human.exportSimulationToAnimation();
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";
 //     if (GlobalConfig::is_enabled("automatic_close"))

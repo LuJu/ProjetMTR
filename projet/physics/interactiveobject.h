@@ -143,7 +143,10 @@ public:
 
     shapetype get_shape_type() const {return _shape_type;}
     void set_shape_type(shapetype shape_type){_shape_type = shape_type;}
-    btVector3 initialSpeed();
+    btVector3 speedAtTime(float time = 0);
+
+    QString exportSimulationToAnimation();
+
 private:
     void deleteMotion();
 
@@ -153,7 +156,11 @@ private:
     // _shape needs to have a polymorphical behaviour so it is a pointer
     btCollisionShape * _shape;
     btTransform _transform;
+
     shapetype _shape_type;
+
+    btVector3 _local_inertia;
+    btRigidBody * _body;
 
     // Curves used to display data on screen
     QList<Curve> _curves;
@@ -173,8 +180,6 @@ private:
     btVector3 _angular_speed_rotation;
     btScalar _angular_speed_y;
 
-    btVector3 _local_inertia;
-    btRigidBody * _body;
 
     struct{
         btVector3 _position;
@@ -190,11 +195,14 @@ private:
         btScalar _ticks;
     }_error_1,_error_2;
 
-    btVector3 _rotation_axis_animation;
-    btVector3 _rotation_axis_simulation;
+//    btVector3 _rotation_axis_animation;
+//    btVector3 _rotation_axis_simulation;
 
+    float rot_x(btQuaternion q) const;
 
+    float rot_y(btQuaternion q) const;
 
+    float rot_z(btQuaternion q) const;
 
 };
 

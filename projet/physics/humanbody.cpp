@@ -39,34 +39,24 @@ void HumanBody::loadObjects(QString path){
                 }
                 else if (!ignore){
                     if (temp.at(0)=="scaling") {
-                        if (!ignore) {
-
-                            for (int k=0; k<2;k++) {
-                                QStringList values = list[i+1+k] ;
-                                for (int j=1; j<values.size()-1;j+=2){
-                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-                                    qDebug()<<"scale"<< values[j+1];
-                                    qDebug();
-                                }
+                        for (int k=0; k<2;k++) {
+                            QStringList values = list[i+1+k] ;
+                            for (int j=1; j<values.size()-1;j+=2){
+                                object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                             }
-
                         }
                     } else if (temp.at(0)=="translation") {
-                        if (!ignore) {
-                            for (int k=0; k<3;k++) {
-                                QStringList values = list[i+1+k] ;
-                                for (int j=1; j<values.size()-1;j+=2){
-                                    object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-                                }
+                        for (int k=0; k<3;k++) {
+                            QStringList values = list[i+1+k] ;
+                            for (int j=1; j<values.size()-1;j+=2){
+                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                             }
                         }
                     } else if (temp.at(0)=="rotation") {
-                        if (!ignore) {
-                            for (int k=0; k<3;k++) {
-                                QStringList values = list[i+1+k] ;
-                                for (int j=1; j<values.size()-1;j+=2){
-                                    object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-                                }
+                        for (int k=0; k<3;k++) {
+                            QStringList values = list[i+1+k] ;
+                            for (int j=1; j<values.size()-1;j+=2){
+                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                             }
                         }
                     }
@@ -253,6 +243,44 @@ void HumanBody::saveFullDataList(){
                     save.simulation.ke<<","<<save.simulation.ake<<","<<save.simulation.pe<<","<<
                     save.ke_diff<<","<<save.ake_diff<<","<<save.pe_diff<<"\n";
         }
+        file.close();
+        qDebug()<<"File successfully written : "<<file.fileName();
+    }
+}
+
+void HumanBody::exportSimulationToAnimation(){
+    QString path = "output/";
+    QString name=GlobalConfig::get_date_time()+"_output_animation";
+    QString oldname=name;
+    QString ext="csv";
+
+    InteractiveObject::part_info save;
+    QFile file;
+    file.setFileName(name+"."+ext);
+    int i = 1;
+    if (QDir::setCurrent(path))
+        qDebug()<<"path set";
+    else {
+        qDebug()<<"path not set "<<path;
+    }
+    while (file.exists()){
+        qWarning()<<"File already exists";
+        name = oldname+" ("+QString::number(i)+")";
+        file.setFileName(name+"."+ext);
+        ++i;
+    }
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qWarning()<<"Couldn't write file "<<path;
+        exit(0);
+    } else {
+        QTextStream stream(&file);
+        QChar c(';');
+        QChar ln('\n');
+        stream<<"body"<<c<<_mass<<c<<ln;
+        for (int i = 0; i < _parts.size(); ++i) {
+            stream << _parts[i]->exportSimulationToAnimation();
+        }
+        stream<<"parts_end"<<c<<ln;
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();
     }
