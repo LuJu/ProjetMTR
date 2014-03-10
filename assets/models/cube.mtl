@@ -1,12 +1,12 @@
 # Blender MTL File: 'None'
 # Material Count: 1
 
-newmtl Material
+newmtl Material.001
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.000000 0.000000 0.000000
+Kd 0.339422 0.236741 0.113458
+Ks 0.424855 0.305771 0.101916
 Ni 1.000000
 d 1.000000
-illum 1
-map_Kd /home/batman/Bureau/cube_text.png
+illum 2
+map_Kd wood.jpg

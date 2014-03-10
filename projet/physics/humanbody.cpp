@@ -98,12 +98,12 @@ void HumanBody::loadObjects(QString path){
 //        ++i;
 //    }
 
-    QList<QPair<QString,QString> > list2 = BodyInfo::jointList();
+    QList<QStringList> list2 = BodyInfo::jointList();
     if (GlobalConfig::is_enabled("constraints_activated")){
         for (int i = 0; i < list2.size(); ++i) {
-            QList<InteractiveObject *>::iterator part1 = findPartByName(list2.at(i).first);
-            QList<InteractiveObject *>::iterator part2 = findPartByName(list2.at(i).second);
-            if (part1 != _parts.end() && ( part2 != _parts.end() || list2.at(i).second == "none")){
+            QList<InteractiveObject *>::iterator part1 = findPartByName(list2.at(i).at(0));
+            QList<InteractiveObject *>::iterator part2 = findPartByName(list2.at(i).at(1));
+            if (part1 != _parts.end() && ( part2 != _parts.end() || list2.at(i).at(1) == "none")){
                 Joint joint;
                 joint._parts.first = *part1;
                 if (part2 != _parts.end())
@@ -154,6 +154,8 @@ void HumanBody::recordStatus(){
 
 void HumanBody::saveDataList(){
     QString path = "output/";
+    QChar c = ',';
+    QChar nl = '\n';
 #ifdef DEECORE
     QString name=GlobalConfig::get_date_time()+"_output";
 #else
@@ -183,18 +185,18 @@ void HumanBody::saveDataList(){
         exit(0);
     } else {
         QTextStream stream(&file);
-        stream<<"id,x animation,y animation,z animation,x simulation, y simulation,z simulation,"<<
-                "vitesse animation,EC animation,ECA animation,EP animation,"<<
-                "vitesse simulation,EC simulation,ECA simulation,EP simulation,"<<
-                "EC difference,ECA difference,EP difference,erreur\n";
+        stream<<"id"<<c<<"x animation"<<c<<"y animation"<<c<<"z animation"<<c<<"x simulation"<<c<<" y simulation"<<c<<"z simulation"<<c<<
+                "vitesse animation" <<c<<"EC animation"  <<c<<"ECA animation" <<c<<"EP animation" <<c<<
+                "vitesse simulation"<<c<<"EC simulation" <<c<<"ECA simulation"<<c<<"EP simulation"<<c<<
+                "EC difference"     <<c<<"ECA difference"<<c<<"EP difference" <<c<<"erreur"       <<nl;
         for (int i = 0; i < _data_list.size(); ++i) {
             save=_data_list.at(i);
-            stream<<save.part_name<<","<<
-                    save.animation.x<<","<<save.animation.y<<","<<save.animation.z<<","<<
-                    save.simulation.x<<","<<save.simulation.y<<","<<save.simulation.z<<","<<
-                    save.animation.speed<<","<<save.animation.ke<<","<<save.animation.ake<<","<<save.animation.pe<<","<<
-                    save.simulation.speed<<","<<save.simulation.ke<<","<<save.simulation.ake<<","<<save.animation.pe<<","<<
-                    save.ke_diff<<","<<save.ake_diff<<","<<save.pe_diff<<","<<save.mean_error<<"\n";
+            stream<<save.part_name<<c<<
+                    save.animation.x     <<c<<save.animation.y  <<c<<save.animation.z   <<c<<
+                    save.simulation.x    <<c<<save.simulation.y <<c<<save.simulation.z  <<c<<
+                    save.animation.speed <<c<<save.animation.ke <<c<<save.animation.ake <<c<<save.animation.pe<<c<<
+                    save.simulation.speed<<c<<save.simulation.ke<<c<<save.simulation.ake<<c<<save.animation.pe<<c<<
+                    save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<c<<save.mean_error  <<nl;
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();
@@ -203,6 +205,8 @@ void HumanBody::saveDataList(){
 
 void HumanBody::saveFullDataList(){
     QString path = "output/";
+    QChar c(',');
+    QChar nl('\n');
 #ifdef DEECORE
     QString name=GlobalConfig::get_date_time()+"_output_full";
 #else
@@ -233,15 +237,15 @@ void HumanBody::saveFullDataList(){
     } else {
         QTextStream stream(&file);
         stream<<"id,"<<
-                "EC animation,ECA animation,EP animation,"<<
-                "EC simulation,ECA simulation,EP simulation,"<<
-                "EC difference,ECA difference,EP difference,erreur\n";
+                "EC animation" <<c<<"ECA animation" <<c<<"EP animation" <<c<<
+                "EC simulation"<<c<<"ECA simulation"<<c<<"EP simulation"<<c<<
+                "EC difference"<<c<<"ECA difference"<<c<<"EP difference"<<c<<"erreur"<<nl;
         for (int i = 0; i < _full_data_list.size(); ++i) {
             save=_full_data_list.at(i);
-            stream<<i<<","<<
-                    save.animation.ke<<","<<save.animation.ake<<","<<save.animation.pe<<","<<
-                    save.simulation.ke<<","<<save.simulation.ake<<","<<save.simulation.pe<<","<<
-                    save.ke_diff<<","<<save.ake_diff<<","<<save.pe_diff<<"\n";
+            stream<<i<<c<<
+            save.animation.ke <<c<<save.animation.ake <<c<<save.animation.pe <<c<<
+            save.simulation.ke<<c<<save.simulation.ake<<c<<save.simulation.pe<<c<<
+            save.ke_diff      <<c<<save.ake_diff      <<c<<save.pe_diff      <<nl;
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();

@@ -13,7 +13,6 @@ Stats::Stats(QWidget *parent):
 }
 Stats::Stats():
     Viewer(){
-
 }
 
 void Stats::draw(){
@@ -30,7 +29,6 @@ void Stats::draw(){
     } else if (started) {
         display3DObjects();
     }
-//    _simulation->get_mutex()->unlock();
     frameEnd();
 }
 

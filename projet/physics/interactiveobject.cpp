@@ -220,7 +220,6 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     btVector3 distance(_animation.translationVector(elapsed)-_previous_data._position);
     btVector3 simulation_distance = _body->getCenterOfMassPosition()-_previous_data._position_simulation;
     btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
-//    qDebug()<<"diff"<<diff;
     _animation_speed = speed_animation;
 
 
@@ -320,11 +319,6 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     return _energy;
 }
 
-//btScalar InteractiveObject::computeWork(btScalar ke_simulation , btScalar ke_animation , btScalar ake_simulation , btScalar ake_animation , btScalar pe_simulation , btScalar pe_animation){
-//    return (ke_simulation - ke_animation)+ (ake_simulation - ake_animation ) + (pe_simulation - pe_animation) ;
-//}
-
-
 void InteractiveObject::setSimulationPosition(float time){
 
     if (GlobalConfig::is_enabled("display_animation_stats")) {
@@ -371,9 +365,6 @@ void InteractiveObject::setSimulationPosition(float time){
         qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     } else {
-
-
-
         btRigidBody& body = get_body();
         _animation_from_simulation.get_translation_curves()[0].insert(time,_body->getCenterOfMassPosition().x());
         _animation_from_simulation.get_translation_curves()[1].insert(time,_body->getCenterOfMassPosition().y());
@@ -386,18 +377,13 @@ void InteractiveObject::setSimulationPosition(float time){
         body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
                                           deg2rad(_angular_speed_rotation.x()),
                                           deg2rad(_angular_speed_rotation.z())));
-        qDebug()<<" rotation "<<_angular_speed_rotation.length();
+//        qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
-
-
-
-
     }
 
     _previous_data._position = translation;
     _previous_data._position_simulation = translation;
     _previous_data._position_simulation_2 = translation;
-//    get_body().setLinearVelocity(btVector3(0,9,0));
 
 }
 

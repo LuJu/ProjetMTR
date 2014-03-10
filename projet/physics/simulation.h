@@ -19,7 +19,6 @@
 #include "humanbody.h"
 #include "simulationparameters.h"
 #include "interactiveobject.h"
-#include "debugtimer.h"
 #include "joint.h"
 
 class Simulation : public QObject
@@ -90,11 +89,13 @@ private:
 
     bool _simulation_over;
     bool _world_filled;
-    bool _started;
     btClock _clock;
 
+    //! indicates that the init() function has been called
     bool _initiated;
 
+    //! indicates that the start() function has been called
+    bool _started;
 };
 
 #endif // SIMULATION_H

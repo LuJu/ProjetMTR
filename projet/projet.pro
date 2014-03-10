@@ -69,7 +69,6 @@ HEADERS += \
     physics/humanbody.h \
     physics/debugginginterface.h \
     physics/debuggingwidget.h \
-    physics/debugtimer.h \
     physics/joint.h
 SOURCES     += \
     physics/interactiveobject.cpp \
@@ -80,7 +79,6 @@ SOURCES     += \
     physics/humanbody.cpp \
     physics/debugginginterface.cpp \
     physics/debuggingwidget.cpp \
-    physics/debugtimer.cpp \
     physics/joint.cpp
 ############################
 

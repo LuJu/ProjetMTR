@@ -44,12 +44,12 @@ float BodyInfo::mass(const QString& body_part, float total_mass){
     return (total_mass/100) * proportion;
 }
 
-QList<QPair<QString,QString> > BodyInfo::jointList(){
-    QList<QPair<QString,QString> > list;
-    list.append(QPair<QString,QString>("thorax","head"));
-    list.append(QPair<QString,QString>("head","pelvis"));
-    list.append(QPair<QString,QString>("head","none"));
-    list.append(QPair<QString,QString>("thorax","none"));
+QList<QStringList> BodyInfo::jointList(){
+    QList<QStringList> list;
+//    list.append(QStringList("thorax","head"));
+//    list.append(QStringList("head","pelvis"));
+//    list.append(QStringList("head","none"));
+//    list.append(QStringList("thorax","none"));
     return list;
 }
 

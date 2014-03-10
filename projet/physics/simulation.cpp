@@ -41,7 +41,7 @@ void Simulation::init() {
     _ground->set_shape(btVector3(3,1,3));
     _ground->set_mass(0); // no gravity
     _ground->get_transform().setOrigin(btVector3(0,-1,0));
-    _ground->set_shape_type(InteractiveObject::cylinder);
+    _ground->set_shape_type(InteractiveObject::cube);
     _display.append(_ground);
 }
 
@@ -73,8 +73,12 @@ void Simulation::start(){
 
 void Simulation::loop(){
     double time_since_last_update = 0;
-    btScalar coeff = _params.get_coefficient();
-    btScalar ups = _params.get_ups();
+
+    btScalar coeff =          _params.get_coefficient();
+    btScalar ups =            _params.get_ups();
+    btScalar duration =       _params.get_duration();
+    btScalar steps_duration = _params.get_steps_duration();
+
     btScalar clock_time = _clock.getTimeMilliseconds() / coeff ;
     _last_update_time = clock_time;
 
@@ -82,14 +86,16 @@ void Simulation::loop(){
     while (_world && !_simulation_over){
         clock_time = _clock.getTimeMilliseconds() / coeff ;
         time_since_last_update = clock_time - _last_update_time;
-        if (time_since_last_update/1000 > 1./(ups * coeff)){
+//        qDebug()<<time_since_last_update;
+        if (time_since_last_update/1000 >= 1./(ups * coeff)){
+//            qDebug()<<"entering update function";
 //            qDebug()<<"time 1"<<_clock.getTimeMilliseconds();
             time_since_last_update = 0;
             _lock.lockForWrite(); {
                 update();
-                if (_step_counter > _params.get_steps_duration())
+                if (_step_counter > steps_duration)
                     stepOver();
-                if (_end_counter > _params.get_duration())
+                if (_end_counter > duration)
                     simulationOver();
                 _updates_since_last_step++;
             } _lock.unlock();
@@ -111,7 +117,7 @@ void Simulation::update(){
     _elapsed=clock_time;
 //    _diff =  progression;
     _elapsed2=_elapsed2+progression;
-//    qDebug()<<"progression:"<<progression;
+//    qDebug()<<"_elapsed2: "<<_elapsed2;
 
 
 //    _world->stepSimulation(progression / coeff,1);

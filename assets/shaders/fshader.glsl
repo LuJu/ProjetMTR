@@ -5,8 +5,10 @@ varying vec3 lightDirection;
 varying vec4 position;
 varying vec3 norm;
 //uniform float factor;
-uniform float shininess;
 uniform vec3 _color;
+uniform sampler2D color_texture;
+
+uniform bool texture_activated;
 
 
 vec4 CelShading ( vec4 color ){
@@ -55,8 +57,9 @@ void main (void)
 
 
 //    gl_FragColor = vec4(0.0,0.0,1.0,0.3);
-    vec4 col = vec4((gl_Color.rgba)*shininess);
-//    gl_FragColor =  texture2D(Texture0, gl_TexCoord[0].st);
+    vec4 col = vec4(gl_Color.rgb,1.0);
     gl_FragColor = col;
+//    if (gl_TexCoord[0]){
+//    gl_FragColor = texture2D(color_texture, gl_TexCoord[0].st);
 }
 

@@ -1,59 +1,35 @@
-//#version 120
+
 varying vec3 normal;
 varying vec3 light;
 varying vec4 position;
 uniform vec3 _WorldSpaceCameraPos;
 uniform mat4 M,V,P;
 uniform mat4 pvm;
-uniform float shininess;
+//uniform vec3 view_direction;
 attribute vec3 norm;
 varying float intensity;
 
+uniform bool texture_activated;
 
 void main(void)
 {
-  bool test = false;
-  vec3 lightDir = vec3(1.0,0.0,0.0);
+  vec3 lightDir = vec3(0.0,0.0,3.0);
+  vec4 v = vec4(gl_Vertex);
+  vec4 color;
+  vec3 view_direction;
 
-  if (test){
+//  intensity = dot(lightDir,gl_Normal);
+//  color = gl_Color * intensity;
+//  view_direction = vec3(V[3]);
+////  if (dot(vec3(view_direction.xyz), gl_Normal) < 1.0) {
+//    if (dot(vec3(view_direction.xyz), gl_Normal) < mix(0.1, 0.4, max(0.0, dot(vec3(gl_Normal.xyz), lightDir)))) {
+////    color = vec4(1.0) /** vec4(0.0)*/;
+//    color = vec4(1.0,0.1,0.1,0.1);
+//      }
 
-    vec4 v = vec4(gl_Vertex);
-//    v.z = sin(5.0*v.y )*0.25;
-    gl_Position =  pvm * v;
-    intensity = dot(lightDir,gl_Normal);
-
-    vec4 color;
-
-    if (intensity > 0.5)
-        color = vec4(0.0,1.0,0.0,1.0);
-      else
-        color = vec4(1.0,0.0,0.0,1.0);
-    color = color * intensity;
-
-//      if (intensity > 0.95)
-//        color = vec4(1.0,0.5,0.5,1.0);
-//      else if (intensity > 0.5)
-//        color = vec4(0.6,0.3,0.3,1.0);
-//      else if (intensity > 0.25)
-//        color = vec4(0.4,0.2,0.2,1.0);
-//      else
-//        color = vec4(0.2,0.1,0.1,1.0);
-
-    gl_FrontColor = color;
-    //    gl_BackColor = vec4(0,0,0,1);
-    //    gl_FrontColor = gl_Color;
-    gl_BackColor = gl_Color;
-
-  } else {
-  //    gl_Position = gl_Vertex * pvm;
-  //    gl_Position =  gl_ModelViewProjectionMatrix * gl_Vertex;
-    normal = gl_Normal;
-
-    gl_FrontColor = gl_Color;
-  //    gl_BackColor = vec4(0,0,0,1);
-  //    gl_FrontColor = gl_Color;
-    gl_BackColor = gl_Color;
-    gl_Position =  pvm * gl_Vertex;
-  }
+  gl_TexCoord[0] = gl_MultiTexCoord0;
+  gl_FrontColor = gl_Color;
+  gl_BackColor = gl_Color;
+  gl_Position =  pvm * v;
 
 }

@@ -132,13 +132,11 @@ void TestScene::displaySimulation(){
             _cylinder_mesh.render();
             break;
         case InteractiveObject::capsule:
-//            M.scale(1,1,1);
             _program->setUniformValue("M",M);
             pvm = P*V*M;
             _program->setUniformValue("pvm",pvm);
             MeshUtils::addCapsuleShape(&c,local_scale.y(),local_scale.x());
             c.render();
-//_cylinder_mesh.render();
             break;
         default:
             break;
@@ -151,11 +149,9 @@ void TestScene::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
     glViewport(0,0,width(),height());
-//    _simulation->_mutex.lock();
-        if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
-        _program->setUniformValue("shininess",(GLfloat).5);
-        if (GlobalConfig::is_enabled("display_animation")) displayAnimation();
-//    _simulation->_mutex.unlock();
+    if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
+    _program->setUniformValue("shininess",(GLfloat).5);
+    if (GlobalConfig::is_enabled("display_animation")) displayAnimation();
     _program->release();
 }
 
@@ -163,17 +159,7 @@ void TestScene::init(){
     Viewer::init();
     _ui->activateProgressiveZoom(60);
     _background_activated=false;
-
-//    _cube_mesh.capsule(1,2);
     _cube_mesh.loadFromFile(":/models/cube.obj");
-    _cylinder_mesh.loadFromFile(":/models/cylinder.obj");
-
-//    _cylinder_mesh.loadFromFile(":/models/Bane_3.obj");
-//    _cube_mesh.loadFromFile(":assets/models/cube.obj");
-//    _cylinder_mesh.loadFromFile(":assets/models/Bane_3.obj");
-    loadTexture(":/textures/models/Bane3_Chest_D.png");
-//    _cylinder_mesh._texture=_textures[0];
-
 }
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)
