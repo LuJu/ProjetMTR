@@ -23,18 +23,18 @@ Simulation::~Simulation(){
     }
 }
 
-void Simulation::init() {
-    SimulationParameters params;
+void Simulation::init(SimulationParameters params) {
     params.set_gravity(btVector3(0,-9.8,0));
 //    params.set_gravity(btVector3(0,0,0));
-    params.set_ups(GlobalConfig::get_int("ups"));
-    params.set_coefficient(GlobalConfig::get_int("coefficient"));
-    params.set_duration(GlobalConfig::get_int("duration"));
-    params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
+//    params.set_ups(GlobalConfig::get_int("ups"));
+//    params.set_coefficient(GlobalConfig::get_int("coefficient"));
+//    params.set_duration(GlobalConfig::get_int("duration"));
+//    params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
     allocateWorld(params);
     _initiated = true;
-    _human.set_mass(GlobalConfig::get_int("body_mass"));
-    _human.loadObjects(GlobalConfig::get_string("input_location"));
+    _human.set_mass(params.get_body_mass());
+//    _human.loadObjects(GlobalConfig::get_string("input_location"));
+    _human.loadObjects(params.get_input_location());
     _display = _human._parts;
     _joints = _human._constraints;
     _ground = new InteractiveObject();

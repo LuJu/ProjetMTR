@@ -156,12 +156,8 @@ void HumanBody::saveDataList(){
     QString path = "output/";
     QChar c = ',';
     QChar nl = '\n';
-#ifdef DEECORE
-    QString name=GlobalConfig::get_date_time()+"_output";
-#else
     QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
     name = name +"_output";
-#endif
     QString oldname=name;
     QString ext="csv";
 
@@ -207,12 +203,8 @@ void HumanBody::saveFullDataList(){
     QString path = "output/";
     QChar c(',');
     QChar nl('\n');
-#ifdef DEECORE
-    QString name=GlobalConfig::get_date_time()+"_output_full";
-#else
     QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
     name = name +"_output";
-#endif
     QString oldname=name;
     QString ext="csv";
 
@@ -254,11 +246,10 @@ void HumanBody::saveFullDataList(){
 
 void HumanBody::exportSimulationToAnimation(){
     QString path = "output/";
-    QString name=GlobalConfig::get_date_time()+"_output_animation";
+    QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
+    name = name +"_output_animation";
     QString oldname=name;
     QString ext="csv";
-
-    InteractiveObject::part_info save;
     QFile file;
     file.setFileName(name+"."+ext);
     int i = 1;

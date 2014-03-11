@@ -134,6 +134,7 @@ int main(int argc, char *argv[])
             _debugging_ui = NULL;
             _debugging = new DebuggingWidget(&gui);
             _debugging_ui = new DebuggingInterface();
+
             _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
             _debugging_ui->setupUi(_debugging);
             _debugging->_interface = _debugging_ui;
@@ -145,7 +146,15 @@ int main(int argc, char *argv[])
         }
     }
 
-    simulation->init();
+    SimulationParameters params;
+    params.set_gravity(btVector3(0,-9.8,0));
+    params.set_ups(GlobalConfig::get_int("ups"));
+    params.set_coefficient(GlobalConfig::get_int("coefficient"));
+    params.set_duration(GlobalConfig::get_int("duration"));
+    params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
+    params.set_body_mass(params.get_body_mass());
+    params.set_input_location(GlobalConfig::get_string("input_location"));
+    simulation->init(params);
 
 
     if (GlobalConfig::is_enabled("automatic_start"))

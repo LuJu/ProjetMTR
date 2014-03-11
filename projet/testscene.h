@@ -37,6 +37,7 @@ public:
 
     void displayAnimation();
     void displaySimulation();
+    void displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4& V, QMatrix4x4& M, QMatrix4x4 pvm);
     Simulation  * _simulation;
 
 private:

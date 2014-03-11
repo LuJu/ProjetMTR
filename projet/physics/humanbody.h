@@ -5,7 +5,7 @@
 #include <QDir>
 #include <QDateTime>
 
-#include <core/globalconfig.h>
+//#include <core/globalconfig.h>
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
