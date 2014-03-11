@@ -2,7 +2,6 @@ QT          += opengl xml widgets
 
 SOURCES     = \
     main.cpp \
-    ../../QtDee/3d/meshutils.cpp
 
 #   UTILS   ###############
 HEADERS     += \
@@ -13,8 +12,7 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/maths.h \
     /home/batman/Programmation/QtDee/utils/csvparser.h \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h \
-    ../../QtDee/3d/meshutils.h
+    /home/batman/Programmation/QtDee/utils/curve.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \
@@ -29,14 +27,17 @@ HEADERS += \
     /home/batman/Programmation/QtDee/3d/transform.h \
     /home/batman/Programmation/QtDee/3d/movementpath.h \
     /home/batman/Programmation/QtDee/3d/material.h \
-    /home/batman/Programmation/QtDee/3d/mesh.h
+    /home/batman/Programmation/QtDee/3d/mesh.h \
+    /home/batman/Programmation/QtDee/3d/meshutils.h
+
 SOURCES     += \
     /home/batman/Programmation/QtDee/3d/graphicobject3d.cpp \
     /home/batman/Programmation/QtDee/3d/vertex.cpp \
     /home/batman/Programmation/QtDee/3d/transform.cpp \
     /home/batman/Programmation/QtDee/3d/movementpath.cpp \
     /home/batman/Programmation/QtDee/3d/material.cpp \
-    /home/batman/Programmation/QtDee/3d/mesh.cpp
+    /home/batman/Programmation/QtDee/3d/mesh.cpp \
+    /home/batman/Programmation/QtDee/3d/meshutils.cpp
 ############################
 
 #   CORE     ##############

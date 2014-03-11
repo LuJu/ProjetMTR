@@ -99,7 +99,9 @@ void HumanBody::loadObjects(QString path){
 //    }
 
     QList<QStringList> list2 = BodyInfo::jointList();
+    #ifdef DEECORE
     if (GlobalConfig::is_enabled("constraints_activated")){
+    #endif
         for (int i = 0; i < list2.size(); ++i) {
             QList<InteractiveObject *>::iterator part1 = findPartByName(list2.at(i).at(0));
             QList<InteractiveObject *>::iterator part2 = findPartByName(list2.at(i).at(1));
@@ -113,7 +115,9 @@ void HumanBody::loadObjects(QString path){
             }
 
         }
+    #ifdef DEECORE
     }
+    #endif
 }
 
 void HumanBody::recordStatus(){

@@ -23,17 +23,11 @@ Simulation::~Simulation(){
     }
 }
 
-void Simulation::init(SimulationParameters params) {
-    params.set_gravity(btVector3(0,-9.8,0));
-//    params.set_gravity(btVector3(0,0,0));
-//    params.set_ups(GlobalConfig::get_int("ups"));
-//    params.set_coefficient(GlobalConfig::get_int("coefficient"));
-//    params.set_duration(GlobalConfig::get_int("duration"));
-//    params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
-    allocateWorld(params);
+void Simulation::init(const SimulationParameters& params) {
+    _params = params;
+    allocateWorld();
     _initiated = true;
     _human.set_mass(params.get_body_mass());
-//    _human.loadObjects(GlobalConfig::get_string("input_location"));
     _human.loadObjects(params.get_input_location());
     _display = _human._parts;
     _joints = _human._constraints;
@@ -45,15 +39,14 @@ void Simulation::init(SimulationParameters params) {
     _display.append(_ground);
 }
 
-void Simulation::allocateWorld(const SimulationParameters& params){
-    _params = params;
+void Simulation::allocateWorld(){
     _collisionConfiguration = new btDefaultCollisionConfiguration();
     _dispatcher = new btCollisionDispatcher(_collisionConfiguration);
     _broadphase = new btDbvtBroadphase();
     _sequentialImpulseConstraintSolver = new btSequentialImpulseConstraintSolver;
 
     _world = new btDiscreteDynamicsWorld(_dispatcher,_broadphase,_sequentialImpulseConstraintSolver,_collisionConfiguration);
-    _world->setGravity(params.get_gravity());
+    _world->setGravity(_params.get_gravity());
 }
 
 void Simulation::start(){
@@ -200,6 +193,6 @@ void Simulation::simulationOver()
      _human.exportSimulationToAnimation();
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";
-//     if (GlobalConfig::is_enabled("automatic_close"))
-     QApplication::exit();
+     if (_params.get_automatic_close())
+        QApplication::exit();
 }

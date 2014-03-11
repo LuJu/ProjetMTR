@@ -10,8 +10,9 @@
 #include <QObject>
 #include <QWidget>
 #include <QVector>
-
-#include "core/globalconfig.h"
+#include <QReadWriteLock>
+#include <QThread>
+#include <QApplication>
 
 #include "utils/csvparser.h"
 
@@ -28,7 +29,7 @@ public:
 
     Simulation();
     ~Simulation();
-    void init();
+    void init(const SimulationParameters &params);
     void start();
     void stop(){_simulation_over = true;}
 
@@ -45,7 +46,7 @@ public slots:
     void loop();
 private:
     void update();
-    void allocateWorld(const SimulationParameters& params);
+    void allocateWorld();
     void simulationOver();
     void stepOver();
 

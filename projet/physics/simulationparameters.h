@@ -26,7 +26,9 @@ public:
     btScalar get_body_mass() const {return _body_mass;}
     void set_body_mass(int body_mass){_body_mass = body_mass;}
     const QString& get_input_location() const {return _input_location;}
-    void set_input_location(const QStr& input_location){_input_location = input_location;}
+    void set_input_location(const QString& input_location){_input_location = input_location;}
+    bool get_automatic_close() const {return _automatic_close;}
+    void set_automatic_close(int automatic_close){_automatic_close = automatic_close;}
 
 private:
     btScalar _steps_duration;
@@ -36,6 +38,8 @@ private:
     btScalar _ups;
     btVector3 _gravity;
     QString _input_location;
+
+    bool _automatic_close;
 
 };
 

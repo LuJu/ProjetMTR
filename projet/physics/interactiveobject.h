@@ -11,7 +11,7 @@
 #include "utils/maths.h"
 #include "utils/curve.h"
 
-#include "core/globalconfig.h"
+//#include "core/globalconfig.h"
 
 #include "animationdata.h"
 

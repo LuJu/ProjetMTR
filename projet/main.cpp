@@ -154,6 +154,7 @@ int main(int argc, char *argv[])
     params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
     params.set_body_mass(params.get_body_mass());
     params.set_input_location(GlobalConfig::get_string("input_location"));
+    params.set_automatic_close(GlobalConfig::is_enabled("automatic_close"));
     simulation->init(params);
 
 
