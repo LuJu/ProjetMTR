@@ -99,10 +99,10 @@ void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4
         _program->setUniformValue("pvm",pvm);
         switch (obj->get_shape_type()) {
         case InteractiveObject::cube:
-            _cube_mesh.render();
+            _cube_mesh->render();
             break;
         case InteractiveObject::cylinder:
-            _cylinder_mesh.render();
+//            _cylinder_mesh.render();
             break;
         }
         break;
@@ -131,8 +131,9 @@ void TestScene::display3DObjects(){
 void TestScene::init(){
     Viewer::init();
     _ui->activateProgressiveZoom(60);
-    _background_activated=false;
-    _cube_mesh.loadFromFile(":/models/cube.obj");
+    OBJLoader loader;
+    loader.parseOBJ(":/models/cube.obj");
+    _cube_mesh = loader.get_mesh();
 }
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)
@@ -162,6 +163,5 @@ void TestScene::closeEvent(QCloseEvent * event){
     _simulation->stop();
     _simulation->get_lock()->unlock();
     QApplication::closeAllWindows();
-//    QGLViewer::closeEvent(event);
 }
 

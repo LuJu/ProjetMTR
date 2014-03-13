@@ -245,6 +245,7 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 //    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
     _angular_speed_rotation = (_animation.rotationVector(elapsed) - _previous_data._rotation_animation) / (diff/1000) ;
+    qDebug()<<"angular speed : "<<_angular_speed_rotation.x()<<" "<<_angular_speed_rotation.y()<<" "<<_angular_speed_rotation.z();
 //    qDebug()<<"rotation :";
 //    qDebug()<<_animation.rotationVector(elapsed).x();
 //    qDebug()<<_animation.rotationVector(elapsed).y();
@@ -302,14 +303,14 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 //    if (GlobalConfig::is_enabled("display_error"))
 //        _curves[3].insert(elapsed,_energy.mean_error);
 //    if (GlobalConfig::is_enabled("display_animation_stats")) {
-        _curves[0].insert(elapsed,_energy.animation.ke);
-        _curves[1].insert(elapsed,_energy.animation.ake);
-        _curves[2].insert(elapsed,_energy.animation.pe);
+//        _curves[0].insert(elapsed,_energy.animation.ke);
+//        _curves[1].insert(elapsed,_energy.animation.ake);
+//        _curves[2].insert(elapsed,_energy.animation.pe);
 //    }
 //    if (GlobalConfig::is_enabled("display_simulation_stats")) {
-        _curves[3].insert(elapsed,_energy.simulation.ke);
-        _curves[4].insert(elapsed,_energy.simulation.ake);
-        _curves[5].insert(elapsed,_energy.simulation.pe);
+//        _curves[3].insert(elapsed,_energy.simulation.ke);
+//        _curves[4].insert(elapsed,_energy.simulation.ake);
+//        _curves[5].insert(elapsed,_energy.simulation.pe);
 //    }
 //    if (GlobalConfig::is_enabled("display_diff")) {
         _curves[6].insert(elapsed,_energy.ke_diff);
@@ -348,6 +349,9 @@ void InteractiveObject::setSimulationPosition(float time){
     quat.setEuler(deg2rad(rotation.x()),
                   deg2rad(rotation.y()),
                   deg2rad(rotation.z()));
+//    quat.setEuler(deg2rad(rotation.x()),
+//                  deg2rad(rotation.y()),
+//                  deg2rad(rotation.z()));
     transform.setRotation(quat);
 
     translation = _animation.translationVector(time);
@@ -359,6 +363,9 @@ void InteractiveObject::setSimulationPosition(float time){
     if (time != 0) {
         btRigidBody& body = get_body();
         body.setLinearVelocity(_animation_speed);
+//        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.x()),
+//                                          deg2rad(_angular_speed_rotation.y()),
+//                                          deg2rad(_angular_speed_rotation.z())));
         body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
                                           deg2rad(_angular_speed_rotation.x()),
                                           deg2rad(_angular_speed_rotation.z())));
@@ -374,6 +381,9 @@ void InteractiveObject::setSimulationPosition(float time){
         _animation_from_simulation.get_rotation_curves()[2].insert(time,rot_z(_body->getOrientation()));
         speedAtTime();
         body.setLinearVelocity(_animation_speed);
+//        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.x()),
+//                                          deg2rad(_angular_speed_rotation.y()),
+//                                          deg2rad(_angular_speed_rotation.z())));
         body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
                                           deg2rad(_angular_speed_rotation.x()),
                                           deg2rad(_angular_speed_rotation.z())));

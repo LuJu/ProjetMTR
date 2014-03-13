@@ -1,8 +1,5 @@
 <RCC>
     <qresource prefix="/models">
-        <file alias="Bane_3.obj">models/Bane_3.obj</file>
-        <file alias="cylinder.obj">models/cylinder.obj</file>
-        <file alias="capsule.obj">models/capsule.obj</file>
         <file alias="cube.obj">models/cube.obj</file>
     </qresource>
     <qresource prefix="/CSV/input">
@@ -13,6 +10,7 @@
         <file alias="jointure">CSV/input/jointure.csv</file>
         <file alias="2joints">CSV/input/2joints.csv</file>
         <file alias="test1">CSV/input/test1.csv</file>
+        <file alias="1axe2">CSV/input/1 axe2.csv</file>
     </qresource>
     <qresource prefix="/shaders">
         <file alias="vshader.glsl">shaders/vshader.glsl</file>
@@ -20,12 +18,9 @@
         <file alias="gshader.glsl">shaders/gshader.glsl</file>
     </qresource>
     <qresource prefix="/textures">
-        <file>models/Bane3_Chest_D.png</file>
         <file alias="wood.jpg">models/wood.jpg</file>
     </qresource>
     <qresource prefix="/materials">
-        <file alias="capsule.mtl">models/capsule.mtl</file>
-        <file alias="cylinder.mtl">models/cylinder.mtl</file>
         <file alias="cube.mtl">models/cube.mtl</file>
     </qresource>
 </RCC>

@@ -28,7 +28,8 @@ HEADERS += \
     /home/batman/Programmation/QtDee/3d/movementpath.h \
     /home/batman/Programmation/QtDee/3d/material.h \
     /home/batman/Programmation/QtDee/3d/mesh.h \
-    /home/batman/Programmation/QtDee/3d/meshutils.h
+    /home/batman/Programmation/QtDee/3d/meshutils.h \
+    /home/batman/Programmation/QtDee/3d/objloader.h
 
 SOURCES     += \
     /home/batman/Programmation/QtDee/3d/graphicobject3d.cpp \
@@ -37,7 +38,8 @@ SOURCES     += \
     /home/batman/Programmation/QtDee/3d/movementpath.cpp \
     /home/batman/Programmation/QtDee/3d/material.cpp \
     /home/batman/Programmation/QtDee/3d/mesh.cpp \
-    /home/batman/Programmation/QtDee/3d/meshutils.cpp
+    /home/batman/Programmation/QtDee/3d/meshutils.cpp \
+    /home/batman/Programmation/QtDee/3d/objloader.cpp
 ############################
 
 #   CORE     ##############

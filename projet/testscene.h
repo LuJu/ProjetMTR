@@ -15,6 +15,7 @@
 #include "utils/maths.h"
 #include "utils/csvparser.h"
 #include "3d/meshutils.h"
+#include "3d/objloader.h"
 class TestScene : public Viewer
 {
     Q_OBJECT
@@ -41,8 +42,9 @@ public:
     Simulation  * _simulation;
 
 private:
-    Mesh _cube_mesh;
-    Mesh _cylinder_mesh;
+//    Mesh _cube_mesh;
+//    Mesh _cylinder_mesh;
+    MeshPointer _cube_mesh;
 
     QList<InteractiveObject * > _display;
 

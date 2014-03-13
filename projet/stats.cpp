@@ -90,7 +90,6 @@ void Stats::init(){
     Viewer::init();
     _ui->set_zoom(100);
     _ui->activateProgressiveZoom(60);
-    _background_activated=false;
 }
 
 void Stats::keyPressEvent(QKeyEvent *keyEvent)

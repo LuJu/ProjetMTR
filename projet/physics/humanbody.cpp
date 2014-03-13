@@ -34,6 +34,8 @@ void HumanBody::loadObjects(QString path){
                         object = new InteractiveObject();
                         object->set_shape_type(InteractiveObject::capsule);
                         object->set_body_part(temp.at(1));
+                        qDebug()<<BodyInfo::mass(temp.at(1),_mass);
+                        qDebug()<<_mass;
                         object->set_mass(BodyInfo::mass(temp.at(1),_mass));
                     }
                 }
@@ -208,7 +210,7 @@ void HumanBody::saveFullDataList(){
     QChar c(',');
     QChar nl('\n');
     QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
-    name = name +"_output";
+    name = name +"_output_full";
     QString oldname=name;
     QString ext="csv";
 
