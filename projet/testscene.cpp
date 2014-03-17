@@ -88,7 +88,6 @@ void TestScene::displaySimulation(){
 }
 
 void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4& V, QMatrix4x4& M, QMatrix4x4 pvm){
-    Mesh c;
     btVector3 local_scale =obj->get_shape();
     switch (obj->get_shape_type()) {
     case InteractiveObject::cube:
@@ -110,8 +109,10 @@ void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4
         pvm = P*V*M;
         _program->setUniformValue("M",M);
         _program->setUniformValue("pvm",pvm);
-        MeshUtils::addCapsuleShape(&c,local_scale.y(),local_scale.x());
-        c.render();
+//        MeshUtils::addCapsuleShape(&c,local_scale.y(),local_scale.x());
+//        c.render();
+        obj->mesh->render();
+//        qDebug()<<obj->mesh->get_polygons().size();
         break;
     default:
         break;

@@ -182,6 +182,14 @@ void InteractiveObject::buildMotion(){
     ;
 }
 
+void InteractiveObject::buildMesh(){
+    mesh = MeshPointer(new Mesh);
+//    btVector3(_animation.scalingVector(0));
+    set_shape(btVector3(_animation.scalingVector(0)));
+    MeshUtils::addCapsuleShape(mesh.data(),get_shape().y(),get_shape().x());
+    qDebug()<<"shape : "<<get_shape().x()<<" "<<get_shape().y();
+}
+
 btVector3 InteractiveObject::get_shape() const {
     switch (_shape_type){
     case cube:
@@ -245,7 +253,7 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 //    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
     _angular_speed_rotation = (_animation.rotationVector(elapsed) - _previous_data._rotation_animation) / (diff/1000) ;
-    qDebug()<<"angular speed : "<<_angular_speed_rotation.x()<<" "<<_angular_speed_rotation.y()<<" "<<_angular_speed_rotation.z();
+//    qDebug()<<"angular speed : "<<_angular_speed_rotation.x()<<" "<<_angular_speed_rotation.y()<<" "<<_angular_speed_rotation.z();
 //    qDebug()<<"rotation :";
 //    qDebug()<<_animation.rotationVector(elapsed).x();
 //    qDebug()<<_animation.rotationVector(elapsed).y();
@@ -400,11 +408,14 @@ void InteractiveObject::setSimulationPosition(float time){
 btVector3 InteractiveObject::speedAtTime(float time){
     _animation.get_translation_curves();
     btVector3 init_position = _animation.translationVector(0);
-    btScalar diff = _animation.get_translation_curves()[0].keys()[1];
-    btVector3 second = _animation.translationVector(diff);
-    btVector3 distance(second-init_position);
-    btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
-    _animation_speed = speed_animation;
+    if (_animation.get_translation_curves()[0].size()>1){
+        btScalar diff = _animation.get_translation_curves()[0].keys()[1];
+        btVector3 second = _animation.translationVector(diff);
+        btVector3 distance(second-init_position);
+        btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
+        _animation_speed = speed_animation;
+    } else
+        _animation_speed = btVector3(0.0,0.0,0.0);
     return _animation_speed;
 }
 

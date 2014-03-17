@@ -34,7 +34,7 @@ void Simulation::init(const SimulationParameters& params) {
     _ground = new InteractiveObject();
     _ground->set_shape(btVector3(3,1,3));
     _ground->set_mass(0); // no gravity
-    _ground->get_transform().setOrigin(btVector3(0,-1,0));
+    _ground->get_transform().setOrigin(btVector3(0,-3,0));
     _ground->set_shape_type(InteractiveObject::cube);
     _display.append(_ground);
 }
@@ -115,7 +115,9 @@ void Simulation::update(){
 
 //    _world->stepSimulation(progression / coeff,1);
 //    _world->stepSimulation(progression,0);
+    btScalar time_t=_clock.getTimeMicroseconds();
     _world->stepSimulation(progression ,1,btScalar(1.0/(ups)));
+//    qDebug()<<"time taken:"<<_clock.getTimeMicroseconds()-time_t;
     _step_counter+=progression*1000; // conversion from seconds to ms
     _end_counter+=progression*1000;
     _ups_counter+=progression*1000;
@@ -146,7 +148,7 @@ void Simulation::cleanWorld(){
     btRigidBody * body;
     if (_world_filled){
         for (int i = 0; i < _joints.size(); ++i) {
-            _world->removeConstraint(_joints[i]._constraint);
+            _world->removeConstraint(_joints[i].get_constraint());
         }
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
@@ -164,22 +166,8 @@ void Simulation::fillWorld(){
             _world->addRigidBody(body);
         }
         for (int i = 0; i < _joints.size(); ++i) {
-            if (_joints[i]._constraint != NULL)
-                delete _joints[i]._constraint;
-            btPoint2PointConstraint * constraint;
-            if (_joints[i]._parts.second != NULL){
-                constraint= new btPoint2PointConstraint(
-                    _joints[i]._parts.first->get_body(),
-                    _joints[i]._parts.second->get_body(),
-                    btVector3(0, _joints[i]._parts.first->get_shape().y()/2  +_joints[i]._parts.first->get_shape().x()  ,0),
-                    btVector3(0,-_joints[i]._parts.second->get_shape().y()/2 -_joints[i]._parts.second->get_shape().x() ,0));
-            } else {
-                constraint= new btPoint2PointConstraint(
-                    _joints[i]._parts.first->get_body(),
-                    btVector3(0,_joints[i]._parts.first->get_shape().y()/2 +_joints[i]._parts.first->get_shape().x(),0));
-            }
-                _joints[i]._constraint = constraint;
-            _world->addConstraint(constraint);
+            _joints[i].buildConstraint();
+            _world->addConstraint(_joints[i].get_constraint());
         }
         _world_filled = true;
     } else qWarning()<<"Attempting to fill a full world" ;

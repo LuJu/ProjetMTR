@@ -11,6 +11,8 @@
 #include "utils/maths.h"
 #include "utils/curve.h"
 
+#include "3d/meshutils.h"
+
 //#include "core/globalconfig.h"
 
 #include "animationdata.h"
@@ -146,6 +148,10 @@ public:
     btVector3 speedAtTime(float time = 0);
 
     QString exportSimulationToAnimation();
+
+    MeshPointer mesh;
+
+    void buildMesh();
 
 private:
     void deleteMotion();

@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QGLFormat b;
     TestScene gui;
-    Stats stats(&gui);
+    Stats * stats;
 
     int ret=0;
 //    qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
@@ -113,22 +113,23 @@ int main(int argc, char *argv[])
 
     Simulation * simulation = new Simulation();
 
-    gui._main_viewer = true;
-    stats._main_viewer = false;
+//    gui._main_viewer = true;
+//    stats->_main_viewer = false;
 
     if (GlobalConfig::is_enabled("display_simulation_window"))
     {
         gui._simulation = simulation;
         gui.setWindowTitle("Physics simulation");
         gui.move(0,0);
-        gui._main_viewer = true;
+//        gui._main_viewer = true;
         if (GlobalConfig::is_enabled("display_stats")) {
-            stats.setWindowFlags( Qt::Window);
-            stats._simulation = simulation;
-            stats.setWindowTitle("Stats");
-            stats.move(gui.width(),0);
-            stats.setGeometry(gui.width(),0,700,300);
-            stats._main_viewer = false;
+            stats=new Stats(&gui);
+            stats->setWindowFlags( Qt::Window);
+            stats->_simulation = simulation;
+            stats->setWindowTitle("Stats");
+            stats->move(gui.width(),0);
+            stats->setGeometry(gui.width(),0,700,300);
+//            stats->_main_viewer = false;
         }
         if (GlobalConfig::is_enabled("debugging")){
             _debugging_ui = NULL;
@@ -165,7 +166,7 @@ int main(int argc, char *argv[])
     {
         gui.show();
         if (GlobalConfig::is_enabled("display_stats")) {
-            stats.show();
+            stats->show();
         }
         if (GlobalConfig::is_enabled("debugging")){
             _debugging->show();
@@ -177,6 +178,9 @@ int main(int argc, char *argv[])
 
     ret=app.exec();
     delete simulation;
+    if (GlobalConfig::is_enabled("display_stats")) {
+        delete stats;
+    }
     if (GlobalConfig::is_enabled("debugging")){
         delete _debugging;
         delete _debugging_ui;

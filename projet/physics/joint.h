@@ -9,11 +9,27 @@
 class Joint
 {
 public:
+    enum constraints_types{
+        hinge,
+        point,
+        cone
+    };
+
     explicit Joint();
     ~Joint();
     QPair<InteractiveObject* ,InteractiveObject* > _parts;
-    btPoint2PointConstraint * _constraint;
-    
+    constraints_types _type;
+
+
+    btVector3 _pivotA;
+    btVector3 _pivotB;
+    btTransform _localeA;
+    btTransform _localeB;
+
+    btScalar _limit[5];
+    bool _limited;
+    bool _complete;
+
 
     btVector3 get_position() const {
         btVector3 pos1 = _parts.first->get_body().getCenterOfMassTransform().getOrigin();
@@ -21,6 +37,20 @@ public:
         btVector3 position = pos1 + axis;
         return position;
     }
+
+    btTypedConstraint* get_constraint(){
+        if (!_constraint)
+            //build constraint
+        return _constraint;
+    }
+
+    void buildConstraint();
+
+private:
+    btTypedConstraint * _constraint;
+
+//    btTypedConstraint * _constraint_pointer;
+
 };
 
 #endif // JOINT_H

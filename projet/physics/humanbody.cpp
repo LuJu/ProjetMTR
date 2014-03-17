@@ -10,7 +10,7 @@ HumanBody::~HumanBody(){
         delete _parts[i];
     }
     for (int i = 0; i < _constraints.size(); ++i) {
-        delete _constraints[i]._constraint;
+        delete _constraints[i].get_constraint();
     }
 }
 
@@ -73,46 +73,38 @@ void HumanBody::loadObjects(QString path){
         i++;
     }
     ignore = false;
-//    while (list[i].at(0)!="constraints_end"){
-//        temp= list[i];
-//        if (temp.at(0) == "constraint"){
-//            if (temp.at(1) == "ignore") ignore = true;
-//            else ignore = false;
-
-//            if (!ignore){
-//                QList<InteractiveObject *>::iterator part1 = findPartByName(temp.at(2));
-//                QList<InteractiveObject *>::iterator part2 = findPartByName(temp.at(3));
-//                if (part1 != _parts.end() && part2 != _parts.end()){
-//                    qDebug()<<(*part1)->get_body_part();
-//                    qDebug()<<(*part2)->get_body_part();
-//                    Joint joint;
-//                    joint._parts.first = *part1;
-//                    joint._parts.second= *part2;
-
-//                    _constraints.append(joint);
-//                    Joint joint2;
-//                    joint2._parts.first = *part1;
-//                    _constraints.append(joint2);
-
-//                }
-//            }
-//        }
-//        ++i;
-//    }
 
     QList<QStringList> list2 = BodyInfo::jointList();
     #ifdef DEECORE
     if (GlobalConfig::is_enabled("constraints_activated")){
     #endif
+        QStringList strlist;
         for (int i = 0; i < list2.size(); ++i) {
-            QList<InteractiveObject *>::iterator part1 = findPartByName(list2.at(i).at(0));
-            QList<InteractiveObject *>::iterator part2 = findPartByName(list2.at(i).at(1));
-            if (part1 != _parts.end() && ( part2 != _parts.end() || list2.at(i).at(1) == "none")){
+            strlist = list2.at(i);
+            QList<InteractiveObject *>::iterator part1 = findPartByName(strlist.at(0));
+            QList<InteractiveObject *>::iterator part2 = findPartByName(strlist.at(1));
+            if (part1 != _parts.end() && ( part2 != _parts.end() || strlist.at(1) == "none")){
                 Joint joint;
                 joint._parts.first = *part1;
                 if (part2 != _parts.end())
                     joint._parts.second= *part2;
                 else joint._parts.second=NULL;
+
+                if (strlist.size() > 2){
+                    int a=3;
+                    if (strlist.at(2) == "hinge")
+                        joint._type=Joint::hinge;
+                    else if (strlist.at(2) == "cone")
+                        joint._type=Joint::cone;
+                    else if (strlist.at(2) == "point")
+                        joint._type=Joint::point;
+                    joint._pivotA=btVector3(strlist.at(a++).toFloat(),strlist.at(a++).toFloat(),strlist.at(a++).toFloat());
+                    joint._localeA.setOrigin(joint._pivotA);
+                    joint._pivotA=btVector3(strlist.at(a++).toFloat(),strlist.at(a++).toFloat(),strlist.at(a++).toFloat());
+                    joint._localeB.setOrigin(joint._pivotB);
+                    joint._complete =false;
+
+                }
                 _constraints.append(joint);
             }
 
@@ -120,6 +112,10 @@ void HumanBody::loadObjects(QString path){
     #ifdef DEECORE
     }
     #endif
+
+    for (int i = 0; i < _parts.size(); ++i) {
+        _parts[i]->buildMesh();
+    }
 }
 
 void HumanBody::recordStatus(){
