@@ -379,7 +379,7 @@ void InteractiveObject::setSimulationPosition(float time){
                                           deg2rad(_angular_speed_rotation.z())));
         qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
-    } else {
+    } else { // if the simulation is starting
         btRigidBody& body = get_body();
         _animation_from_simulation.get_translation_curves()[0].insert(time,_body->getCenterOfMassPosition().x());
         _animation_from_simulation.get_translation_curves()[1].insert(time,_body->getCenterOfMassPosition().y());
@@ -387,8 +387,8 @@ void InteractiveObject::setSimulationPosition(float time){
         _animation_from_simulation.get_rotation_curves()[0].insert(time,rot_x(_body->getOrientation()));
         _animation_from_simulation.get_rotation_curves()[1].insert(time,rot_y(_body->getOrientation()));
         _animation_from_simulation.get_rotation_curves()[2].insert(time,rot_z(_body->getOrientation()));
-        speedAtTime();
-        body.setLinearVelocity(_animation_speed);
+
+        body.setLinearVelocity(speedAtTime(0));
 //        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.x()),
 //                                          deg2rad(_angular_speed_rotation.y()),
 //                                          deg2rad(_angular_speed_rotation.z())));
@@ -405,7 +405,8 @@ void InteractiveObject::setSimulationPosition(float time){
 
 }
 
-btVector3 InteractiveObject::speedAtTime(float time){
+btVector3 InteractiveObject::speedAtTime(float time) {
+    btVector3 animation_speed;
     _animation.get_translation_curves();
     btVector3 init_position = _animation.translationVector(0);
     if (_animation.get_translation_curves()[0].size()>1){
@@ -413,10 +414,10 @@ btVector3 InteractiveObject::speedAtTime(float time){
         btVector3 second = _animation.translationVector(diff);
         btVector3 distance(second-init_position);
         btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
-        _animation_speed = speed_animation;
+        animation_speed = speed_animation;
     } else
-        _animation_speed = btVector3(0.0,0.0,0.0);
-    return _animation_speed;
+        animation_speed = btVector3(0.0,0.0,0.0);
+    return animation_speed;
 }
 
 btScalar InteractiveObject::get_volume(){

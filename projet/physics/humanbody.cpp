@@ -34,8 +34,9 @@ void HumanBody::loadObjects(QString path){
                         object = new InteractiveObject();
                         object->set_shape_type(InteractiveObject::capsule);
                         object->set_body_part(temp.at(1));
-                        qDebug()<<BodyInfo::mass(temp.at(1),_mass);
-                        qDebug()<<_mass;
+                        if ((BodyInfo::mass(temp.at(1),_mass)==0)){
+                            qWarning()<<"Object mass null for part: "<<temp.at(1);
+                        }
                         object->set_mass(BodyInfo::mass(temp.at(1),_mass));
                     }
                 }
@@ -91,21 +92,37 @@ void HumanBody::loadObjects(QString path){
                 else joint._parts.second=NULL;
 
                 if (strlist.size() > 2){
-                    int a=3;
+                    int n=3;
                     if (strlist.at(2) == "hinge")
                         joint._type=Joint::hinge;
                     else if (strlist.at(2) == "cone")
                         joint._type=Joint::cone;
                     else if (strlist.at(2) == "point")
                         joint._type=Joint::point;
-                    joint._pivotA=btVector3(strlist.at(a++).toFloat(),strlist.at(a++).toFloat(),strlist.at(a++).toFloat());
+                    btScalar a,b,c;
+                    bool good=false;
+                    a = strlist.at(n++).toFloat(&good);
+                    if (good = false ) qWarning()<<"Cannot convert str to bool";
+                    b= strlist.at(n++).toFloat(&good);
+                    if (good = false ) qWarning()<<"Cannot convert str to bool";
+                    c = strlist.at(n++).toFloat(&good);
+                    if (good = false ) qWarning()<<"Cannot convert str to bool";
+                    joint._pivotA=btVector3(a,b,c);
                     joint._localeA.setOrigin(joint._pivotA);
-                    joint._pivotA=btVector3(strlist.at(a++).toFloat(),strlist.at(a++).toFloat(),strlist.at(a++).toFloat());
-                    joint._localeB.setOrigin(joint._pivotB);
-                    joint._complete =false;
 
+                    a = strlist.at(n++).toFloat(&good);
+                    if (good = false ) qWarning()<<"Cannot convert str to bool";
+                    b= strlist.at(n++).toFloat(&good);
+                    if (good = false ) qWarning()<<"Cannot convert str to bool";
+                    c = strlist.at(n++).toFloat(&good);
+                    if (good = false ) qWarning()<<"Cannot convert str to bool";
+                    joint._pivotB=btVector3(a,b,c);
+
+                    joint._localeB.setOrigin(joint._pivotB);
+                    joint._complete =true;
+
+                    _constraints.append(joint);
                 }
-                _constraints.append(joint);
             }
 
         }

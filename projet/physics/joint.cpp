@@ -23,7 +23,7 @@ void Joint::buildConstraint(){
 
     if (_constraint != NULL)
         delete _constraint;
-    if (!_complete){
+    if (!_complete){ // only points
 
         if (_parts.second != NULL){
             constraint= new btPoint2PointConstraint(
@@ -53,6 +53,7 @@ void Joint::buildConstraint(){
             }
             break;
         case cone:
+
             if (_parts.second != NULL){
                 constraint= new btConeTwistConstraint(
                             _parts.first->get_body(),
@@ -66,12 +67,17 @@ void Joint::buildConstraint(){
             }
             break;
         case hinge:
+            _localeA.setIdentity();_localeA.getBasis().setEulerZYX(0,M_PI_2,0);_localeA.setOrigin(_pivotA);
+            qDebug()<<"A: "<<_pivotA.x()<<" "<<_pivotA.y()<<" "<<_pivotA.z();
+            _localeB.setIdentity();_localeB.getBasis().setEulerZYX(0,M_PI_2,0);_localeB.setOrigin(_pivotB);
+            qDebug()<<"B: "<<_pivotB.x()<<" "<<_pivotB.y()<<" "<<_pivotB.z();
             if (_parts.second != NULL){
                 constraint= new btHingeConstraint(
                             _parts.first->get_body(),
                             _parts.second->get_body(),
                             _localeA,
                             _localeB);
+                ((btHingeConstraint*)constraint)->setLimit(btScalar(-M_PI_4), btScalar(M_PI_2));
             } else
                 qWarning()<<"cannot create hinge constraint on one object";
             break;
