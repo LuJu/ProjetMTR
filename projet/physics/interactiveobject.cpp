@@ -252,7 +252,7 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     btVector3 speed_simulation =_calculated_simulation_speed; // second method
 //    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
-    _angular_speed_rotation = (_animation.rotationVector(elapsed) - _previous_data._rotation_animation) / (diff/1000) ;
+    _angular_speed_animation = (_animation.rotationVector(elapsed) - _previous_data._rotation_animation) / (diff/1000) ;
 //    qDebug()<<"angular speed : "<<_angular_speed_rotation.x()<<" "<<_angular_speed_rotation.y()<<" "<<_angular_speed_rotation.z();
 //    qDebug()<<"rotation :";
 //    qDebug()<<_animation.rotationVector(elapsed).x();
@@ -269,7 +269,10 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 
     _previous_data._rotation_animation = _animation.rotationVector(elapsed);
     _energy.animation.speed = speed_animation.length();
-    _energy.simulation.speed = speed_simulation.length();
+    _energy.simulation.speed = (speed_simulation.length());
+
+    _energy.animation.aspeed = _angular_speed_animation.length();
+    _energy.simulation.aspeed = rad2deg(_body->getAngularVelocity().length());
 
     _energy.animation.ke  = kinetic_energy( speed_animation.length(),_mass);
     _energy.simulation.ke = kinetic_energy( speed_simulation.length(),_mass);
@@ -374,10 +377,10 @@ void InteractiveObject::setSimulationPosition(float time){
 //        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.x()),
 //                                          deg2rad(_angular_speed_rotation.y()),
 //                                          deg2rad(_angular_speed_rotation.z())));
-        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
-                                          deg2rad(_angular_speed_rotation.x()),
-                                          deg2rad(_angular_speed_rotation.z())));
-        qDebug()<<" rotation "<<_angular_speed_rotation.length();
+        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_animation.y()),
+                                          deg2rad(_angular_speed_animation.x()),
+                                          deg2rad(_angular_speed_animation.z())));
+        qDebug()<<" rotation "<<_angular_speed_animation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     } else { // if the simulation is starting
         btRigidBody& body = get_body();
@@ -392,9 +395,9 @@ void InteractiveObject::setSimulationPosition(float time){
 //        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.x()),
 //                                          deg2rad(_angular_speed_rotation.y()),
 //                                          deg2rad(_angular_speed_rotation.z())));
-        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.y()),
-                                          deg2rad(_angular_speed_rotation.x()),
-                                          deg2rad(_angular_speed_rotation.z())));
+        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_animation.y()),
+                                          deg2rad(_angular_speed_animation.x()),
+                                          deg2rad(_angular_speed_animation.z())));
 //        qDebug()<<" rotation "<<_angular_speed_rotation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     }
@@ -438,6 +441,26 @@ btScalar InteractiveObject::get_moment(){
     btScalar moment = pow(get_shape().y(),2)*
             _mass/3;
 //    qDebug()<<"moment : "<<moment;
+    btScalar m = _mass;
+    btScalar R = get_shape().x();
+    btScalar R2 = pow(R,2);
+    btScalar h = get_shape().y();
+    btScalar h2 = pow(h,2);
+
+    btMatrix3x3 moment_matrix (m*(R2/4 + h2/12) , 0               , 0                ,
+                               0                , (1/2) * m * R2  , 0                ,
+                               0                , 0               , m*(R2/4 + h2/12) );
+    btMatrix3x3 rotation;
+    rotation.setRotation(_body->getCenterOfMassTransform().getRotation());
+    btMatrix3x3 product = (180/M_PI)*(moment_matrix*rotation);
+    for (int i = 0; i < 3; ++i) {
+        qDebug()<<"matrix";
+        qDebug()<<product[0][0]<<" "<<product[0][1]<<" "<<product[0][2];
+        qDebug()<<product[1][0]<<" "<<product[1][1]<<" "<<product[1][2];
+        qDebug()<<product[2][0]<<" "<<product[2][1]<<" "<<product[2][2];
+        qDebug();
+    }
+//    btMatrix3x3 rotation = _body->
     return moment;
 }
 
@@ -449,7 +472,7 @@ btScalar InteractiveObject::get_angular_EC_simulation(){
 
 btScalar InteractiveObject::get_angular_EC_animation(){
 //    qDebug()<<"animation velocity: "<<_angular_speed_rotation.length();
-    return _angular_speed_rotation.length() * _angular_speed_rotation.length() * get_moment() / 2;
+    return _angular_speed_animation.length() * _angular_speed_animation.length() * get_moment() / 2;
 }
 
 QString InteractiveObject::exportSimulationToAnimation(){
@@ -487,7 +510,6 @@ QString InteractiveObject::exportSimulationToAnimation(){
     return outstring;
 }
 
-
 float InteractiveObject::rot_x(btQuaternion q) const
 {
     float m_x = q.x();
@@ -519,3 +541,6 @@ float InteractiveObject::rot_z(btQuaternion q) const
     return rad2deg(rotz);
 }
 
+btVector3 InteractiveObject::btQuat2euler(btQuaternion q){
+    return btVector3(rot_x(q),rot_y(q),rot_z(q));
+}

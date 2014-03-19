@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>321</height>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -76,9 +76,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>70</y>
+     <y>80</y>
      <width>501</width>
-     <height>61</height>
+     <height>105</height>
     </rect>
    </property>
    <property name="font">
@@ -327,6 +327,21 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_49">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>V angle</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label_5">
           <property name="font">
            <font>
@@ -387,6 +402,21 @@
           </property>
           <property name="text">
            <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="animation_aspeed">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>V angle</string>
           </property>
          </widget>
         </item>
@@ -455,6 +485,21 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_51">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>rad/s</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label_30">
           <property name="font">
            <font>
@@ -509,7 +554,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>50</y>
+     <y>60</y>
      <width>91</width>
      <height>17</height>
     </rect>
@@ -530,9 +575,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>170</y>
+     <y>220</y>
      <width>501</width>
-     <height>61</height>
+     <height>105</height>
     </rect>
    </property>
    <property name="font">
@@ -781,6 +826,21 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_52">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>V angle</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label_14">
           <property name="font">
            <font>
@@ -841,6 +901,21 @@
           </property>
           <property name="text">
            <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="simulation_aspeed">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>V angle</string>
           </property>
          </widget>
         </item>
@@ -909,6 +984,21 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_54">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <italic>true</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>rad/s</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label_26">
           <property name="font">
            <font>
@@ -963,7 +1053,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>150</y>
+     <y>200</y>
      <width>91</width>
      <height>17</height>
     </rect>
@@ -978,27 +1068,6 @@
    </property>
    <property name="text">
     <string>Simulation :</string>
-   </property>
-  </widget>
-  <widget class="Line" name="line">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>130</y>
-     <width>501</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-     <weight>75</weight>
-     <italic>true</italic>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
    </property>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_2">
@@ -1069,8 +1138,8 @@
   <widget class="QWidget" name="horizontalLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>270</y>
+     <x>190</x>
+     <y>370</y>
      <width>281</width>
      <height>31</height>
     </rect>
@@ -1134,8 +1203,8 @@
   <widget class="QWidget" name="horizontalLayoutWidget_5">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>240</y>
+     <x>190</x>
+     <y>340</y>
      <width>281</width>
      <height>31</height>
     </rect>
@@ -1200,9 +1269,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>240</y>
+     <y>320</y>
      <width>170</width>
-     <height>61</height>
+     <height>82</height>
     </rect>
    </property>
    <property name="font">

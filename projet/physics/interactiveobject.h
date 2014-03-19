@@ -23,6 +23,7 @@ public:
     typedef struct energy_info{
         float x,y,z;
         float speed;
+        float aspeed; //angular speed
         float ake,ke,pe;
     }t_energy_info;
 
@@ -182,8 +183,7 @@ private:
 
     btVector3 _calculated_simulation_speed;
     btVector3 _animation_speed;
-    btVector3 _angular_speed;
-    btVector3 _angular_speed_rotation;
+    btVector3 _angular_speed_animation;
     btScalar _angular_speed_y;
 
 
@@ -210,6 +210,7 @@ private:
 
     float rot_z(btQuaternion q) const;
 
+    btVector3 btQuat2euler(btQuaternion q);
 };
 
 #endif // INTERACTIVEOBJECT_H

@@ -21,7 +21,6 @@ DebuggingInterface * _debugging_ui;
 
 
 void speedTest(){
-
 }
 
 void customMessageHandler(QtMsgType type, const char *msg)

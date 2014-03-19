@@ -121,8 +121,8 @@ void HumanBody::loadObjects(QString path){
                     joint._localeB.setOrigin(joint._pivotB);
                     joint._complete =true;
 
-                    _constraints.append(joint);
                 }
+                _constraints.append(joint);
             }
 
         }

@@ -50,32 +50,32 @@ float BodyInfo::mass(const QString& body_part, float total_mass){
 QList<QStringList> BodyInfo::jointList(){
     QList<QStringList> list;
     QStringList a;
-//    a<<"thorax"<<"head";
-//    list.append(a);
-//    a.clear();
-//    a<<"head"<<"pelvis";
-//    list.append(a);
-//    a.clear();
-//    a<<"head"<<"none";
-//    list.append(a);
-//    a.clear();
-//    a<<"thorax"<<"none";
-//    list.append(a);
-//    a.clear();
-    a<<"pelvis"<<"spine"<<"hinge"   <<"0"<<"0.15"<<"0"<<"0"<<"-0.15"<<"0";list.append(a);a.clear();
-    a<<"spine"<<"head"<<"cone"<<"0"<<"0.30"<<"0"<<"0"<<"-0.14"<<"0";list.append(a);a.clear();
+    a<<"thorax"<<"head";
+    list.append(a);
+    a.clear();
+    a<<"head"<<"pelvis";
+    list.append(a);
+    a.clear();
+    a<<"head"<<"none";
+    list.append(a);
+    a.clear();
+    a<<"thorax"<<"none";
+    list.append(a);
+    a.clear();
+//    a<<"pelvis"<<"spine"<<"hinge"   <<"0"<<"0.15"<<"0"<<"0"<<"-0.15"<<"0";list.append(a);a.clear();
+//    a<<"spine"<<"head"<<"cone"<<"0"<<"0.30"<<"0"<<"0"<<"-0.14"<<"0";list.append(a);a.clear();
 
-    a<<"pelvis"<<"left_leg"<<"cone"<<"-0.18"<<"-0.10"<<"0"<<"0"<<"0.225"<<"0";list.append(a);a.clear();
-    a<<"left_leg"<<"left_foot"<<"hinge"<<"0.0"<<"-0.225"<<"0"<<"0"<<"0.185"<<"0";list.append(a);a.clear();
+//    a<<"pelvis"<<"left_leg"<<"cone"<<"-0.18"<<"-0.10"<<"0"<<"0"<<"0.225"<<"0";list.append(a);a.clear();
+//    a<<"left_leg"<<"left_foot"<<"hinge"<<"0.0"<<"-0.225"<<"0"<<"0"<<"0.185"<<"0";list.append(a);a.clear();
 
-    a<<"pelvis"<<"right_leg"<<"cone"<<"0.18"<<"-0.10"<<"0"<<"0"<<"0.225"<<"0";list.append(a);a.clear();
-    a<<"right_leg"<<"right_foot"<<"hinge"<<"0.0"<<"-0.225"<<"0"<<"0"<<"0.185"<<"0";list.append(a);a.clear();
+//    a<<"pelvis"<<"right_leg"<<"cone"<<"0.18"<<"-0.10"<<"0"<<"0"<<"0.225"<<"0";list.append(a);a.clear();
+//    a<<"right_leg"<<"right_foot"<<"hinge"<<"0.0"<<"-0.225"<<"0"<<"0"<<"0.185"<<"0";list.append(a);a.clear();
 
-    a<<"spine"<<"left_upper_arm"<<"cone"<<"-0.2"<<"-0.15"<<"0"<<"0"<<"-0.18"<<"0";list.append(a);a.clear();
-    a<<"left_upper_arm"<<"left_forearm"<<"hinge"<<"0.0"<<"0.18"<<"0"<<"0"<<"-0.14"<<"0";list.append(a);a.clear();
+//    a<<"spine"<<"left_upper_arm"<<"cone"<<"-0.2"<<"-0.15"<<"0"<<"0"<<"-0.18"<<"0";list.append(a);a.clear();
+//    a<<"left_upper_arm"<<"left_forearm"<<"hinge"<<"0.0"<<"0.18"<<"0"<<"0"<<"-0.14"<<"0";list.append(a);a.clear();
 
-    a<<"spine"<<"right_upper_arm"<<"cone"<<"0.2"<<"0.15"<<"0"<<"0"<<"-0.18"<<"0";list.append(a);a.clear();
-    a<<"right_upper_arm"<<"right_forearm"<<"hinge"<<"0.0"<<"0.18"<<"0"<<"0"<<"-0.14"<<"0";list.append(a);a.clear();
+//    a<<"spine"<<"right_upper_arm"<<"cone"<<"0.2"<<"0.15"<<"0"<<"0"<<"-0.18"<<"0";list.append(a);a.clear();
+//    a<<"right_upper_arm"<<"right_forearm"<<"hinge"<<"0.0"<<"0.18"<<"0"<<"0"<<"-0.14"<<"0";list.append(a);a.clear();
 
     return list;
 }
