@@ -177,7 +177,7 @@ void Simulation::fillWorld(){
 void Simulation::simulationOver()
 {
      _human.saveDataList();
-     _human.saveFullDataList();
+     _human.saveFullDataList(_params);
      _human.exportSimulationToAnimation();
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";

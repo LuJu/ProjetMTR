@@ -218,7 +218,7 @@ void HumanBody::saveDataList(){
     }
 }
 
-void HumanBody::saveFullDataList(){
+void HumanBody::saveFullDataList(const SimulationParameters& params){
     QString path = "output/";
     QChar c(',');
     QChar nl('\n');
@@ -248,15 +248,15 @@ void HumanBody::saveFullDataList(){
     } else {
         QTextStream stream(&file);
         stream<<"id,"<<
-                "EC animation" <<c<<"ECA animation" <<c<<"EP animation" <<c<<
-                "EC simulation"<<c<<"ECA simulation"<<c<<"EP simulation"<<c<<
-                "EC difference"<<c<<"ECA difference"<<c<<"EP difference"<<c<<"erreur"<<nl;
+                "ECT animation (J)" <<c<<"ECA animation (J)" <<c<<"EC totale animation"<<c<<"EP animation (J)" <<c<<
+                "ECT simulation (J)"<<c<<"ECA simulation (J)"<<c<<"EC totale simulation"<<c<<"EP simulation (J)"<<c<<
+                "ECT difference (J)"<<c<<"ECA difference (J)"<<c<<"EC totale difference"<<c<<"EP difference (J)"<<c<<"duree(ms):"<<c<<params.get_duration()<<c<<"pas(ms):"<<c<<params.get_steps_duration()<<nl;
         for (int i = 0; i < _full_data_list.size(); ++i) {
             save=_full_data_list.at(i);
             stream<<i<<c<<
-            save.animation.ke <<c<<save.animation.ake <<c<<save.animation.pe <<c<<
-            save.simulation.ke<<c<<save.simulation.ake<<c<<save.simulation.pe<<c<<
-            save.ke_diff      <<c<<save.ake_diff      <<c<<save.pe_diff      <<nl;
+            save.animation.ke <<c<<save.animation.ake <<c<<save.animation.ake+save.animation.ke  <<c<<save.animation.pe <<c<<
+            save.simulation.ke<<c<<save.simulation.ake<<c<<save.simulation.ake+save.simulation.ke<<c<<save.simulation.pe<<c<<
+            save.ke_diff      <<c<<save.ake_diff      <<c<<save.ake_diff+save.ake_diff           <<c<<save.pe_diff      <<nl;
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();

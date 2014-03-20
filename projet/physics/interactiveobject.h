@@ -44,6 +44,21 @@ public:
         capsule
     };
 
+    enum curve_data{
+        ANIMATION_KE = 0,
+        ANIMATION_AKE,
+        ANIMATION_PE,
+        SIMULATION_KE,
+        SIMULATION_AKE,
+        SIMULATION_PE,
+        DIFF_KE,
+        DIFF_AKE,
+        DIFF_PE,
+        ANIMATION_Y,
+        SIMULATION_Y,
+        NUMBER_OF_CURVES
+    };
+
 
     void setSimulationPosition(float time);
 
@@ -211,6 +226,13 @@ private:
     float rot_z(btQuaternion q) const;
 
     btVector3 btQuat2euler(btQuaternion q);
+
+    void appendCurve(int index, QString label, QColor color);
+    void appendCurves();
+    void appendCurveSteps(int index, QString label, QColor color);
+    void appendCurvesSteps();
+
+
 };
 
 #endif // INTERACTIVEOBJECT_H

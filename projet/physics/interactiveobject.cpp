@@ -20,6 +20,53 @@ InteractiveObject::InteractiveObject():
     __build(btVector3(0,0,0),btVector3(1,1,1),cube);
 }
 
+void InteractiveObject::appendCurve( int index,QString label, QColor color){
+    Curve& c= _curves[index];
+    c.set_color(color);
+    c.set_label(label);
+    _curves.append(c);
+}
+void InteractiveObject::appendCurveSteps( int index,QString label, QColor color){
+    Curve& c= _curves_steps[index];
+    c.set_color(color);
+    c.set_label(label);
+    _curves_steps.append(c);
+}
+
+void InteractiveObject::appendCurves(){
+    for (int i = 0; i < NUMBER_OF_CURVES; ++i) {
+        _curves.append(Curve());
+    }
+    appendCurve(ANIMATION_KE,"Animation KE",QColor(255,0,0));
+    appendCurve(ANIMATION_AKE,"Animation KE",QColor(0,0,255));
+    appendCurve(ANIMATION_PE,"Animation KE",QColor(255,255,255));
+    appendCurve(SIMULATION_KE,"Animation KE",QColor(255,0,0));
+    appendCurve(SIMULATION_AKE,"Animation KE",QColor(0,0,255));
+    appendCurve(SIMULATION_PE,"Animation KE",QColor(255,255,25));
+    appendCurve(DIFF_KE,"Animation KE",QColor(255,0,255));
+    appendCurve(DIFF_AKE,"Animation KE",QColor(0,255,255));
+    appendCurve(DIFF_PE,"Animation KE",QColor(255,255,0));
+    appendCurve(ANIMATION_Y,"Animation KE",QColor(255,0,255));
+    appendCurve(SIMULATION_Y,"Animation KE",QColor(0,255,255));
+}
+
+void InteractiveObject::appendCurvesSteps(){
+    for (int i = 0; i < NUMBER_OF_CURVES; ++i) {
+        _curves_steps.append(Curve());
+    }
+    appendCurve(ANIMATION_KE,"Animation KE",QColor(255,0,0));
+    appendCurve(ANIMATION_AKE,"Animation KE",QColor(0,0,255));
+    appendCurve(ANIMATION_PE,"Animation KE",QColor(255,255,255));
+    appendCurve(SIMULATION_KE,"Animation KE",QColor(255,0,0));
+    appendCurve(SIMULATION_AKE,"Animation KE",QColor(0,0,255));
+    appendCurve(SIMULATION_PE,"Animation KE",QColor(255,255,25));
+    appendCurve(DIFF_KE,"Animation KE",QColor(255,0,255));
+    appendCurve(DIFF_AKE,"Animation KE",QColor(0,255,255));
+    appendCurve(DIFF_PE,"Animation KE",QColor(255,255,0));
+    appendCurve(ANIMATION_Y,"Animation KE",QColor(255,0,255));
+    appendCurve(SIMULATION_Y,"Animation KE",QColor(0,255,255));
+}
+
 void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,shapetype type){
     switch(type){
     case cube:
@@ -39,83 +86,8 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
     _animation_from_simulation.get_translation_curves()[1].set_color(QColor(0,1,0));
     _animation_from_simulation.get_translation_curves()[2].set_color(QColor(0,0,1));
 
-    Curve c=Curve();
-    c.set_color(QColor(255,0,0));
-    c.set_label("Animation KE");
-    _curves.append(c);
-    c=Curve();
-    c.set_color(QColor(0,0,255));
-    c.set_label("animation ake");
-    _curves.append(c);
-    c=Curve();
-    c.set_color(QColor(255,255,255));
-    c.set_label("animation_pe");
-    _curves.append(c);
-
-    c=Curve();
-    c.set_color(QColor(255,0,0));
-    c.set_label("Simulation KE");
-    _curves.append(c);
-    c=Curve();
-    c.set_color(QColor(0,0,255));
-    c.set_label("Simulation ake");
-    _curves.append(c);
-    c=Curve();
-    c.set_color(QColor(255,255,255));
-    c.set_label("Simulation pe");
-    _curves.append(c);
-
-    c=Curve();
-    c.set_color(QColor(255,0,255));
-    c.set_label("ke diff");
-    _curves.append(c);
-    c=Curve();
-    c.set_color(QColor(0,255,255)); // cyan
-    c.set_label("ake diff");
-    _curves.append(c);
-    c=Curve();
-    c.set_color(QColor(255,255,0)); // yellow
-    c.set_label("pe diff");
-    _curves.append(c);
-
-    c=Curve();
-    c.set_color(QColor(255,0,0));
-    c.set_label("Animation KE");
-    _curves_steps.append(c);
-    c=Curve();
-    c.set_color(QColor(0,0,255));
-    c.set_label("animation ake");
-    _curves_steps.append(c);
-    c=Curve();
-    c.set_color(QColor(255,255,255));
-    c.set_label("animation_pe");
-    _curves_steps.append(c);
-
-    c=Curve();
-    c.set_color(QColor(255,0,0));
-    c.set_label("Simulation KE");
-    _curves_steps.append(c);
-    c=Curve();
-    c.set_color(QColor(0,0,255));
-    c.set_label("Simulation ake");
-    _curves_steps.append(c);
-    c=Curve();
-    c.set_color(QColor(255,255,255));
-    c.set_label("Simulation pe");
-    _curves_steps.append(c);
-
-    c=Curve();
-    c.set_color(QColor(255,0,255));
-    c.set_label("ke diff");
-    _curves_steps.append(c);
-    c=Curve();
-    c.set_color(QColor(0,255,255)); // cyan
-    c.set_label("ake diff");
-    _curves_steps.append(c);
-    c=Curve();
-    c.set_color(QColor(255,255,0)); // yellow
-    c.set_label("pe diff");
-    _curves_steps.append(c);
+    appendCurves();
+    appendCurvesSteps();
 
     _error_1._speed_error = 0;
     _error_1._ticks= 0;
@@ -316,17 +288,19 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 //    if (GlobalConfig::is_enabled("display_animation_stats")) {
 //        _curves[0].insert(elapsed,_energy.animation.ke);
 //        _curves[1].insert(elapsed,_energy.animation.ake);
-//        _curves[2].insert(elapsed,_energy.animation.pe);
+        _curves[2].insert(elapsed,_energy.animation.pe);
 //    }
 //    if (GlobalConfig::is_enabled("display_simulation_stats")) {
 //        _curves[3].insert(elapsed,_energy.simulation.ke);
 //        _curves[4].insert(elapsed,_energy.simulation.ake);
-//        _curves[5].insert(elapsed,_energy.simulation.pe);
+        _curves[5].insert(elapsed,_energy.simulation.pe);
 //    }
 //    if (GlobalConfig::is_enabled("display_diff")) {
-        _curves[6].insert(elapsed,_energy.ke_diff);
-        _curves[7].insert(elapsed,_energy.ake_diff);
-        _curves[8].insert(elapsed,_energy.pe_diff);
+//        _curves[6].insert(elapsed,_energy.ke_diff);
+//        _curves[7].insert(elapsed,_energy.ake_diff);
+        _curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
+        _curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
+        _curves[SIMULATION_Y].insert(elapsed,_energy.simulation.y);
 //    }
     return _energy;
 }
@@ -334,19 +308,19 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 void InteractiveObject::setSimulationPosition(float time){
 
 //    if (GlobalConfig::is_enabled("display_animation_stats")) {
-        _curves_steps[0].insert(time,_energy.animation.ke);
-        _curves_steps[1].insert(time,_energy.animation.ake);
-        _curves_steps[2].insert(time,_energy.animation.pe);
+//        _curves_steps[0].insert(time,_energy.animation.ke);
+//        _curves_steps[1].insert(time,_energy.animation.ake);
+        _curves_steps[ANIMATION_PE].insert(time,_energy.animation.pe);
 //    }
 //    if (GlobalConfig::is_enabled("display_simulation_stats")) {
-        _curves_steps[3].insert(time,_energy.simulation.ke);
-        _curves_steps[4].insert(time,_energy.simulation.ake);
-        _curves_steps[5].insert(time,_energy.simulation.pe);
+//        _curves_steps[3].insert(time,_energy.simulation.ke);
+//        _curves_steps[4].insert(time,_energy.simulation.ake);
+        _curves_steps[SIMULATION_PE].insert(time,_energy.simulation.pe);
 //    }
 //    if (GlobalConfig::is_enabled("display_diff")) {
-        _curves_steps[6].insert(time,_energy.ke_diff);
-        _curves_steps[7].insert(time,_energy.ake_diff);
-        _curves_steps[8].insert(time,_energy.pe_diff);
+//        _curves_steps[6].insert(time,_energy.ke_diff);
+//        _curves_steps[7].insert(time,_energy.ake_diff);
+        _curves_steps[DIFF_PE].insert(time,_energy.pe_diff);
 //    }
 
 
@@ -380,7 +354,7 @@ void InteractiveObject::setSimulationPosition(float time){
         body.setAngularVelocity(btVector3(deg2rad(_angular_speed_animation.y()),
                                           deg2rad(_angular_speed_animation.x()),
                                           deg2rad(_angular_speed_animation.z())));
-        qDebug()<<" rotation "<<_angular_speed_animation.length();
+//        qDebug()<<" rotation "<<_angular_speed_animation.length();
         _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
     } else { // if the simulation is starting
         btRigidBody& body = get_body();
@@ -447,21 +421,33 @@ btScalar InteractiveObject::get_moment(){
     btScalar h = get_shape().y();
     btScalar h2 = pow(h,2);
 
-    btMatrix3x3 moment_matrix (m*(R2/4 + h2/12) , 0               , 0                ,
-                               0                , (1/2) * m * R2  , 0                ,
-                               0                , 0               , m*(R2/4 + h2/12) );
+    qDebug()<<"mass: "<<m;
+    qDebug()<<"mass: "<<R2;
+    qDebug()<<"mass: "<<(m * R2)/2.0f;
+
+    btMatrix3x3 moment_matrix (m*(R2/4.0f + h2/12.0f) , 0               , 0                      ,
+                               0                      , (m * R2)/2.0f  , 0                      ,
+                               0                      , 0               , m*(R2/4.0f + h2/12.0f) );
     btMatrix3x3 rotation;
     rotation.setRotation(_body->getCenterOfMassTransform().getRotation());
-    btMatrix3x3 product = (180/M_PI)*(moment_matrix*rotation);
-    for (int i = 0; i < 3; ++i) {
-        qDebug()<<"matrix";
+    btMatrix3x3 product = (moment_matrix*rotation);
+        qDebug()<<"matrix moment";
+        qDebug()<<moment_matrix[0][0]<<" "<<moment_matrix[0][1]<<" "<<moment_matrix[0][2];
+        qDebug()<<moment_matrix[1][0]<<" "<<moment_matrix[1][1]<<" "<<moment_matrix[1][2];
+        qDebug()<<moment_matrix[2][0]<<" "<<moment_matrix[2][1]<<" "<<moment_matrix[2][2];
+        qDebug();
+        qDebug()<<"matrix rotations";
+        qDebug()<<rotation[0][0]<<" "<<rotation[0][1]<<" "<<rotation[0][2];
+        qDebug()<<rotation[1][0]<<" "<<rotation[1][1]<<" "<<rotation[1][2];
+        qDebug()<<rotation[2][0]<<" "<<rotation[2][1]<<" "<<rotation[2][2];
+        qDebug();
+        qDebug()<<"product";
         qDebug()<<product[0][0]<<" "<<product[0][1]<<" "<<product[0][2];
         qDebug()<<product[1][0]<<" "<<product[1][1]<<" "<<product[1][2];
         qDebug()<<product[2][0]<<" "<<product[2][1]<<" "<<product[2][2];
         qDebug();
-    }
 //    btMatrix3x3 rotation = _body->
-    return moment;
+        return product[2][2];
 }
 
 btScalar InteractiveObject::get_angular_EC_simulation(){
@@ -472,7 +458,7 @@ btScalar InteractiveObject::get_angular_EC_simulation(){
 
 btScalar InteractiveObject::get_angular_EC_animation(){
 //    qDebug()<<"animation velocity: "<<_angular_speed_rotation.length();
-    return _angular_speed_animation.length() * _angular_speed_animation.length() * get_moment() / 2;
+    return pow(deg2rad(_angular_speed_animation.length()),2) * get_moment() / 2;
 }
 
 QString InteractiveObject::exportSimulationToAnimation(){
