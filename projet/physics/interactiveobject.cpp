@@ -1,12 +1,11 @@
 #include "interactiveobject.h"
 
-InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& shape,shapetype type):
+InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& shape,Shape::shapetype type):
     _mass(1),
     _animated(false),
     _body(NULL),
     _motion_state(NULL),
-    _local_inertia(btVector3(0,0,0)),
-    _shape_type(type){
+    _local_inertia(btVector3(0,0,0)){
     __build(origin,shape,type);
 }
 
@@ -15,9 +14,8 @@ InteractiveObject::InteractiveObject():
     _animated(false),
     _body(NULL),
     _motion_state(NULL),
-    _local_inertia(btVector3(0,0,0)),
-    _shape_type(cube){
-    __build(btVector3(0,0,0),btVector3(1,1,1),cube);
+    _local_inertia(btVector3(0,0,0)){
+    __build(btVector3(0,0,0),btVector3(1,1,1),Shape::cube);
 }
 
 void InteractiveObject::appendCurve( int index,QString label, QColor color){
@@ -67,18 +65,21 @@ void InteractiveObject::appendCurvesSteps(){
     appendCurve(SIMULATION_Y,"Animation KE",QColor(0,255,255));
 }
 
-void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,shapetype type){
-    switch(type){
-    case cube:
-        _shape = new btBoxShape(shape);
-        break;
-    case cylinder:
-        _shape = new btCylinderShape(shape);
-        break;
-    case capsule:
-        _shape = new btCapsuleShape(shape.x(),shape.y());
-        break;
-    }
+void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,Shape::shapetype type){
+    _shape = Shape(shape,type);
+
+
+//    switch(type){
+//    case Shape::cube:
+//        _shape = new btBoxShape(shape);
+//        break;
+//    case Shape::cylinder:
+//        _shape = new btCylinderShape(shape);
+//        break;
+//    case Shape::capsule:
+//        _shape = new btCapsuleShape(shape.x(),shape.y());
+//        break;
+//    }
     _transform.setIdentity();
     _transform.setOrigin(origin);
 
@@ -128,7 +129,7 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
 //}
 
 InteractiveObject::~InteractiveObject(){
-    if(_shape) delete _shape;
+//    if(_shape) delete _shape;
     if(_body)  delete _body;
     if(_motion_state) delete _motion_state;
 }
@@ -147,60 +148,36 @@ void InteractiveObject::deleteMotion(){
 
 void InteractiveObject::buildMotion(){
     deleteMotion();
-    _shape->calculateLocalInertia(_mass,_local_inertia);
+    btCollisionShape * shape = _shape.get_collision_shape();
+    shape->calculateLocalInertia(_mass,_local_inertia);
     _motion_state = new btDefaultMotionState(_transform);
-    btRigidBody::btRigidBodyConstructionInfo construction_info(_mass, _motion_state, _shape, _local_inertia);
+    btRigidBody::btRigidBodyConstructionInfo construction_info(_mass, _motion_state, shape, _local_inertia);
     _body = new btRigidBody(construction_info);
     ;
 }
 
 void InteractiveObject::buildMesh(){
     mesh = MeshPointer(new Mesh);
-//    btVector3(_animation.scalingVector(0));
     set_shape(btVector3(_animation.scalingVector(0)));
     MeshUtils::addCapsuleShape(mesh.data(),get_shape().y(),get_shape().x());
     qDebug()<<"shape : "<<get_shape().x()<<" "<<get_shape().y();
 }
 
 btVector3 InteractiveObject::get_shape() const {
-    switch (_shape_type){
-    case cube:
-        return ((btBoxShape *) _shape)->getHalfExtentsWithMargin();
-        break;
-    case cylinder:
-        return ((btCylinderShape *) _shape)->getHalfExtentsWithMargin();
-        break;
-    case capsule:
-        btVector3 shape;
-        shape.setX(((btCapsuleShape *)_shape)->getRadius());
-        shape.setY(((btCapsuleShape *)_shape)->getHalfHeight()*2);
-        shape.setZ(((btCapsuleShape *)_shape)->getRadius());
-        return shape;
-        break;
-    }
+    return _shape.get_shape();
 }
 
 void InteractiveObject::set_shape(const btVector3 &shape){
-    delete _shape;
-    switch (_shape_type){
-    case cube:
-        _shape = new btBoxShape(shape);
-        break;
-    case cylinder:
-        _shape = new btCylinderShape(shape);
-        break;
-    case capsule:
-        _shape = new btCapsuleShape(shape.x(),shape.y());
-        break;
-    }
-
+    _shape.set_shape(shape);
 }
 
-const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
+void InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
+
+
+
     btVector3 distance(_animation.translationVector(elapsed)-_previous_data._position);
     btVector3 simulation_distance = _body->getCenterOfMassPosition()-_previous_data._position_simulation;
-    btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
-    _animation_speed = speed_animation;
+    _animation_speed = distance/(diff/1000); // the diff value is in ms so a conversion is needed to be in m/s
 
 
 /// Calculated simulation speed
@@ -225,21 +202,14 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 //    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
     _angular_speed_animation = (_animation.rotationVector(elapsed) - _previous_data._rotation_animation) / (diff/1000) ;
-//    qDebug()<<"angular speed : "<<_angular_speed_rotation.x()<<" "<<_angular_speed_rotation.y()<<" "<<_angular_speed_rotation.z();
-//    qDebug()<<"rotation :";
-//    qDebug()<<_animation.rotationVector(elapsed).x();
-//    qDebug()<<_animation.rotationVector(elapsed).y();
-//    qDebug()<<_animation.rotationVector(elapsed).z();
-//    qDebug();
-//    qDebug()<<_previous_data._rotation_animation.x();
-//    qDebug()<<_previous_data._rotation_animation.y();
-//    qDebug()<<_previous_data._rotation_animation.z();
-//    qDebug();
-//    qDebug()<<_angular_speed_rotation.x();
-//              qDebug()<<_angular_speed_rotation.y();
-//              qDebug()<<_angular_speed_rotation.z();
 
     _previous_data._rotation_animation = _animation.rotationVector(elapsed);
+
+    updateEnergyStructure(_animation_speed,speed_simulation,gravity,elapsed);
+    insertDataToCurves(_curves,elapsed);
+}
+
+void InteractiveObject::updateEnergyStructure(btVector3 speed_animation, btVector3 speed_simulation, float gravity, float elapsed){
     _energy.animation.speed = speed_animation.length();
     _energy.simulation.speed = (speed_simulation.length());
 
@@ -265,13 +235,6 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
 
     _energy.part_name = _body_part_name;
 
-//    _animation_from_simulation.get_translation_curves()[0].insert(elapsed,_body->getCenterOfMassPosition().x());
-//    _animation_from_simulation.get_translation_curves()[1].insert(elapsed,_body->getCenterOfMassPosition().y());
-//    _animation_from_simulation.get_translation_curves()[2].insert(elapsed,_body->getCenterOfMassPosition().z());
-//    _animation_from_simulation.get_rotation_curves()[0].insert(elapsed,rot_x(_body->getOrientation()));
-//    _animation_from_simulation.get_rotation_curves()[1].insert(elapsed,rot_y(_body->getOrientation()));
-//    _animation_from_simulation.get_rotation_curves()[2].insert(elapsed,rot_z(_body->getOrientation()));
-
     _energy.ake_diff = _energy.animation.ake - _energy.simulation.ake;
     _energy.ke_diff = _energy.animation.ke - _energy.simulation.ke;
     _energy.pe_diff = _energy.animation.pe - _energy.simulation.pe;
@@ -281,62 +244,38 @@ const InteractiveObject::t_part_info& InteractiveObject::updatePartInfo(float el
     _energy.mean_error = get_mean_error();
     _energy.mean_error_2 = get_mean_error_2();
 
-//    if (GlobalConfig::is_enabled("display_speed"))
-//        _curves[0].insert(elapsed,_energy.simulation.speed);
-//    if (GlobalConfig::is_enabled("display_error"))
-//        _curves[3].insert(elapsed,_energy.mean_error);
-//    if (GlobalConfig::is_enabled("display_animation_stats")) {
-//        _curves[0].insert(elapsed,_energy.animation.ke);
-//        _curves[1].insert(elapsed,_energy.animation.ake);
-        _curves[2].insert(elapsed,_energy.animation.pe);
-//    }
-//    if (GlobalConfig::is_enabled("display_simulation_stats")) {
-//        _curves[3].insert(elapsed,_energy.simulation.ke);
-//        _curves[4].insert(elapsed,_energy.simulation.ake);
-        _curves[5].insert(elapsed,_energy.simulation.pe);
-//    }
-//    if (GlobalConfig::is_enabled("display_diff")) {
-//        _curves[6].insert(elapsed,_energy.ke_diff);
-//        _curves[7].insert(elapsed,_energy.ake_diff);
-        _curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
-        _curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
-        _curves[SIMULATION_Y].insert(elapsed,_energy.simulation.y);
-//    }
-    return _energy;
 }
 
-void InteractiveObject::setSimulationPosition(float time){
+void InteractiveObject::insertDataToCurves(QList<Curve>& curves, float elapsed){
+//        if (GlobalConfig::is_enabled("display_animation_stats")) {
+//            curves[ANIMATION_KE].insert(elapsed,_energy.animation.ke);
+//            curves[ANIMATION_AKE].insert(elapsed,_energy.animation.ake);
+//            curves[ANIMATION_PE].insert(elapsed,_energy.animation.pe);
+//        }
+//        if (GlobalConfig::is_enabled("display_simulation_stats")) {
+//            curves[SIMULATION_KE].insert(elapsed,_energy.simulation.ke);
+//            curves[SIMULATION_AKE].insert(elapsed,_energy.simulation.ake);
+//            curves[SIMULATION_PE].insert(elapsed,_energy.simulation.pe);
+//        }
+//        if (GlobalConfig::is_enabled("display_diff")) {
+            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
+            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
+            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
+            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
+            curves[SIMULATION_Y].insert(elapsed,_energy.simulation.y);
+//        }
+}
 
-//    if (GlobalConfig::is_enabled("display_animation_stats")) {
-//        _curves_steps[0].insert(time,_energy.animation.ke);
-//        _curves_steps[1].insert(time,_energy.animation.ake);
-        _curves_steps[ANIMATION_PE].insert(time,_energy.animation.pe);
-//    }
-//    if (GlobalConfig::is_enabled("display_simulation_stats")) {
-//        _curves_steps[3].insert(time,_energy.simulation.ke);
-//        _curves_steps[4].insert(time,_energy.simulation.ake);
-        _curves_steps[SIMULATION_PE].insert(time,_energy.simulation.pe);
-//    }
-//    if (GlobalConfig::is_enabled("display_diff")) {
-//        _curves_steps[6].insert(time,_energy.ke_diff);
-//        _curves_steps[7].insert(time,_energy.ake_diff);
-        _curves_steps[DIFF_PE].insert(time,_energy.pe_diff);
-//    }
-
-
+void InteractiveObject::setSimulationTransformFromAnimation(float time){
     btVector3 shape,translation,rotation;
     btQuaternion quat;
     btTransform transform;
 
     transform.setIdentity();
-
     rotation = _animation.rotationVector(time);
-    quat.setEuler(deg2rad(rotation.x()),
-                  deg2rad(rotation.y()),
+    quat.setEuler(deg2rad(rotation.y()),
+                  deg2rad(rotation.x()),
                   deg2rad(rotation.z()));
-//    quat.setEuler(deg2rad(rotation.x()),
-//                  deg2rad(rotation.y()),
-//                  deg2rad(rotation.z()));
     transform.setRotation(quat);
 
     translation = _animation.translationVector(time);
@@ -344,57 +283,61 @@ void InteractiveObject::setSimulationPosition(float time){
     set_transform(transform);
     shape =btVector3(_animation.scalingVector(time));
     set_shape(shape);
-    buildMotion();
-    if (time != 0) {
-        btRigidBody& body = get_body();
-        body.setLinearVelocity(_animation_speed);
-//        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.x()),
-//                                          deg2rad(_angular_speed_rotation.y()),
-//                                          deg2rad(_angular_speed_rotation.z())));
-        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_animation.y()),
-                                          deg2rad(_angular_speed_animation.x()),
-                                          deg2rad(_angular_speed_animation.z())));
-//        qDebug()<<" rotation "<<_angular_speed_animation.length();
-        _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
-    } else { // if the simulation is starting
-        btRigidBody& body = get_body();
-        _animation_from_simulation.get_translation_curves()[0].insert(time,_body->getCenterOfMassPosition().x());
-        _animation_from_simulation.get_translation_curves()[1].insert(time,_body->getCenterOfMassPosition().y());
-        _animation_from_simulation.get_translation_curves()[2].insert(time,_body->getCenterOfMassPosition().z());
-        _animation_from_simulation.get_rotation_curves()[0].insert(time,rot_x(_body->getOrientation()));
-        _animation_from_simulation.get_rotation_curves()[1].insert(time,rot_y(_body->getOrientation()));
-        _animation_from_simulation.get_rotation_curves()[2].insert(time,rot_z(_body->getOrientation()));
-
-        body.setLinearVelocity(speedAtTime(0));
-//        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_rotation.x()),
-//                                          deg2rad(_angular_speed_rotation.y()),
-//                                          deg2rad(_angular_speed_rotation.z())));
-        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_animation.y()),
-                                          deg2rad(_angular_speed_animation.x()),
-                                          deg2rad(_angular_speed_animation.z())));
-//        qDebug()<<" rotation "<<_angular_speed_rotation.length();
-        _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
-    }
 
     _previous_data._position = translation;
     _previous_data._position_simulation = translation;
     _previous_data._position_simulation_2 = translation;
+}
 
+void InteractiveObject::setSimulationPosition(float time){
+
+    if (time != 0) insertDataToCurves(_curves_steps,time);
+
+    setSimulationTransformFromAnimation(time);
+    buildMotion();
+    btRigidBody& body = get_body();
+    if (time != 0) {
+        buildMotion();
+        body.setLinearVelocity(_animation_speed);
+        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_animation.x()),
+                                          deg2rad(_angular_speed_animation.y()),
+                                          deg2rad(_angular_speed_animation.z())));
+    } else { // if the simulation is starting
+
+        body.setLinearVelocity(speedAtTime(0));
+        body.setAngularVelocity(btVector3(deg2rad(_angular_speed_animation.x()),
+                                          deg2rad(_angular_speed_animation.y()),
+                                          deg2rad(_angular_speed_animation.z())));
+    }
+
+    _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
+    updateAnimationFromSimulationData(time);
+}
+
+void InteractiveObject::updateAnimationFromSimulationData(float time){
+    btRigidBody& body = get_body();
+    _animation_from_simulation.get_translation_curves()[0].insert(time,body.getCenterOfMassPosition().x());
+    _animation_from_simulation.get_translation_curves()[1].insert(time,body.getCenterOfMassPosition().y());
+    _animation_from_simulation.get_translation_curves()[2].insert(time,body.getCenterOfMassPosition().z());
+    _animation_from_simulation.get_rotation_curves()[0].insert(time,rot_x(body.getOrientation()));
+    _animation_from_simulation.get_rotation_curves()[1].insert(time,rot_y(body.getOrientation()));
+    _animation_from_simulation.get_rotation_curves()[2].insert(time,rot_z(body.getOrientation()));
 }
 
 btVector3 InteractiveObject::speedAtTime(float time) {
-    btVector3 animation_speed;
-    _animation.get_translation_curves();
-    btVector3 init_position = _animation.translationVector(0);
-    if (_animation.get_translation_curves()[0].size()>1){
-        btScalar diff = _animation.get_translation_curves()[0].keys()[1];
-        btVector3 second = _animation.translationVector(diff);
-        btVector3 distance(second-init_position);
-        btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
-        animation_speed = speed_animation;
-    } else
-        animation_speed = btVector3(0.0,0.0,0.0);
-    return animation_speed;
+//    btVector3 animation_speed;
+//    _animation.get_translation_curves();
+//    btVector3 init_position = _animation.translationVector(0);
+//    if (_animation.get_translation_curves()[0].size()>1){
+//        btScalar diff = _animation.get_translation_curves()[0].keys()[1];
+//        btVector3 second = _animation.translationVector(diff);
+//        btVector3 distance(second-init_position);
+//        btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
+//        animation_speed = speed_animation;
+//    } else
+//        animation_speed = btVector3(0.0,0.0,0.0);
+//    qDebug()<<"initial speed :"<<_animation.translationSlope(0).length();
+    return _animation.translationSlope(0.0f) * 1000.0f;
 }
 
 btScalar InteractiveObject::get_volume(){
@@ -421,9 +364,9 @@ btScalar InteractiveObject::get_moment(){
     btScalar h = get_shape().y();
     btScalar h2 = pow(h,2);
 
-    qDebug()<<"mass: "<<m;
-    qDebug()<<"mass: "<<R2;
-    qDebug()<<"mass: "<<(m * R2)/2.0f;
+//    qDebug()<<"mass: "<<m;
+//    qDebug()<<"mass: "<<R2;
+//    qDebug()<<"mass: "<<(m * R2)/2.0f;
 
     btMatrix3x3 moment_matrix (m*(R2/4.0f + h2/12.0f) , 0               , 0                      ,
                                0                      , (m * R2)/2.0f  , 0                      ,
@@ -431,22 +374,22 @@ btScalar InteractiveObject::get_moment(){
     btMatrix3x3 rotation;
     rotation.setRotation(_body->getCenterOfMassTransform().getRotation());
     btMatrix3x3 product = (moment_matrix*rotation);
-        qDebug()<<"matrix moment";
-        qDebug()<<moment_matrix[0][0]<<" "<<moment_matrix[0][1]<<" "<<moment_matrix[0][2];
-        qDebug()<<moment_matrix[1][0]<<" "<<moment_matrix[1][1]<<" "<<moment_matrix[1][2];
-        qDebug()<<moment_matrix[2][0]<<" "<<moment_matrix[2][1]<<" "<<moment_matrix[2][2];
-        qDebug();
-        qDebug()<<"matrix rotations";
-        qDebug()<<rotation[0][0]<<" "<<rotation[0][1]<<" "<<rotation[0][2];
-        qDebug()<<rotation[1][0]<<" "<<rotation[1][1]<<" "<<rotation[1][2];
-        qDebug()<<rotation[2][0]<<" "<<rotation[2][1]<<" "<<rotation[2][2];
-        qDebug();
-        qDebug()<<"product";
-        qDebug()<<product[0][0]<<" "<<product[0][1]<<" "<<product[0][2];
-        qDebug()<<product[1][0]<<" "<<product[1][1]<<" "<<product[1][2];
-        qDebug()<<product[2][0]<<" "<<product[2][1]<<" "<<product[2][2];
-        qDebug();
-//    btMatrix3x3 rotation = _body->
+//        qDebug()<<"matrix moment";
+//        qDebug()<<moment_matrix[0][0]<<" "<<moment_matrix[0][1]<<" "<<moment_matrix[0][2];
+//        qDebug()<<moment_matrix[1][0]<<" "<<moment_matrix[1][1]<<" "<<moment_matrix[1][2];
+//        qDebug()<<moment_matrix[2][0]<<" "<<moment_matrix[2][1]<<" "<<moment_matrix[2][2];
+//        qDebug();
+//        qDebug()<<"matrix rotations";
+//        qDebug()<<rotation[0][0]<<" "<<rotation[0][1]<<" "<<rotation[0][2];
+//        qDebug()<<rotation[1][0]<<" "<<rotation[1][1]<<" "<<rotation[1][2];
+//        qDebug()<<rotation[2][0]<<" "<<rotation[2][1]<<" "<<rotation[2][2];
+//        qDebug();
+//        qDebug()<<"product";
+//        qDebug()<<product[0][0]<<" "<<product[0][1]<<" "<<product[0][2];
+//        qDebug()<<product[1][0]<<" "<<product[1][1]<<" "<<product[1][2];
+//        qDebug()<<product[2][0]<<" "<<product[2][1]<<" "<<product[2][2];
+//        qDebug();
+////    btMatrix3x3 rotation = _body->
         return product[2][2];
 }
 

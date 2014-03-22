@@ -32,7 +32,7 @@ void HumanBody::loadObjects(QString path){
                     else ignore = false;
                     if (!ignore){
                         object = new InteractiveObject();
-                        object->set_shape_type(InteractiveObject::capsule);
+                        object->get_shape_struct().set_shape_type(Shape::capsule);
                         object->set_body_part(temp.at(1));
                         if ((BodyInfo::mass(temp.at(1),_mass)==0)){
                             qWarning()<<"Object mass null for part: "<<temp.at(1);

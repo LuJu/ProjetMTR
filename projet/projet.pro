@@ -2,6 +2,7 @@ QT          += opengl xml widgets
 
 SOURCES     = \
     main.cpp \
+    physics/shape.cpp
 
 #   UTILS   ###############
 HEADERS     += \
@@ -12,7 +13,8 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/maths.h \
     /home/batman/Programmation/QtDee/utils/csvparser.h \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h
+    /home/batman/Programmation/QtDee/utils/curve.h \
+    physics/shape.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \

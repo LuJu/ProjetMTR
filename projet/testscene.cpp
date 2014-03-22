@@ -50,9 +50,18 @@ void TestScene::displayAnimation(){
         if (obj->get_animated()){
             transform.setIdentity();
             btVector3 rotation_degrees = obj->get_animation().rotationVector(elapsed);
-            quat.setEuler(deg2rad(rotation_degrees.x()),
-                          deg2rad(rotation_degrees.y()),
+            quat.setEuler(deg2rad(rotation_degrees.y()),
+                          deg2rad(rotation_degrees.x()),
                           deg2rad(rotation_degrees.z()));
+//            quat.setEuler(deg2rad(rotation_degrees.y()),
+//                          deg2rad(rotation_degrees.x()),
+//                          deg2rad(rotation_degrees.z()));
+//            quat.setEuler(M_PI_4,
+//                          0,
+//                          0);
+//            qDebug()<<" arot x "<<rotation_degrees.x();
+//            qDebug()<<" arot y "<<rotation_degrees.y();
+//            qDebug()<<" arot z  "<<rotation_degrees.z();
             btVector3 translation(obj->get_animation().translationVector(elapsed));
             transform.setRotation(quat);
             transform.setOrigin(translation);
@@ -89,23 +98,23 @@ void TestScene::displaySimulation(){
 
 void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4& V, QMatrix4x4& M, QMatrix4x4 pvm){
     btVector3 local_scale =obj->get_shape();
-    switch (obj->get_shape_type()) {
-    case InteractiveObject::cube:
-    case InteractiveObject::cylinder:
+    switch (obj->get_shape_struct().get_shape_type()) {
+    case Shape::cube:
+    case Shape::cylinder:
         M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
         pvm = P*V*M;
         _program->setUniformValue("M",M);
         _program->setUniformValue("pvm",pvm);
-        switch (obj->get_shape_type()) {
-        case InteractiveObject::cube:
+        switch (obj->get_shape_struct().get_shape_type()) {
+        case Shape::cube:
             _cube_mesh->render();
             break;
-        case InteractiveObject::cylinder:
+        case Shape::cylinder:
 //            _cylinder_mesh.render();
             break;
         }
         break;
-    case InteractiveObject::capsule:
+    case Shape::capsule:
         pvm = P*V*M;
         _program->setUniformValue("M",M);
         _program->setUniformValue("pvm",pvm);

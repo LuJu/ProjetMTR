@@ -16,6 +16,7 @@
 //#include "core/globalconfig.h"
 
 #include "animationdata.h"
+#include "shape.h"
 
 class InteractiveObject
 {
@@ -38,11 +39,7 @@ public:
         float mean_error_2;
     }t_part_info;
 
-    enum shapetype{
-        cube,
-        cylinder,
-        capsule
-    };
+
 
     enum curve_data{
         ANIMATION_KE = 0,
@@ -72,10 +69,10 @@ public:
 
 
 
-    InteractiveObject(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),shapetype type=cube);
+    InteractiveObject(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),Shape::shapetype type=Shape::cube);
     InteractiveObject();
     ~InteractiveObject();
-    void __build(const btVector3& origin, const btVector3& shape,shapetype type);
+    void __build(const btVector3& origin, const btVector3& shape,Shape::shapetype type);
 
     //! brief
     /*!
@@ -94,14 +91,8 @@ public:
         \param  input
         \return output
     */
-    const InteractiveObject::t_part_info& updatePartInfo(float elapsed,float diff,float gravity);
+    void updatePartInfo(float elapsed,float diff,float gravity);
     InteractiveObject::t_part_info getEnergyInformation() const {return _energy;}
-
-
-//    btVector3 get_previous_position_simulation() const {return _previous_position_simulation;}
-//    void set_previous_position_simulation(btVector3 previous_position_simulation){_previous_position_simulation = previous_position_simulation;}
-
-
 
     btVector3 get_shape() const ;
     void set_shape(const btVector3 &shape);
@@ -159,13 +150,18 @@ public:
     QList<Curve>& get_curves_steps() {return _curves_steps;}
 
 
-    shapetype get_shape_type() const {return _shape_type;}
-    void set_shape_type(shapetype shape_type){_shape_type = shape_type;}
+//    Shape::shapetype get_shape_type() const {return _shape.get_shape_type();}
+    void set_shape_type(Shape::shapetype shape_type){ _shape.set_shape_type(shape_type);}
     btVector3 speedAtTime(float time);
 
     QString exportSimulationToAnimation();
 
     MeshPointer mesh;
+    Shape _shape;
+
+    Shape& get_shape_struct(){
+        return _shape;
+    }
 
     void buildMesh();
 
@@ -176,10 +172,8 @@ private:
     InteractiveObject(const InteractiveObject& object);
     btDefaultMotionState * _motion_state;
     // _shape needs to have a polymorphical behaviour so it is a pointer
-    btCollisionShape * _shape;
+//    btCollisionShape * _shape;
     btTransform _transform;
-
-    shapetype _shape_type;
 
     btVector3 _local_inertia;
     btRigidBody * _body;
@@ -231,8 +225,10 @@ private:
     void appendCurves();
     void appendCurveSteps(int index, QString label, QColor color);
     void appendCurvesSteps();
-
-
+    void insertDataToCurves(QList<Curve>& curves, float elapsed);
+    void updateEnergyStructure(btVector3 speed_animation, btVector3 speed_simulation, float gravity, float elapsed);
+    void updateAnimationFromSimulationData(float time);
+    void setSimulationTransformFromAnimation(float time);
 };
 
 #endif // INTERACTIVEOBJECT_H
