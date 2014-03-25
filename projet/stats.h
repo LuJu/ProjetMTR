@@ -37,6 +37,7 @@ public:
 
 //    virtual void closeEvent(QCloseEvent * event);
     void displayStats();
+    void displayStatsTest();
     void installDebugger();
 //    Simulation& get_simulation() {return _simulation;}
     Simulation  * _simulation;

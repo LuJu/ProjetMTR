@@ -78,6 +78,49 @@ void Stats::displayStats(){
     }
 }
 
+void Stats::displayStatsTest(){
+    QMatrix4x4 M,V,P,pvm;
+    QRect window;
+    float right,top,bottom,value;
+    value = bottom = top = right = 0;
+    QList<Curve> _test_curves;
+    Curve c;
+    c.set_color(QColor(255,255,255));
+    c.insert(0,10);
+    c.insert(5,18);
+    c.insert(8,5);
+    _test_curves.append(c);
+    for (int j = 0; j < _test_curves.size(); ++j) {
+        value = (_test_curves[j].end()-1).key();
+        if (right < value)
+            right = value;
+        value = _test_curves[j].get_max();
+        if (top < value)
+            top = value;
+        value = _test_curves[j].get_min();
+        if (bottom > value)
+            bottom = value;
+    }
+
+    window.setY(100);
+    window.setHeight(-100);
+    window.setX(-10);
+    window.setWidth(100);
+
+    P.ortho(window);
+    pvm = P*V*M;
+    _program->setUniformValue("P",P);
+    _program->setUniformValue("pvm",pvm);
+
+
+    for (int j = 0; j < _test_curves.size(); ++j) {
+        MeshUtils::render(_test_curves[j],1,_test_curves[j].get_color(),2);
+    }
+
+
+//    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
+}
+
 void Stats::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
