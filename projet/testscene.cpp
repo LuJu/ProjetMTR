@@ -44,24 +44,15 @@ void TestScene::displayAnimation(){
 
     btTransform transform;
     btQuaternion quat;
-
+    InteractiveObject * obj;
     for (int i = 0; i < _display.size(); ++i) {
-        InteractiveObject * obj = _display.at(i);
+        obj = _display.at(i);
         if (obj->get_animated()){
             transform.setIdentity();
             btVector3 rotation_degrees = obj->get_animation().rotationVector(elapsed);
             quat.setEuler(deg2rad(rotation_degrees.y()),
                           deg2rad(rotation_degrees.x()),
                           deg2rad(rotation_degrees.z()));
-//            quat.setEuler(deg2rad(rotation_degrees.y()),
-//                          deg2rad(rotation_degrees.x()),
-//                          deg2rad(rotation_degrees.z()));
-//            quat.setEuler(M_PI_4,
-//                          0,
-//                          0);
-//            qDebug()<<" arot x "<<rotation_degrees.x();
-//            qDebug()<<" arot y "<<rotation_degrees.y();
-//            qDebug()<<" arot z  "<<rotation_degrees.z();
             btVector3 translation(obj->get_animation().translationVector(elapsed));
             transform.setRotation(quat);
             transform.setOrigin(translation);
@@ -97,7 +88,7 @@ void TestScene::displaySimulation(){
 }
 
 void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4& V, QMatrix4x4& M, QMatrix4x4 pvm){
-    btVector3 local_scale =obj->get_shape();
+    btVector3 local_scale =obj->get_shape_struct().get_shape();
     switch (obj->get_shape_struct().get_shape_type()) {
     case Shape::cube:
     case Shape::cylinder:
@@ -109,19 +100,13 @@ void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4
         case Shape::cube:
             _cube_mesh->render();
             break;
-        case Shape::cylinder:
-//            _cylinder_mesh.render();
-            break;
         }
         break;
-    case Shape::capsule:
+        case Shape::capsule:
         pvm = P*V*M;
         _program->setUniformValue("M",M);
         _program->setUniformValue("pvm",pvm);
-//        MeshUtils::addCapsuleShape(&c,local_scale.y(),local_scale.x());
-//        c.render();
-        obj->mesh->render();
-//        qDebug()<<obj->mesh->get_polygons().size();
+        obj->get_mesh()->render();
         break;
     default:
         break;

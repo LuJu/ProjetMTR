@@ -20,6 +20,8 @@ Joint::~Joint(){
 void Joint::buildConstraint(){
 
     btTypedConstraint * constraint;
+    btVector3 first_shape = _parts.first->get_shape_struct().get_shape();
+    btVector3 second_shape = _parts.second->get_shape_struct().get_shape();
 
     if (_constraint != NULL)
         delete _constraint;
@@ -29,12 +31,12 @@ void Joint::buildConstraint(){
             constraint= new btPoint2PointConstraint(
                 _parts.first->get_body(),
                 _parts.second->get_body(),
-                btVector3(0, _parts.first->get_shape().y()/2  +_parts.first->get_shape().x()  ,0),
-                btVector3(0,-_parts.second->get_shape().y()/2 -_parts.second->get_shape().x() ,0));
+                btVector3(0, first_shape.y()/2  + first_shape.x()  ,0),
+                btVector3(0,-second_shape.y()/2 - second_shape.x() ,0));
         } else {
             constraint= new btPoint2PointConstraint(
                 _parts.first->get_body(),
-                btVector3(0,_parts.first->get_shape().y()/2 +_parts.first->get_shape().x(),0));
+                btVector3(0,first_shape.y()/2 +first_shape.x(),0));
         }
             _constraint = (btTypedConstraint*) constraint;
     } else {

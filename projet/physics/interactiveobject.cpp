@@ -5,7 +5,8 @@ InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& s
     _animated(false),
     _body(NULL),
     _motion_state(NULL),
-    _local_inertia(btVector3(0,0,0)){
+    _local_inertia(btVector3(0,0,0)),
+    _collision_shape(NULL){
     __build(origin,shape,type);
 }
 
@@ -14,7 +15,8 @@ InteractiveObject::InteractiveObject():
     _animated(false),
     _body(NULL),
     _motion_state(NULL),
-    _local_inertia(btVector3(0,0,0)){
+    _local_inertia(btVector3(0,0,0)),
+    _collision_shape(NULL){
     __build(btVector3(0,0,0),btVector3(1,1,1),Shape::cube);
 }
 
@@ -132,6 +134,7 @@ InteractiveObject::~InteractiveObject(){
 //    if(_shape) delete _shape;
     if(_body)  delete _body;
     if(_motion_state) delete _motion_state;
+    if(_collision_shape) delete _collision_shape;
 }
 
 btRigidBody & InteractiveObject::get_body(){
@@ -141,34 +144,32 @@ btRigidBody & InteractiveObject::get_body(){
     return *_body;
 }
 
+const btRigidBody & InteractiveObject::get_body() const {
+    if(!_body || !_motion_state){
+        qWarning()<<"body not defined";
+    }
+    return *_body;
+}
+
 void InteractiveObject::deleteMotion(){
     if(_body)  delete _body;
     if(_motion_state) delete _motion_state;
+    if(_collision_shape) delete _collision_shape;
 }
 
 void InteractiveObject::buildMotion(){
     deleteMotion();
-    btCollisionShape * shape = _shape.get_collision_shape();
-    shape->calculateLocalInertia(_mass,_local_inertia);
+    _collision_shape = _shape.newCollisionShape();
+    _collision_shape->calculateLocalInertia(_mass,_local_inertia);
     _motion_state = new btDefaultMotionState(_transform);
-    btRigidBody::btRigidBodyConstructionInfo construction_info(_mass, _motion_state, shape, _local_inertia);
+    btRigidBody::btRigidBodyConstructionInfo construction_info(_mass, _motion_state, _collision_shape , _local_inertia);
     _body = new btRigidBody(construction_info);
-    ;
 }
 
 void InteractiveObject::buildMesh(){
-    mesh = MeshPointer(new Mesh);
-    set_shape(btVector3(_animation.scalingVector(0)));
-    MeshUtils::addCapsuleShape(mesh.data(),get_shape().y(),get_shape().x());
-    qDebug()<<"shape : "<<get_shape().x()<<" "<<get_shape().y();
-}
-
-btVector3 InteractiveObject::get_shape() const {
-    return _shape.get_shape();
-}
-
-void InteractiveObject::set_shape(const btVector3 &shape){
-    _shape.set_shape(shape);
+    _mesh = MeshPointer(new Mesh);
+    _shape.set_shape(btVector3(_animation.scalingVector(0)));
+    MeshUtils::addCapsuleShape(_mesh.data(),_shape.get_shape().y(),_shape.get_shape().x());
 }
 
 void InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
@@ -282,7 +283,7 @@ void InteractiveObject::setSimulationTransformFromAnimation(float time){
     transform.setOrigin(translation);
     set_transform(transform);
     shape =btVector3(_animation.scalingVector(time));
-    set_shape(shape);
+    _shape.set_shape(shape);
 
     _previous_data._position = translation;
     _previous_data._position_simulation = translation;
@@ -324,44 +325,16 @@ void InteractiveObject::updateAnimationFromSimulationData(float time){
     _animation_from_simulation.get_rotation_curves()[2].insert(time,rot_z(body.getOrientation()));
 }
 
-btVector3 InteractiveObject::speedAtTime(float time) {
-//    btVector3 animation_speed;
-//    _animation.get_translation_curves();
-//    btVector3 init_position = _animation.translationVector(0);
-//    if (_animation.get_translation_curves()[0].size()>1){
-//        btScalar diff = _animation.get_translation_curves()[0].keys()[1];
-//        btVector3 second = _animation.translationVector(diff);
-//        btVector3 distance(second-init_position);
-//        btVector3 speed_animation(distance/(diff/1000)); // the diff value is in ms so a conversion is needed to be in m/s
-//        animation_speed = speed_animation;
-//    } else
-//        animation_speed = btVector3(0.0,0.0,0.0);
-//    qDebug()<<"initial speed :"<<_animation.translationSlope(0).length();
-    return _animation.translationSlope(0.0f) * 1000.0f;
+btVector3 InteractiveObject::speedAtTime(float time) const {
+    return _animation.translationSlope(time) * 1000.0f;
 }
 
-btScalar InteractiveObject::get_volume(){
-    // for capsule : volume of cylinder of radius R and height H + volume of sphere of radius R
-    // = pi.R^2.h + 4/3.pi.R^3
-    btScalar r = get_shape().x();
-    btScalar h = get_shape().y();
-    btScalar sphere_volume = (4/3) * M_PI * pow(r,3);
-    btScalar cylinder_volume =  M_PI * pow(r,2) * h;
-    return cylinder_volume+sphere_volume;
-}
-
-
-
-//thin cylinder (mass m , length h) rotating with the axis on one of the extremities
-// = 1/3.m.h
 btScalar InteractiveObject::get_moment(){
-    btScalar moment = pow(get_shape().y(),2)*
-            _mass/3;
-//    qDebug()<<"moment : "<<moment;
+    btVector3 shape  = _shape.get_shape();
     btScalar m = _mass;
-    btScalar R = get_shape().x();
+    btScalar R = shape.x();
     btScalar R2 = pow(R,2);
-    btScalar h = get_shape().y();
+    btScalar h = shape.y();
     btScalar h2 = pow(h,2);
 
 //    qDebug()<<"mass: "<<m;
@@ -394,13 +367,11 @@ btScalar InteractiveObject::get_moment(){
 }
 
 btScalar InteractiveObject::get_angular_EC_simulation(){
-//    qDebug()<<"simulation velocity: "<<rad2deg(_body->getAngularVelocity().length());
-    return _body->getAngularVelocity().length() * _body->getAngularVelocity().length() * get_moment() / 2;
+    return pow(_body->getAngularVelocity().length(),2) * get_moment() / 2;
 
 }
 
 btScalar InteractiveObject::get_angular_EC_animation(){
-//    qDebug()<<"animation velocity: "<<_angular_speed_rotation.length();
     return pow(deg2rad(_angular_speed_animation.length()),2) * get_moment() / 2;
 }
 
@@ -414,8 +385,8 @@ QString InteractiveObject::exportSimulationToAnimation(){
     output<<"object"<<c<<_body_part_name<<c<<"display"<<nl;
 
     output<<"scaling"<<c<<nl;
-    output<<"radius"<<c<<0.0<<c<<get_shape().x()<<c<<nl;
-    output<<"length"<<c<<0.0<<c<<get_shape().y()<<c<<nl;
+    output<<"radius"<<c<<0.0<<c<<_shape.get_shape().x()<<c<<nl;
+    output<<"length"<<c<<0.0<<c<<_shape.get_shape().y()<<c<<nl;
 
     output<<"translation"<<c<<nl;
     for (int j = 0; j < 3; ++j) {
@@ -437,39 +408,4 @@ QString InteractiveObject::exportSimulationToAnimation(){
     }
     output<<"end"<<nl;
     return outstring;
-}
-
-float InteractiveObject::rot_x(btQuaternion q) const
-{
-    float m_x = q.x();
-    float m_y = q.y();
-    float m_z = q.z();
-    float m_w = q.w();
-    float rotx = atan2(2*((m_w * m_x) + (m_y * m_z)), 1 - (2 * ((m_x* m_x) + (m_y * m_y))));
-    return rad2deg(rotx);
-}
-
-float InteractiveObject::rot_y(btQuaternion q) const
-{
-    float m_x = q.x();
-    float m_y = q.y();
-    float m_z = q.z();
-    float m_w = q.w();
-    float roty = asin(2 * ((m_w * m_y) - (m_z * m_x)));
-    return rad2deg(roty);
-}
-
-
-float InteractiveObject::rot_z(btQuaternion q) const
-{
-    float m_x = q.x();
-    float m_y = q.y();
-    float m_z = q.z();
-    float m_w = q.w();
-    float rotz = atan2(2 * ((m_w * m_z) + (m_x * m_y)), 1 - (2 * ((m_y * m_y) + (m_z * m_z))));
-    return rad2deg(rotz);
-}
-
-btVector3 InteractiveObject::btQuat2euler(btQuaternion q){
-    return btVector3(rot_x(q),rot_y(q),rot_z(q));
 }

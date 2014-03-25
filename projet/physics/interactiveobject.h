@@ -17,6 +17,7 @@
 
 #include "animationdata.h"
 #include "shape.h"
+#include "btutils.h"
 
 class InteractiveObject
 {
@@ -40,6 +41,67 @@ public:
     }t_part_info;
 
 
+    InteractiveObject(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),Shape::shapetype type=Shape::cube);
+    InteractiveObject();
+    ~InteractiveObject();
+
+
+    btVector3 getTopPosition() const {
+        btVector3 center = get_body().getCenterOfMassPosition();
+//        btTransform transform = get_body().getan
+        btQuaternion orientation = get_body().getOrientation();
+        btVector3 position = orientation.getAxis() * _shape.get_shape().getY();
+    }
+    //! calculates the information about the energy of the part of the body
+    /*!
+        calculates the information about the energy of the part of the body \n
+        This is where the kinetic energy and speed and potential energy are calculated
+        \n Status  1 : not implemented
+        \param  input
+        \return output
+    */
+    void updatePartInfo(float elapsed,float diff,float gravity);
+    InteractiveObject::t_part_info getEnergyInformation() const {return _energy;}
+
+    btVector3 & get_local_inertia() {return _local_inertia;}
+    void set_local_inertia(btVector3 local_inertia){_local_inertia = local_inertia;}
+
+    btScalar get_mass() const {return _mass;}
+    void set_mass(btScalar mass){_mass = mass;}
+
+    btTransform & get_transform() {return _transform;}
+    void set_transform(btTransform transform){_transform = transform;}
+
+    btRigidBody & get_body();
+    const btRigidBody & get_body() const ;
+
+    AnimationData& get_animation() {return _animation;}
+
+    bool get_animated() const {return _animated;}
+    void set_animated(bool animated){_animated = animated;}
+
+    const QString& get_body_part() const {return _body_part_name;}
+    void set_body_part(const QString& body_part){_body_part_name = body_part;}
+
+    btDefaultMotionState * get_motion_state(){
+        if(!_motion_state)
+            _motion_state = new btDefaultMotionState(_transform);
+        return _motion_state;
+    }
+
+    const QList<Curve>& get_curves() const {return _curves;}
+    const QList<Curve>& get_curves_steps() const {return _curves_steps;}
+
+    QString exportSimulationToAnimation();
+
+
+    MeshPointer& get_mesh(){return _mesh;}
+    Shape& get_shape_struct(){return _shape;}
+
+    void buildMesh();
+    void setSimulationPosition(float time);
+
+private:
 
     enum curve_data{
         ANIMATION_KE = 0,
@@ -56,118 +118,13 @@ public:
         NUMBER_OF_CURVES
     };
 
-
-    void setSimulationPosition(float time);
-
-
-    btVector3 getTopPosition(){
-        btVector3 center = get_body().getCenterOfMassPosition();
-//        btTransform transform = get_body().getan
-        btQuaternion orientation = get_body().getOrientation();
-        btVector3 position = orientation.getAxis() * get_shape().getY();
-    }
-
-
-
-    InteractiveObject(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),Shape::shapetype type=Shape::cube);
-    InteractiveObject();
-    ~InteractiveObject();
     void __build(const btVector3& origin, const btVector3& shape,Shape::shapetype type);
-
-    //! brief
-    /*!
-        description
-        \n Status  1 : not implemented
-        \param  input
-        \return output
-    */
-    void buildMotion();    
-
-    //! calculates the information about the energy of the part of the body
-    /*!
-        calculates the information about the energy of the part of the body \n
-        This is where the kinetic energy and speed and potential energy are calculated
-        \n Status  1 : not implemented
-        \param  input
-        \return output
-    */
-    void updatePartInfo(float elapsed,float diff,float gravity);
-    InteractiveObject::t_part_info getEnergyInformation() const {return _energy;}
-
-    btVector3 get_shape() const ;
-    void set_shape(const btVector3 &shape);
-
-    btVector3 & get_local_inertia() {return _local_inertia;}
-    void set_local_inertia(btVector3 local_inertia){_local_inertia = local_inertia;}
-
-    btScalar get_mass() const {return _mass;}
-    void set_mass(btScalar mass){_mass = mass;}
-
-    btTransform & get_transform() {return _transform;}
-    void set_transform(btTransform transform){_transform = transform;}
-
-    btRigidBody & get_body();
-
-    AnimationData& get_animation() {return _animation;}
-
-    void set_animation(AnimationData& animation){_animation = animation;}
-
-    bool get_animated() const {return _animated;}
-    void set_animated(bool animated){_animated = animated;}
-
-    const QString& get_body_part() const {return _body_part_name;}
-    void set_body_part(const QString& body_part){_body_part_name = body_part;}
-
-
-    btDefaultMotionState * get_motion_state(){
-        if(!_motion_state)
-            _motion_state = new btDefaultMotionState(_transform);
-        return _motion_state;
-    }
-    btScalar get_mean_error() const {
-        return _error_1._speed_error / _error_1._ticks ;
-    }
-    btScalar get_mean_error_2() const {
-        return _error_2._speed_error / _error_2._ticks ;
-    }
-
-//    btVector3 get_animation_speed() const {return _animation_speed;}
-//    void set_animation_speed(btVector3 animation_speed){_animation_speed = animation_speed;}
-
-    btScalar get_density(){
-        return _mass / get_volume();
-    }
-
-    btScalar get_volume();
-    btScalar get_moment();
-
-    btScalar get_angular_EC_simulation();
-
-    btScalar get_angular_EC_animation();
-
-
-    QList<Curve>& get_curves() {return _curves;}
-    QList<Curve>& get_curves_steps() {return _curves_steps;}
-
-
-//    Shape::shapetype get_shape_type() const {return _shape.get_shape_type();}
-    void set_shape_type(Shape::shapetype shape_type){ _shape.set_shape_type(shape_type);}
-    btVector3 speedAtTime(float time);
-
-    QString exportSimulationToAnimation();
-
-    MeshPointer mesh;
     Shape _shape;
-
-    Shape& get_shape_struct(){
-        return _shape;
-    }
-
-    void buildMesh();
-
-private:
     void deleteMotion();
+    void buildMotion();
+    MeshPointer _mesh;
 
+    btVector3 speedAtTime(float time) const;
     //! temporary disabled
     InteractiveObject(const InteractiveObject& object);
     btDefaultMotionState * _motion_state;
@@ -177,7 +134,7 @@ private:
 
     btVector3 _local_inertia;
     btRigidBody * _body;
-
+    btCollisionShape *_collision_shape;
     // Curves used to display data on screen
     QList<Curve> _curves;
     QList<Curve> _curves_steps;
@@ -210,17 +167,6 @@ private:
         btScalar _ticks;
     }_error_1,_error_2;
 
-//    btVector3 _rotation_axis_animation;
-//    btVector3 _rotation_axis_simulation;
-
-    float rot_x(btQuaternion q) const;
-
-    float rot_y(btQuaternion q) const;
-
-    float rot_z(btQuaternion q) const;
-
-    btVector3 btQuat2euler(btQuaternion q);
-
     void appendCurve(int index, QString label, QColor color);
     void appendCurves();
     void appendCurveSteps(int index, QString label, QColor color);
@@ -229,6 +175,21 @@ private:
     void updateEnergyStructure(btVector3 speed_animation, btVector3 speed_simulation, float gravity, float elapsed);
     void updateAnimationFromSimulationData(float time);
     void setSimulationTransformFromAnimation(float time);
+    btScalar get_density(){
+        return _mass / _shape.get_volume();
+    }
+
+    btScalar get_moment();
+
+    btScalar get_angular_EC_simulation();
+
+    btScalar get_angular_EC_animation();
+    btScalar get_mean_error() const {
+        return _error_1._speed_error / _error_1._ticks ;
+    }
+    btScalar get_mean_error_2() const {
+        return _error_2._speed_error / _error_2._ticks ;
+    }
 };
 
 #endif // INTERACTIVEOBJECT_H

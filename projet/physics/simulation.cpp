@@ -32,10 +32,10 @@ void Simulation::init(const SimulationParameters& params) {
     _display = _human._parts;
     _joints = _human._constraints;
     _ground = new InteractiveObject();
-    _ground->set_shape(btVector3(3,1,3));
+    _ground->get_shape_struct().set_shape(btVector3(3,1,3));
     _ground->set_mass(0); // no gravity
     _ground->get_transform().setOrigin(btVector3(0,-3,0));
-    _ground->set_shape_type(Shape::cube);
+    _ground->get_shape_struct().set_shape_type(Shape::cube);
 
     _display.append(_ground);
 }

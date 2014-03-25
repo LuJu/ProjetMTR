@@ -18,29 +18,26 @@ btVector3 Shape::get_shape() const {
 
 void Shape::set_shape(const btVector3 &shape){
     _shape_vector = shape;
-    if (_shape_collision!=NULL) delete _shape_collision;
-    collision_shape_outdated = true;
 }
 
-void Shape::buildCollisionShape(){
-    if (collision_shape_outdated){
-        if (_shape_collision) delete _shape_collision;
-        switch (_shape){
+btCollisionShape *Shape::buildCollisionShape(){
+    btCollisionShape * collision_shape ;
+    switch (_shape){
         case cube:
-            _shape_collision= new btBoxShape(_shape_vector);
+            collision_shape = new btBoxShape(_shape_vector);
             break;
         case cylinder:
-            _shape_collision = new btCylinderShape(_shape_vector);
+            collision_shape  = new btCylinderShape(_shape_vector);
             break;
         case capsule:
-            _shape_collision = new btCapsuleShape(_shape_vector.x(),_shape_vector.y());
+            collision_shape  = new btCapsuleShape(_shape_vector.x(),_shape_vector.y());
             break;
-        }
-        collision_shape_outdated = false;
     }
+    return collision_shape;
+
 }
 
-btCollisionShape * Shape::get_collision_shape(){
-    buildCollisionShape();
-    return _shape_collision;
+btCollisionShape * Shape::newCollisionShape(){
+    btCollisionShape * collision_shape = buildCollisionShape();
+    return collision_shape;
 }
