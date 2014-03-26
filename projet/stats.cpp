@@ -84,11 +84,34 @@ void Stats::displayStatsTest(){
     float right,top,bottom,value;
     value = bottom = top = right = 0;
     QList<Curve> _test_curves;
+    BezierPath path[10];
+    path[0]._bezier[0] = Point3df(0,10,0);
+    path[0]._bezier[1] = Point3df(10,10,0);
+    path[0]._bezier[2] = Point3df(40,200,0);
+    path[0]._bezier[3] = Point3df(50,200,0);
+
+    path[1]._bezier[0] = Point3df(50,200,0);
+    path[1]._bezier[1] = Point3df(60,200,0);
+    path[1]._bezier[2] = Point3df(90,-20,0);
+    path[1]._bezier[3] = Point3df(100,-20,0);
+
+    path[2]._bezier[0] = Point3df(0,10,0);
+    path[2]._bezier[1] = Point3df(0,10,0);
+    path[2]._bezier[2] = Point3df(50,38,0);
+    path[2]._bezier[3] = Point3df(50,38,0);
+
+    path[3]._bezier[0] = Point3df(50,38,0);
+    path[3]._bezier[1] = Point3df(50,38,0);
+    path[3]._bezier[2] = Point3df(100,-20,0);
+    path[3]._bezier[3] = Point3df(100,-20,0);
+
+//    path[0].compute(path[0]._bezier,10);
+//    path[1].compute(path[1]._bezier,10);
+//    path[2].compute(path[0]._bezier,2);
+//    path[3].compute(path[0]._bezier,1);
+//    path[4].compute(path[0]._bezier,0);
     Curve c;
-    c.set_color(QColor(255,255,255));
-    c.insert(0,10);
-    c.insert(5,18);
-    c.insert(8,5);
+    c.set_color(QColor(255,0,255));
     _test_curves.append(c);
     for (int j = 0; j < _test_curves.size(); ++j) {
         value = (_test_curves[j].end()-1).key();
@@ -102,30 +125,48 @@ void Stats::displayStatsTest(){
             bottom = value;
     }
 
-    window.setY(100);
+    window.setY(50);
     window.setHeight(-100);
     window.setX(-10);
-    window.setWidth(100);
+    window.setWidth(150);
 
     P.ortho(window);
     pvm = P*V*M;
     _program->setUniformValue("P",P);
     _program->setUniformValue("pvm",pvm);
 
-
-    for (int j = 0; j < _test_curves.size(); ++j) {
-        MeshUtils::render(_test_curves[j],1,_test_curves[j].get_color(),2);
+    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,30,30);
+    for (int j = 0; j < 4; ++j) {
+        path[j].compute(path[j]._bezier,5);
+//        MeshUtils::render(path[j]);
     }
+//    for (int j = 0; j < _test_curves.size(); ++j) {
+        for (int i = 0; i < 2; ++i) {
+            for (int k = 0; k < 4; ++k) {
+                c.insert(path[i]._bezier[k].x(),path[i]._bezier[k].y());
+            }
+        }
+//        MeshUtils::render(c,1,c.get_color(),2,true);
+//    }
+    Curve c1;
+    for (int i = 0; i < path[0].get_points().size(); ++i) {
+        c1.insert(path[0].get_points().at(i).x(),path[0].get_points().at(i).y());
+    }
+    for (int i = 0; i < path[1].get_points().size(); ++i) {
+        c1.insert(path[1].get_points().at(i).x(),path[1].get_points().at(i).y());
+    }
+    Curve c2 = c1.get_slope_curve();
+    MeshUtils::render(c1,1,c.get_color(),2);
+    MeshUtils::render(c2,1,c.get_color(),2);
+qDebug()<<c2.size();
 
-
-//    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 }
 
 void Stats::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
     glViewport(0,0,width(),height());
-    displayStats();
+    displayStatsTest();
     _program->release();
 }
 
