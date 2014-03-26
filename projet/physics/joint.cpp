@@ -21,7 +21,10 @@ void Joint::buildConstraint(){
 
     btTypedConstraint * constraint;
     btVector3 first_shape = _parts.first->get_shape_struct().get_shape();
-    btVector3 second_shape = _parts.second->get_shape_struct().get_shape();
+
+    btVector3 second_shape ;
+    if (_parts.second != NULL)
+        second_shape = _parts.second->get_shape_struct().get_shape();
 
     if (_constraint != NULL)
         delete _constraint;
