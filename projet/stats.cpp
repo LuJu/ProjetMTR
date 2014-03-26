@@ -155,10 +155,19 @@ void Stats::displayStatsTest(){
     for (int i = 0; i < path[1].get_points().size(); ++i) {
         c1.insert(path[1].get_points().at(i).x(),path[1].get_points().at(i).y());
     }
-    Curve c2 = c1.get_slope_curve();
-    MeshUtils::render(c1,1,c.get_color(),2);
-    MeshUtils::render(c2,1,c.get_color(),2);
-qDebug()<<c2.size();
+    Curve c2 = c1.tangentCurve();
+//    MeshUtils::render(c1,1,c.get_color(),2);
+//    MeshUtils::render(c2,1,c.get_color(),2);
+    Curve c3;
+    c3.insert(10,15);
+    c3.insert(15,40);
+    c3.insert(60,12);
+    c3.insert(100,-40);
+    c3.toBezier();
+
+    MeshUtils::render(*(c3._bezier),1,c.get_color(),2);
+    MeshUtils::render(c3,1,c.get_color(),2);
+qDebug()<<c3.size();
 
 }
 
@@ -166,7 +175,7 @@ void Stats::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
     glViewport(0,0,width(),height());
-    displayStatsTest();
+    displayStats();
     _program->release();
 }
 

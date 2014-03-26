@@ -259,9 +259,9 @@ void InteractiveObject::insertDataToCurves(QList<Curve>& curves, float elapsed){
 //            curves[SIMULATION_PE].insert(elapsed,_energy.simulation.pe);
 //        }
 //        if (GlobalConfig::is_enabled("display_diff")) {
-            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
-            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
-            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
+//            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
+//            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
+//            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
             curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
             curves[SIMULATION_Y].insert(elapsed,_energy.simulation.y);
 //        }
