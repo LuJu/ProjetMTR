@@ -46,6 +46,7 @@ void InteractiveObject::appendCurves(){
     appendCurve(DIFF_KE,"Animation KE",QColor(255,0,255));
     appendCurve(DIFF_AKE,"Animation KE",QColor(0,255,255));
     appendCurve(DIFF_PE,"Animation KE",QColor(255,255,0));
+    appendCurve(ANIMATION_X,"Animation KE",QColor(255,0,0));
     appendCurve(ANIMATION_Y,"Animation KE",QColor(255,0,255));
     appendCurve(SIMULATION_Y,"Animation KE",QColor(0,255,255));
 }
@@ -63,6 +64,7 @@ void InteractiveObject::appendCurvesSteps(){
     appendCurve(DIFF_KE,"Animation KE",QColor(255,0,255));
     appendCurve(DIFF_AKE,"Animation KE",QColor(0,255,255));
     appendCurve(DIFF_PE,"Animation KE",QColor(255,255,0));
+    appendCurve(ANIMATION_X,"Animation KE",QColor(255,0,0));
     appendCurve(ANIMATION_Y,"Animation KE",QColor(255,0,255));
     appendCurve(SIMULATION_Y,"Animation KE",QColor(0,255,255));
 }
@@ -263,7 +265,8 @@ void InteractiveObject::insertDataToCurves(QList<Curve>& curves, float elapsed){
 //            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
 //            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
             curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
-            curves[SIMULATION_Y].insert(elapsed,_energy.simulation.y);
+            curves[ANIMATION_X].insert(elapsed,_energy.animation.x);
+//            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
 //        }
 }
 

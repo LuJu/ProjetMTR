@@ -113,6 +113,7 @@ private:
         DIFF_KE,
         DIFF_AKE,
         DIFF_PE,
+        ANIMATION_X,
         ANIMATION_Y,
         SIMULATION_Y,
         NUMBER_OF_CURVES

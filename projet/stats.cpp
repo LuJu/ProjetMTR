@@ -83,91 +83,54 @@ void Stats::displayStatsTest(){
     QRect window;
     float right,top,bottom,value;
     value = bottom = top = right = 0;
-    QList<Curve> _test_curves;
+//    QList<Curve> _test_curves;
     BezierPath path[10];
-    path[0]._bezier[0] = Point3df(0,10,0);
-    path[0]._bezier[1] = Point3df(10,10,0);
-    path[0]._bezier[2] = Point3df(40,200,0);
-    path[0]._bezier[3] = Point3df(50,200,0);
-
-    path[1]._bezier[0] = Point3df(50,200,0);
-    path[1]._bezier[1] = Point3df(60,200,0);
-    path[1]._bezier[2] = Point3df(90,-20,0);
-    path[1]._bezier[3] = Point3df(100,-20,0);
-
-    path[2]._bezier[0] = Point3df(0,10,0);
-    path[2]._bezier[1] = Point3df(0,10,0);
-    path[2]._bezier[2] = Point3df(50,38,0);
-    path[2]._bezier[3] = Point3df(50,38,0);
-
-    path[3]._bezier[0] = Point3df(50,38,0);
-    path[3]._bezier[1] = Point3df(50,38,0);
-    path[3]._bezier[2] = Point3df(100,-20,0);
-    path[3]._bezier[3] = Point3df(100,-20,0);
-
-//    path[0].compute(path[0]._bezier,10);
-//    path[1].compute(path[1]._bezier,10);
-//    path[2].compute(path[0]._bezier,2);
-//    path[3].compute(path[0]._bezier,1);
-//    path[4].compute(path[0]._bezier,0);
-    Curve c;
-    c.set_color(QColor(255,0,255));
-    _test_curves.append(c);
-    for (int j = 0; j < _test_curves.size(); ++j) {
-        value = (_test_curves[j].end()-1).key();
+    Curve curves[6];
+    Curve * bcurves[3];
+    curves[0] = _display.at(0)->get_animation().get_translation_curves()[0].get_bezier();
+    curves[1] = _display.at(0)->get_animation().get_translation_curves()[1].get_bezier();
+    curves[2] = _display.at(0)->get_animation().get_translation_curves()[2].get_bezier();
+    curves[3] = _display.at(0)->get_animation().get_translation_curves()[0];
+    curves[4] = _display.at(0)->get_animation().get_translation_curves()[1];
+    curves[5] = _display.at(0)->get_animation().get_translation_curves()[2];
+//    _test_curves.append(c);
+    for (int j = 0; j < 6; ++j) {
+        value = (curves[j].end()-1).key();
         if (right < value)
             right = value;
-        value = _test_curves[j].get_max();
+        value = curves[j].get_max();
         if (top < value)
             top = value;
-        value = _test_curves[j].get_min();
+        value = curves[j].get_min();
         if (bottom > value)
             bottom = value;
     }
 
-    window.setY(50);
-    window.setHeight(-100);
-    window.setX(-10);
-    window.setWidth(150);
+    qDebug()<<"window: "<<top<<" "<<bottom<<" "<<right;
+
+    window.setY(10);
+    window.setHeight(-20);
+//    window.setHeight(-(top+bottom)-20);
+    window.setX(0);
+    window.setWidth(10000);
 
     P.ortho(window);
     pvm = P*V*M;
     _program->setUniformValue("P",P);
     _program->setUniformValue("pvm",pvm);
 
-    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,30,30);
-    for (int j = 0; j < 4; ++j) {
-        path[j].compute(path[j]._bezier,5);
-//        MeshUtils::render(path[j]);
-    }
-//    for (int j = 0; j < _test_curves.size(); ++j) {
-        for (int i = 0; i < 2; ++i) {
-            for (int k = 0; k < 4; ++k) {
-                c.insert(path[i]._bezier[k].x(),path[i]._bezier[k].y());
-            }
-        }
-//        MeshUtils::render(c,1,c.get_color(),2,true);
-//    }
-    Curve c1;
-    for (int i = 0; i < path[0].get_points().size(); ++i) {
-        c1.insert(path[0].get_points().at(i).x(),path[0].get_points().at(i).y());
-    }
-    for (int i = 0; i < path[1].get_points().size(); ++i) {
-        c1.insert(path[1].get_points().at(i).x(),path[1].get_points().at(i).y());
-    }
-    Curve c2 = c1.tangentCurve();
-//    MeshUtils::render(c1,1,c.get_color(),2);
-//    MeshUtils::render(c2,1,c.get_color(),2);
-    Curve c3;
-    c3.insert(10,15);
-    c3.insert(15,40);
-    c3.insert(60,12);
-    c3.insert(100,-40);
-    c3.toBezier();
+    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,10);
 
-    MeshUtils::render(*(c3._bezier),1,c.get_color(),2);
-    MeshUtils::render(c3,1,c.get_color(),2);
-qDebug()<<c3.size();
+    for (int i = 0; i < 6; ++i) {
+        curves[i].set_color(QColor(255,0,255));
+//        MeshUtils::render(curves[i],1,curves[i].get_color(),i+1);right
+    }
+    MeshUtils::render(curves[0],1 ,QColor(255,0,255),1);
+    qDebug()<<"sizeb:"<<curves[0].size();
+    qDebug()<<"size:"<<curves[3].size();
+    qDebug()<<"value"<<curves[3].value( curves[3].keys()[curves[3].keys().size()-2]);
+    qDebug()<<"value2"<<curves[3].value(curves[3].keys()[curves[3].keys().size()-1]);
+    MeshUtils::render(curves[3],1,QColor(0,0,255),2);
 
 }
 
@@ -175,7 +138,7 @@ void Stats::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
     glViewport(0,0,width(),height());
-    displayStats();
+    displayStatsTest();
     _program->release();
 }
 
