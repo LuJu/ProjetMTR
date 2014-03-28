@@ -188,7 +188,7 @@ void InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
 //    qDebug()<<"adistance: "<<distance.length();
 //    qDebug()<<"position : "<<animation_position.x()<<" "<<animation_position.y()<<" "<<animation_position.z()<<" ";
 //    qDebug()<<"idistance: "<<distance.x()<<" "<<distance.y()<<" "<<distance.z()<<" ";
-    qDebug()<<"distance: "<<distance.length()<<"m";
+//    qDebug()<<"distance: "<<distance.length()<<"m";
 //    qDebug()<<"diff: "<<diff;
 //    if (_animation_speed.length() > 0.8f){
 ////        qDebug()<<"leo";
@@ -271,11 +271,11 @@ void InteractiveObject::insertDataToCurves(QList<Curve>& curves, float elapsed){
 //            curves[SIMULATION_PE].insert(elapsed,_energy.simulation.pe);
 //        }
 //        if (GlobalConfig::is_enabled("display_diff")) {
-//            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
-//            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
-//            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
-            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
-            curves[ANIMATION_X].insert(elapsed,_energy.animation.x);
+            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
+            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
+            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
+//            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
+//            curves[ANIMATION_X].insert(elapsed,_energy.animation.x);
 //            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
 //        }
 }

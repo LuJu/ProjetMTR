@@ -359,6 +359,6 @@ void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
 }
 
 void HumanBody::setSimulationPosition(float time){
-//    for (int i = 0; i < _parts.size(); ++i)
-//        _parts[i]->setSimulationPosition(time);
+    for (int i = 0; i < _parts.size(); ++i)
+        _parts[i]->setSimulationPosition(time);
 }
