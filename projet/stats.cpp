@@ -111,26 +111,26 @@ void Stats::displayStatsTest(){
     window.setY(10);
     window.setHeight(-20);
 //    window.setHeight(-(top+bottom)-20);
-    window.setX(0);
-    window.setWidth(10000);
+    window.setX(-1000);
+    window.setWidth(12000);
 
     P.ortho(window);
     pvm = P*V*M;
     _program->setUniformValue("P",P);
     _program->setUniformValue("pvm",pvm);
 
-    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,10);
+//    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,10);
 
     for (int i = 0; i < 6; ++i) {
         curves[i].set_color(QColor(255,0,255));
 //        MeshUtils::render(curves[i],1,curves[i].get_color(),i+1);right
     }
     MeshUtils::render(curves[0],1 ,QColor(255,0,255),1);
-    qDebug()<<"sizeb:"<<curves[0].size();
-    qDebug()<<"size:"<<curves[3].size();
-    qDebug()<<"value"<<curves[3].value( curves[3].keys()[curves[3].keys().size()-2]);
-    qDebug()<<"value2"<<curves[3].value(curves[3].keys()[curves[3].keys().size()-1]);
-    MeshUtils::render(curves[3],1,QColor(0,0,255),2);
+//    qDebug()<<"sizeb:"<<curves[0].size();
+//    qDebug()<<"size:"<<curves[3].size();
+//    qDebug()<<"value"<<curves[3].value( curves[3].keys()[curves[3].keys().size()-2]);
+//    qDebug()<<"value2"<<curves[3].value(curves[3].keys()[curves[3].keys().size()-1]);
+    MeshUtils::render(curves[3],1,QColor(0,0,255),1);
 
 }
 
@@ -138,7 +138,7 @@ void Stats::display3DObjects(){
     _program->bind();
     _program->setUniformValue("shininess",(GLfloat)1.0);
     glViewport(0,0,width(),height());
-    displayStatsTest();
+    displayStats();
     _program->release();
 }
 

@@ -178,15 +178,24 @@ void InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
 
 
 
-    btVector3 distance(_animation.translationVector(elapsed)-_previous_data._position);
+    btVector3 animation_position = _animation.translationVector(elapsed);
+    btVector3 distance(animation_position-_previous_data._position);
     btVector3 simulation_distance = _body->getCenterOfMassPosition()-_previous_data._position_simulation;
     _animation_speed = distance/(diff/1000); // the diff value is in ms so a conversion is needed to be in m/s
 
-
 /// Calculated simulation speed
     _calculated_simulation_speed = simulation_distance/(diff/1000);
+//    qDebug()<<"adistance: "<<distance.length();
+//    qDebug()<<"position : "<<animation_position.x()<<" "<<animation_position.y()<<" "<<animation_position.z()<<" ";
+//    qDebug()<<"idistance: "<<distance.x()<<" "<<distance.y()<<" "<<distance.z()<<" ";
+    qDebug()<<"distance: "<<distance.length()<<"m";
+//    qDebug()<<"diff: "<<diff;
+//    if (_animation_speed.length() > 0.8f){
+////        qDebug()<<"leo";
+//        btVector3 lol(_animation.translationVector(elapsed)-_previous_data._position);
+//    }
     _error_1._speed_error += absolute_value(_calculated_simulation_speed.length() - _body->getLinearVelocity().length());
-    _previous_data._position = _animation.translationVector(elapsed);
+    _previous_data._position = animation_position;
     _previous_data._position_simulation_2 = _previous_data._position_simulation;
     _previous_data._position_simulation = _body->getCenterOfMassPosition();
 
@@ -213,6 +222,7 @@ void InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
 }
 
 void InteractiveObject::updateEnergyStructure(btVector3 speed_animation, btVector3 speed_simulation, float gravity, float elapsed){
+
     _energy.animation.speed = speed_animation.length();
     _energy.simulation.speed = (speed_simulation.length());
 
@@ -288,7 +298,7 @@ void InteractiveObject::setSimulationTransformFromAnimation(float time){
     shape =btVector3(_animation.scalingVector(time));
     _shape.set_shape(shape);
 
-    _previous_data._position = translation;
+//    _previous_data._position = translation;
     _previous_data._position_simulation = translation;
     _previous_data._position_simulation_2 = translation;
 }
