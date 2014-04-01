@@ -58,6 +58,9 @@ public:
 private:
 //    btCollisionShape * _shape_collision;
 
+    btScalar cylinderVolume()const;
+    btScalar cubeVolume() const;
+    btScalar capsuleVolume()const;
 };
 
 #endif // HAPE_H

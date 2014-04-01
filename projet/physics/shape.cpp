@@ -2,6 +2,22 @@
 
 
 btScalar Shape::get_volume() const {
+    switch (_shape){
+    case capsule:
+        return capsuleVolume();
+        break;
+    case cylinder:
+        return cylinderVolume();
+        break;
+    case cube:
+        return cubeVolume();
+        break;
+    }
+}
+
+
+btScalar Shape::capsuleVolume()const{
+
     // for capsule : volume of cylinder of radius R and height H + volume of sphere of radius R
     // = pi.R^2.h + 4/3.pi.R^3
     btScalar r = get_shape().x();
@@ -9,6 +25,19 @@ btScalar Shape::get_volume() const {
     btScalar sphere_volume = (4/3) * M_PI * pow(r,3);
     btScalar cylinder_volume =  M_PI * pow(r,2) * h;
     return cylinder_volume+sphere_volume;
+}
+btScalar Shape::cylinderVolume()const{
+    // = pi.R^2.h
+    btScalar r = get_shape().x();
+    btScalar h = get_shape().y();
+    btScalar cylinder_volume =  M_PI * pow(r,2) * h;
+    return cylinder_volume;
+}
+btScalar Shape::cubeVolume()const{
+    btScalar x = get_shape().x();
+    btScalar y = get_shape().y();
+    btScalar z = get_shape().z();
+    return x*y*z;
 }
 
 
