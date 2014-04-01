@@ -52,10 +52,30 @@ void Stats::displayStats(){
                 bottom = value;
         }
     }
-    window.setY(_ui->get_zoom()/10+1);
-    window.setHeight((-(_ui->get_zoom()/5)+1));
-    window.setX(right-width()*6);
-    window.setWidth(width()*6);
+    float zoom = _ui->get_zoom();
+    float log = 1 / (qLn(zoom) / qLn(10));
+    zoom = zoom ;
+
+    if (GlobalConfig::is_enabled("automatic_stats_progression")){
+
+    } else {
+        qDebug()<<"zoom: "<<log;
+        if (log < 0) log = 0;
+        log = log * 1000;
+        qDebug()<<"log : "<<log;
+        int height = log;
+        right = _ui->get_camera().get_position().x() * 6;
+        top = _ui->get_camera().get_position().y() / 2;
+        int topint = top + height/2;
+        window.setY(topint);
+        window.setHeight(-height);
+    //    qDebug()<<"top: "<<top + height/2;
+        qDebug()<<"height : "<<- height;
+        window.setX(right);
+        window.setWidth(width()*6);
+
+    }
+
 
     P.ortho(window);
     pvm = P*V*M;
@@ -144,6 +164,7 @@ void Stats::display3DObjects(){
 
 void Stats::init(){
     Viewer::init();
+    _ui->_type = UIState::camera2D;
     _ui->set_zoom(100);
     _ui->activateProgressiveZoom(60);
 }
@@ -159,6 +180,8 @@ void Stats::keyPressEvent(QKeyEvent *keyEvent)
         _simulation->get_lock()->lockForRead();
         _simulation->start();
         _simulation->get_lock()->unlock();
+    } else if (keyEvent->key()==Qt::Key_A) {
+        GlobalConfig::switchState("automatic_stats_progression");
     } else {
         Viewer::keyPressEvent(keyEvent);
     }

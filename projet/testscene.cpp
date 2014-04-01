@@ -125,6 +125,7 @@ void TestScene::display3DObjects(){
 
 void TestScene::init(){
     Viewer::init();
+
     _ui->activateProgressiveZoom(60);
     OBJLoader loader;
     loader.parseOBJ(":/models/cube.obj");
