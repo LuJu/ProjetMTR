@@ -52,13 +52,20 @@ void Stats::displayStats(){
                 bottom = value;
         }
     }
-    float zoom = _ui->get_zoom();
-    float log = 1 / (qLn(zoom) / qLn(10));
-    zoom = zoom ;
+
+
 
     if (GlobalConfig::is_enabled("automatic_stats_progression")){
+        window.setY(_ui->get_zoom()/10+1);
+        window.setHeight((-(_ui->get_zoom()/5)+1));
+        window.setX(right-width()*6);
+        window.setWidth(width()*6);
 
     } else {
+        float zoom = _ui->get_zoom();
+        float log = 1 / (qLn(zoom) / qLn(10));
+        zoom = zoom ;
+
         qDebug()<<"zoom: "<<log;
         if (log < 0) log = 0;
         log = log * 1000;

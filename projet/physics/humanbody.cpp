@@ -99,25 +99,21 @@ void HumanBody::loadObjects(QString path){
                         joint._type=Joint::cone;
                     else if (strlist.at(2) == "point")
                         joint._type=Joint::point;
-                    btScalar a,b,c;
+                    btScalar vals[3];
                     bool good=false;
-                    a = strlist.at(n++).toFloat(&good);
-                    if (good = false ) qWarning()<<"Cannot convert str to bool";
-                    b= strlist.at(n++).toFloat(&good);
-                    if (good = false ) qWarning()<<"Cannot convert str to bool";
-                    c = strlist.at(n++).toFloat(&good);
-                    if (good = false ) qWarning()<<"Cannot convert str to bool";
-                    joint._pivotA=btVector3(a,b,c);
+                    for (int id = 0; id < 3; ++id) {
+                        vals[i] = strlist.at(i+3).toFloat(&good);
+                        if (good == false ) qWarning()<<"Cannot convert str to bool";
+                    }
+
+                    joint._pivotA=btVector3(vals[0],vals[1],vals[2]);
                     joint._localeA.setOrigin(joint._pivotA);
 
-                    a = strlist.at(n++).toFloat(&good);
-                    if (good = false ) qWarning()<<"Cannot convert str to bool";
-                    b= strlist.at(n++).toFloat(&good);
-                    if (good = false ) qWarning()<<"Cannot convert str to bool";
-                    c = strlist.at(n++).toFloat(&good);
-                    if (good = false ) qWarning()<<"Cannot convert str to bool";
-                    joint._pivotB=btVector3(a,b,c);
-
+                    for (int id = 0; id < 3; ++id) {
+                        vals[i] = strlist.at(i+6).toFloat(&good);
+                        if (good == false ) qWarning()<<"Cannot convert str to bool";
+                    }
+                    joint._pivotB=btVector3(vals[0],vals[1],vals[2]);
                     joint._localeB.setOrigin(joint._pivotB);
                     joint._complete =true;
 
