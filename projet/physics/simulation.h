@@ -35,8 +35,8 @@ public:
 
     const QList<InteractiveObject * >& get_display_list() {return  _display;}
     bool is_over() const {return _simulation_over;}
-    float get_elapsed_microseconds() const {return _elapsed;}
-    float get_elapsed_milliseconds() const {return _elapsed/1000;}
+    float get_elapsed_realtime() const {return _elapsed_realtime;}
+    float get_elapsed_milliseconds() const {return _elapsed_simulation;}
     HumanBody * get_human() {return &_human;}
     QReadWriteLock* get_lock() {return &_lock;}
 
@@ -74,8 +74,8 @@ private:
 
 
 
-    btScalar _elapsed;
-    btScalar _elapsed2;
+    btScalar _elapsed_realtime;
+    btScalar _elapsed_simulation;
     btScalar _diff;
 //    double _time_beginning;
 

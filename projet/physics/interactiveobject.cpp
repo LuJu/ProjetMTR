@@ -20,70 +20,33 @@ InteractiveObject::InteractiveObject():
     __build(btVector3(0,0,0),btVector3(1,1,1),Shape::cube);
 }
 
-void InteractiveObject::appendCurve( int index,QString label, QColor color){
-    Curve& c= _curves[index];
+void InteractiveObject::appendCurve(QList<Curve>& list, int index,QString label, QColor color){
+    Curve& c= list[index];
     c.set_color(color);
     c.set_label(label);
-    _curves.append(c);
-}
-void InteractiveObject::appendCurveSteps( int index,QString label, QColor color){
-    Curve& c= _curves_steps[index];
-    c.set_color(color);
-    c.set_label(label);
-    _curves_steps.append(c);
 }
 
-void InteractiveObject::appendCurves(){
+void InteractiveObject::appendCurves(QList<Curve>& list){
     for (int i = 0; i < NUMBER_OF_CURVES; ++i) {
-        _curves.append(Curve());
+        list.append(Curve());
     }
-    appendCurve(ANIMATION_KE,"Animation KE",QColor(255,0,0));
-    appendCurve(ANIMATION_AKE,"Animation KE",QColor(0,0,255));
-    appendCurve(ANIMATION_PE,"Animation KE",QColor(255,255,255));
-    appendCurve(SIMULATION_KE,"Animation KE",QColor(255,0,0));
-    appendCurve(SIMULATION_AKE,"Animation KE",QColor(0,0,255));
-    appendCurve(SIMULATION_PE,"Animation KE",QColor(255,255,25));
-    appendCurve(DIFF_KE,"Animation KE",QColor(255,0,255));
-    appendCurve(DIFF_AKE,"Animation KE",QColor(0,255,255));
-    appendCurve(DIFF_PE,"Animation KE",QColor(255,255,0));
-    appendCurve(ANIMATION_X,"Animation KE",QColor(255,0,0));
-    appendCurve(ANIMATION_Y,"Animation KE",QColor(255,0,255));
-    appendCurve(SIMULATION_Y,"Animation KE",QColor(0,255,255));
-}
-
-void InteractiveObject::appendCurvesSteps(){
-    for (int i = 0; i < NUMBER_OF_CURVES; ++i) {
-        _curves_steps.append(Curve());
-    }
-    appendCurve(ANIMATION_KE,"Animation KE",QColor(255,0,0));
-    appendCurve(ANIMATION_AKE,"Animation KE",QColor(0,0,255));
-    appendCurve(ANIMATION_PE,"Animation KE",QColor(255,255,255));
-    appendCurve(SIMULATION_KE,"Animation KE",QColor(255,0,0));
-    appendCurve(SIMULATION_AKE,"Animation KE",QColor(0,0,255));
-    appendCurve(SIMULATION_PE,"Animation KE",QColor(255,255,25));
-    appendCurve(DIFF_KE,"Animation KE",QColor(255,0,255));
-    appendCurve(DIFF_AKE,"Animation KE",QColor(0,255,255));
-    appendCurve(DIFF_PE,"Animation KE",QColor(255,255,0));
-    appendCurve(ANIMATION_X,"Animation KE",QColor(255,0,0));
-    appendCurve(ANIMATION_Y,"Animation KE",QColor(255,0,255));
-    appendCurve(SIMULATION_Y,"Animation KE",QColor(0,255,255));
+    appendCurve(list,ANIMATION_KE,"Animation KE",QColor(255,0,0));
+    appendCurve(list,ANIMATION_AKE,"Animation KE",QColor(0,0,255));
+    appendCurve(list,ANIMATION_PE,"Animation KE",QColor(255,255,255));
+    appendCurve(list,SIMULATION_KE,"Animation KE",QColor(255,0,0));
+    appendCurve(list,SIMULATION_AKE,"Animation KE",QColor(0,0,255));
+    appendCurve(list,SIMULATION_PE,"Animation KE",QColor(255,255,25));
+    appendCurve(list,DIFF_KE,"Animation KE",QColor(255,0,255));
+    appendCurve(list,DIFF_AKE,"Animation KE",QColor(0,255,255));
+    appendCurve(list,DIFF_PE,"Animation KE",QColor(255,255,0));
+    appendCurve(list,ANIMATION_X,"Animation KE",QColor(255,0,0));
+    appendCurve(list,ANIMATION_Y,"Animation KE",QColor(255,0,255));
+    appendCurve(list,SIMULATION_Y,"Animation KE",QColor(0,255,255));
 }
 
 void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,Shape::shapetype type){
     _shape = Shape(shape,type);
 
-
-//    switch(type){
-//    case Shape::cube:
-//        _shape = new btBoxShape(shape);
-//        break;
-//    case Shape::cylinder:
-//        _shape = new btCylinderShape(shape);
-//        break;
-//    case Shape::capsule:
-//        _shape = new btCapsuleShape(shape.x(),shape.y());
-//        break;
-//    }
     _transform.setIdentity();
     _transform.setOrigin(origin);
 
@@ -91,8 +54,8 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
     _animation_from_simulation.get_translation_curves()[1].set_color(QColor(0,1,0));
     _animation_from_simulation.get_translation_curves()[2].set_color(QColor(0,0,1));
 
-    appendCurves();
-    appendCurvesSteps();
+    appendCurves(_curves);
+    appendCurves(_curves_steps);
 
     _error_1._speed_error = 0;
     _error_1._ticks= 0;
@@ -122,18 +85,7 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
     _energy.simulation.z = 0;
 }
 
-//InteractiveObject::InteractiveObject(const InteractiveObject& object) :
-//    _animated(false),
-//    _mass(object._mass),
-//    _transform(object._transform),
-//    _local_inertia(object._local_inertia),
-//    _body(NULL),
-//    _motion_state(NULL){
-//    _shape = new btBoxShape(((btBoxShape*)object._shape)->getHalfExtentsWithMargin());
-//}
-
 InteractiveObject::~InteractiveObject(){
-//    if(_shape) delete _shape;
     if(_body)  delete _body;
     if(_motion_state) delete _motion_state;
     if(_collision_shape) delete _collision_shape;
@@ -179,23 +131,14 @@ void InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
 
 
     btVector3 animation_position = _animation.translationVector(elapsed);
-    btVector3 distance(animation_position-_previous_data._position);
+    btVector3 distance(animation_position-_previous_data._position_animation);
     btVector3 simulation_distance = _body->getCenterOfMassPosition()-_previous_data._position_simulation;
     _animation_speed = distance/(diff/1000); // the diff value is in ms so a conversion is needed to be in m/s
 
 /// Calculated simulation speed
     _calculated_simulation_speed = simulation_distance/(diff/1000);
-//    qDebug()<<"adistance: "<<distance.length();
-//    qDebug()<<"position : "<<animation_position.x()<<" "<<animation_position.y()<<" "<<animation_position.z()<<" ";
-//    qDebug()<<"idistance: "<<distance.x()<<" "<<distance.y()<<" "<<distance.z()<<" ";
-//    qDebug()<<"distance: "<<distance.length()<<"m";
-//    qDebug()<<"diff: "<<diff;
-//    if (_animation_speed.length() > 0.8f){
-////        qDebug()<<"leo";
-//        btVector3 lol(_animation.translationVector(elapsed)-_previous_data._position);
-//    }
     _error_1._speed_error += absolute_value(_calculated_simulation_speed.length() - _body->getLinearVelocity().length());
-    _previous_data._position = animation_position;
+    _previous_data._position_animation = animation_position;
     _previous_data._position_simulation_2 = _previous_data._position_simulation;
     _previous_data._position_simulation = _body->getCenterOfMassPosition();
 
@@ -214,8 +157,14 @@ void InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
 //    btVector3 speed_simulation =_calculated_simulation_speed_2; // third method
 
     _angular_speed_animation = (_animation.rotationVector(elapsed) - _previous_data._rotation_animation) / (diff/1000) ;
+    btQuaternion rot = _body->getCenterOfMassTransform().getRotation();
+
+    btVector3 current_rotation_animation = _animation.rotationVector(elapsed);
+    _rotation_vector_animation = (current_rotation_animation-_previous_data._rotation_animation).normalized();
+    _rotation_vector_simulation = (btQuat2euler(rot)-_previous_data._rotation_simulation).normalized();
 
     _previous_data._rotation_animation = _animation.rotationVector(elapsed);
+    _previous_data._rotation_simulation = btQuat2euler(rot);
 
     updateEnergyStructure(_animation_speed,speed_simulation,gravity,elapsed);
     insertDataToCurves(_curves,elapsed);
@@ -227,7 +176,13 @@ void InteractiveObject::updateEnergyStructure(btVector3 speed_animation, btVecto
     _energy.simulation.speed = (speed_simulation.length());
 
     _energy.animation.aspeed = _angular_speed_animation.length();
+    _energy.animation.pt_aspeed.x = _angular_speed_animation.x();
+    _energy.animation.pt_aspeed.y = _angular_speed_animation.y();
+    _energy.animation.pt_aspeed.z = _angular_speed_animation.z();
     _energy.simulation.aspeed = rad2deg(_body->getAngularVelocity().length());
+    _energy.simulation.pt_aspeed.x = rad2deg(_body->getAngularVelocity().x());
+    _energy.simulation.pt_aspeed.y = rad2deg(_body->getAngularVelocity().y());
+    _energy.simulation.pt_aspeed.z = rad2deg(_body->getAngularVelocity().z());
 
     _energy.animation.ke  = kinetic_energy( speed_animation.length(),_mass);
     _energy.simulation.ke = kinetic_energy( speed_simulation.length(),_mass);
@@ -318,10 +273,18 @@ void InteractiveObject::setSimulationPosition(float time){
                                           deg2rad(_angular_speed_animation.z())));
     } else { // if the simulation is starting
 
-        body.setLinearVelocity(speedAtTime(0));
+        _animation_speed = speedAtTime(0.0f);
+        _angular_speed_animation = _animation.rotationTangent(time) ;
+        body.setLinearVelocity(_animation_speed);
         body.setAngularVelocity(btVector3(deg2rad(_angular_speed_animation.x()),
                                           deg2rad(_angular_speed_animation.y()),
                                           deg2rad(_angular_speed_animation.z())));
+        _previous_data._position_animation = _animation.translationVector(0.0f);
+        _previous_data._position_simulation = _body->getCenterOfMassPosition();
+        _previous_data._position_simulation_2 = _previous_data._position_simulation;
+        _previous_data._linear_velocity = _body->getLinearVelocity();
+        _previous_data._rotation_animation = _animation.rotationVector(0.0f);
+        _calculated_simulation_speed = _animation_speed;
     }
 
     _previous_data._linear_velocity = _animation_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
@@ -339,10 +302,10 @@ void InteractiveObject::updateAnimationFromSimulationData(float time){
 }
 
 btVector3 InteractiveObject::speedAtTime(float time) const {
-    return _animation.translationSlope(time) * 1000.0f;
+    return _animation.translationTangent(time) * 1000.0f;
 }
 
-btScalar InteractiveObject::get_moment(){
+btScalar InteractiveObject::get_moment(btVector3 rotation_axis){
     btVector3 shape  = _shape.get_shape();
     btScalar m = _mass;
     btScalar R = shape.x();
@@ -358,34 +321,44 @@ btScalar InteractiveObject::get_moment(){
                                0                      , (m * R2)/2.0f  , 0                      ,
                                0                      , 0               , m*(R2/4.0f + h2/12.0f) );
     btMatrix3x3 rotation;
-    rotation.setRotation(_body->getCenterOfMassTransform().getRotation());
+    rotation.setIdentity();
+    rotation[0][0] = rotation_axis[0];
+    rotation[1][0] = rotation_axis[1];
+    rotation[2][0] = rotation_axis[2];
+    rotation[1][1] = 0;
+    rotation[2][2] = 0;
+//    rotation.setRotation(_body->getCenterOfMassTransform().getRotation());
+//    btVector3 rotation_axis = _rotation_animation.cross(_previous_data._rotation_animation);
     btMatrix3x3 product = (moment_matrix*rotation);
-//        qDebug()<<"matrix moment";
-//        qDebug()<<moment_matrix[0][0]<<" "<<moment_matrix[0][1]<<" "<<moment_matrix[0][2];
-//        qDebug()<<moment_matrix[1][0]<<" "<<moment_matrix[1][1]<<" "<<moment_matrix[1][2];
-//        qDebug()<<moment_matrix[2][0]<<" "<<moment_matrix[2][1]<<" "<<moment_matrix[2][2];
-//        qDebug();
-//        qDebug()<<"matrix rotations";
-//        qDebug()<<rotation[0][0]<<" "<<rotation[0][1]<<" "<<rotation[0][2];
-//        qDebug()<<rotation[1][0]<<" "<<rotation[1][1]<<" "<<rotation[1][2];
-//        qDebug()<<rotation[2][0]<<" "<<rotation[2][1]<<" "<<rotation[2][2];
-//        qDebug();
-//        qDebug()<<"product";
-//        qDebug()<<product[0][0]<<" "<<product[0][1]<<" "<<product[0][2];
-//        qDebug()<<product[1][0]<<" "<<product[1][1]<<" "<<product[1][2];
-//        qDebug()<<product[2][0]<<" "<<product[2][1]<<" "<<product[2][2];
-//        qDebug();
+
+//    qDebug()<<"vector rotation";
+//    qDebug()<<rotation_axis[0]<<" "<<rotation_axis[1]<<" "<<rotation_axis[2];
+//    qDebug()<<"matrix moment";
+//    qDebug()<<moment_matrix[0][0]<<" "<<moment_matrix[0][1]<<" "<<moment_matrix[0][2];
+//    qDebug()<<moment_matrix[1][0]<<" "<<moment_matrix[1][1]<<" "<<moment_matrix[1][2];
+//    qDebug()<<moment_matrix[2][0]<<" "<<moment_matrix[2][1]<<" "<<moment_matrix[2][2];
+//    qDebug();
+//    qDebug()<<"matrix rotations";
+//    qDebug()<<rotation[0][0]<<" "<<rotation[0][1]<<" "<<rotation[0][2];
+//    qDebug()<<rotation[1][0]<<" "<<rotation[1][1]<<" "<<rotation[1][2];
+//    qDebug()<<rotation[2][0]<<" "<<rotation[2][1]<<" "<<rotation[2][2];
+//    qDebug();
+//    qDebug()<<"product";
+//    qDebug()<<product[0][0]<<" "<<product[0][1]<<" "<<product[0][2];
+//    qDebug()<<product[1][0]<<" "<<product[1][1]<<" "<<product[1][2];
+//    qDebug()<<product[2][0]<<" "<<product[2][1]<<" "<<product[2][2];
+//    qDebug();
 ////    btMatrix3x3 rotation = _body->
-        return product[2][2];
+        return (product.getColumn(0)).length();
 }
 
 btScalar InteractiveObject::get_angular_EC_simulation(){
-    return pow(_body->getAngularVelocity().length(),2) * get_moment() / 2;
+    return pow(_body->getAngularVelocity().length(),2) * get_moment(_rotation_vector_simulation) / 2;
 
 }
 
 btScalar InteractiveObject::get_angular_EC_animation(){
-    return pow(deg2rad(_angular_speed_animation.length()),2) * get_moment() / 2;
+    return pow(deg2rad(_angular_speed_animation.length()),2) * get_moment(_rotation_vector_animation) / 2;
 }
 
 QString InteractiveObject::exportSimulationToAnimation(){

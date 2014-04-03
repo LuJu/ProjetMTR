@@ -28,17 +28,17 @@ public:
                          _rotation_curves[1].get_value(time),
                          _rotation_curves[2].get_value(time));
     }
-    btVector3 scalingSlope(float time) const {
+    btVector3 scalingTangent(float time) const {
         return btVector3(_scaling_curves[0].tangentAt(time),
                          _scaling_curves[1].tangentAt(time),
                          _scaling_curves[2].tangentAt(time));
     }
-    btVector3 translationSlope(float time) const {
+    btVector3 translationTangent(float time) const {
         return btVector3(_translation_curves[0].tangentAt(time),
                          _translation_curves[1].tangentAt(time),
                          _translation_curves[2].tangentAt(time));
     }
-    btVector3 rotationSlope(float time) const {
+    btVector3 rotationTangent(float time) const {
         return btVector3(_rotation_curves[0].tangentAt(time),
                          _rotation_curves[1].tangentAt(time),
                          _rotation_curves[2].tangentAt(time));

@@ -99,8 +99,11 @@ void Stats::displayStats(){
         }
         const QList<Curve>& curves_steps= _display.at(i)->get_curves_steps();
         for (int j = 0; j < curves_steps.size(); ++j) {
-            if (!curves_steps[j].isEmpty()) MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),i+3,true);
-//            Mesh::render(curves_steps[j],GlobalConfig::get_int("steps_duration")/10,curves_steps[j].get_color(),i+6,true);
+            if (!curves_steps[j].isEmpty()){
+                MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),i+3,true);
+            }
+
+//            MeshUtils::render(curves_steps[j],GlobalConfig::get_int("steps_duration")/10,curves_steps[j].get_color(),i+6,true);
         }
     }
 }

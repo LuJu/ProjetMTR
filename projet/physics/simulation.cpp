@@ -8,7 +8,7 @@ Simulation::Simulation():
     _end_counter(0),
     _updates_since_last_step(0),
     _started(false),
-    _elapsed2(0)
+    _elapsed_simulation(0)
 {
 }
 
@@ -75,15 +75,10 @@ void Simulation::loop(){
 
     btScalar clock_time = _clock.getTimeMilliseconds() / coeff ;
     _last_update_time = clock_time;
-
-//    qDebug()<<"time : "<<_clock.getTimeMilliseconds();
     while (_world && !_simulation_over){
         clock_time = _clock.getTimeMilliseconds() / coeff ;
         time_since_last_update = clock_time - _last_update_time;
-//        qDebug()<<time_since_last_update;
         if (time_since_last_update/1000 >= 1./(ups * coeff)){
-//            qDebug()<<"entering update function";
-//            qDebug()<<"time 1"<<_clock.getTimeMilliseconds();
             time_since_last_update = 0;
             _lock.lockForWrite(); {
                 update();
@@ -93,7 +88,6 @@ void Simulation::loop(){
                     simulationOver();
                 _updates_since_last_step++;
             } _lock.unlock();
-//            qDebug()<<"time 2"<<_clock.getTimeMilliseconds();
             _last_update_time =clock_time;
 
         }
@@ -104,28 +98,18 @@ void Simulation::update(){
 
     btScalar coeff = _params.get_coefficient();
     btScalar ups = _params.get_ups();
-    btScalar progression = 1./(ups * coeff);
+    btScalar progression_s = 1.d/(ups * coeff);
+    btScalar progression_ms = 1000.0d*(1./(ups * coeff));
     btScalar clock_time = _clock.getTimeMicroseconds()/coeff;
 
-    _diff =  clock_time-_elapsed;
-    _elapsed=clock_time;
-//    _diff =  progression;
-    _elapsed2=_elapsed2+progression;
-//    qDebug()<<"_elapsed2: "<<_elapsed2;
-
-
-//    _world->stepSimulation(progression / coeff,1);
-//    _world->stepSimulation(progression,0);
-    btScalar time_t=_clock.getTimeMicroseconds();
-    _world->stepSimulation(progression ,1,btScalar(1.0/(ups)));
-//    qDebug()<<"time taken:"<<_clock.getTimeMicroseconds()-time_t;
-    _step_counter+=progression*1000; // conversion from seconds to ms
-    _end_counter+=progression*1000;
-    _ups_counter+=progression*1000;
-    _human.updateBodyInformations(_elapsed2*1000,progression*1000,_params.get_gravity().y());
-//    _human.updateBodyInformations(_elapsed/1000,_diff/1000,_params.get_gravity().y());
-//    qDebug()<<"elapsed" <<_elapsed / 1000;
-//    qDebug()<<"counter" <<_step_counter;
+    _diff =  clock_time-_elapsed_realtime;
+    _elapsed_realtime=clock_time;
+    _elapsed_simulation=_elapsed_simulation+progression_ms;
+    _world->stepSimulation(progression_s ,1,btScalar(1.0/(ups)));
+    _step_counter+=progression_ms; // conversion from seconds to ms
+    _end_counter+=progression_ms;
+    _ups_counter+=progression_ms;
+    _human.updateBodyInformations(_elapsed_simulation,progression_ms,_params.get_gravity().y());
 }
 
 void Simulation::resetStep(float time){
@@ -136,13 +120,12 @@ void Simulation::resetStep(float time){
 //    qDebug()<<"updates :"<<_updates_since_last_step<<" / ";
     _updates_since_last_step = 0;
     _step_counter = 0;
-
 }
 
 void Simulation::stepOver(){
     _human.recordStatus();
 //    qDebug()<<"time step over: "<<_clock.getTimeMilliseconds();
-    resetStep(_elapsed2*1000);
+    resetStep(_elapsed_simulation);
 }
 
 void Simulation::cleanWorld(){

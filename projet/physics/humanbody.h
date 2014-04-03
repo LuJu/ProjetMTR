@@ -32,6 +32,7 @@ public:
     QList<InteractiveObject::part_info> _full_data_list;
     QList<InteractiveObject::part_info> _complete_data_list;
     void saveDataList();
+    void savePartDataList(const QString& part_name);
     void saveFullDataList(const SimulationParameters& params);
     void saveCompleteDataList();
     void setSimulationPosition(float time);

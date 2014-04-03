@@ -22,8 +22,14 @@
 class InteractiveObject
 {
 public:
+    typedef struct pt{
+        float x,y,z;
+    }t_pt;
+
     typedef struct energy_info{
         float x,y,z;
+        pt pt_aspeed;
+        pt pt_speed;
         float speed;
         float aspeed; //angular speed
         float ake,ke,pe;
@@ -85,7 +91,7 @@ public:
 
     btDefaultMotionState * get_motion_state(){
         if(!_motion_state)
-            _motion_state = new btDefaultMotionState(_transform);
+            qWarning()<<"Motion state not defined";
         return _motion_state;
     }
 
@@ -126,11 +132,9 @@ private:
     MeshPointer _mesh;
 
     btVector3 speedAtTime(float time) const;
-    //! temporary disabled
+    //! disabled
     InteractiveObject(const InteractiveObject& object);
     btDefaultMotionState * _motion_state;
-    // _shape needs to have a polymorphical behaviour so it is a pointer
-//    btCollisionShape * _shape;
     btTransform _transform;
 
     btVector3 _local_inertia;
@@ -151,16 +155,18 @@ private:
     btVector3 _calculated_simulation_speed;
     btVector3 _animation_speed;
     btVector3 _angular_speed_animation;
-    btScalar _angular_speed_y;
-
+    btVector3 _angular_speed_simulation;
+    btVector3 _rotation_vector_animation;
+    btVector3 _rotation_vector_simulation;
 
     struct{
-        btVector3 _position;
+        btVector3 _position_animation;
         btVector3 _rotation_animation;
+        btVector3 _rotation_simulation;
         btVector3 _linear_velocity;
         btVector3 _position_simulation;
         btVector3 _position_simulation_2;
-    }_previous_data;
+    }_previous_data, _current_data;
 
     //! error between the speed given by bullet and the speed obtained from calculation
     struct {
@@ -168,10 +174,8 @@ private:
         btScalar _ticks;
     }_error_1,_error_2;
 
-    void appendCurve(int index, QString label, QColor color);
-    void appendCurves();
-    void appendCurveSteps(int index, QString label, QColor color);
-    void appendCurvesSteps();
+    void appendCurve(QList<Curve>& list, int index, QString label, QColor color);
+    void appendCurves(QList<Curve>& list);
     void insertDataToCurves(QList<Curve>& curves, float elapsed);
     void updateEnergyStructure(btVector3 speed_animation, btVector3 speed_simulation, float gravity, float elapsed);
     void updateAnimationFromSimulationData(float time);
@@ -180,7 +184,7 @@ private:
         return _mass / _shape.get_volume();
     }
 
-    btScalar get_moment();
+    btScalar get_moment(btVector3 rotation_axis);
 
     btScalar get_angular_EC_simulation();
 

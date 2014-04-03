@@ -152,6 +152,9 @@ void HumanBody::recordStatus(){
         _data_list.append(energy);
 
         full_data.animation.speed += energy.animation.speed;
+        full_data.animation.pt_aspeed.x += energy.animation.pt_aspeed.x;
+        full_data.animation.pt_aspeed.y += energy.animation.pt_aspeed.y;
+        full_data.animation.pt_aspeed.z += energy.animation.pt_aspeed.z;
 
         full_data.simulation.ake += energy.simulation.ake;
         full_data.simulation.ke += energy.simulation.ke;
@@ -214,8 +217,62 @@ void HumanBody::saveDataList(){
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();
+        for (int j = 0; j < _parts.size(); ++j) {
+            savePartDataList(_parts[j]->get_body_part());
+        }
     }
 }
+
+void HumanBody::savePartDataList(const QString& part_name){
+    QString path = "output/";
+    QChar c = ',';
+    QChar nl = '\n';
+    QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
+    name = name +"_output_"+part_name;
+    QString oldname=name;
+    QString ext="csv";
+
+    InteractiveObject::part_info save;
+    QFile file;
+    file.setFileName(name+"."+ext);
+    int i = 1;
+    if (QDir::setCurrent(path))
+        qDebug()<<"path set";
+    else {
+        qDebug()<<"path not set "<<path;
+    }
+    while (file.exists()){
+        qWarning()<<"File already exists";
+        name = oldname+" ("+QString::number(i)+")";
+        file.setFileName(name+"."+ext);
+        ++i;
+    }
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        qWarning()<<"Couldn't write file "<<path;
+        exit(0);
+    } else {
+        QTextStream stream(&file);
+        stream<<"id"<<c<<"x animation"<<c<<"y animation"<<c<<"z animation"<<c<<"x simulation"<<c<<" y simulation"<<c<<"z simulation"<<c<<
+                "vitesse animation" <<c<<"EC animation"  <<c<<"ECA animation" <<c<<"EP animation" <<c<<
+                "vitesse simulation"<<c<<"EC simulation" <<c<<"ECA simulation"<<c<<"EP simulation"<<c<<
+                "EC difference"     <<c<<"ECA difference"<<c<<"EP difference" <<c<<"erreur"       <<nl;
+        for (int i = 0; i < _data_list.size(); ++i) {
+            if (_data_list[i].part_name == part_name){
+                save=_data_list.at(i);
+                stream<<save.part_name<<c<<
+                        save.animation.x     <<c<<save.animation.y  <<c<<save.animation.z   <<c<<
+                        save.simulation.x    <<c<<save.simulation.y <<c<<save.simulation.z  <<c<<
+                        save.animation.speed <<c<<save.animation.ke <<c<<save.animation.ake <<c<<save.animation.pe<<c<<
+                        save.simulation.speed<<c<<save.simulation.ke<<c<<save.simulation.ake<<c<<save.animation.pe<<c<<
+                        save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<c<<save.mean_error  <<nl;
+            }
+        }
+        file.close();
+        qDebug()<<"File successfully written : "<<file.fileName();
+    }
+}
+
+
 void HumanBody::saveCompleteDataList(){
     QString path = "output/";
     QChar c = ',';
@@ -293,14 +350,14 @@ void HumanBody::saveFullDataList(const SimulationParameters& params){
     } else {
         QTextStream stream(&file);
         stream<<"id,"<<
-                "Speed animation"   <<c<<
+                "Speed animation"   <<c<<"ASpeed animation x"<<c<<"ASpeed animation y" <<c<<"ASpeed animation z"<<c<<
                 "ECT animation (J)" <<c<<"ECA animation (J)" <<c<<"EC totale animation"<<c<<"EP animation (J)" <<c<<
                 "ECT simulation (J)"<<c<<"ECA simulation (J)"<<c<<"EC totale simulation"<<c<<"EP simulation (J)"<<c<<
                 "ECT difference (J)"<<c<<"ECA difference (J)"<<c<<"EC totale difference"<<c<<"EP difference (J)"<<c<<"duree(ms):"<<c<<params.get_duration()<<c<<"pas(ms):"<<c<<params.get_steps_duration()<<nl;
         for (int i = 0; i < _full_data_list.size(); ++i) {
             save=_full_data_list.at(i);
             stream<<i<<c<<
-            save.animation.speed<<c<<
+            save.animation.speed<<c<<save.animation.pt_aspeed.x<<c<<save.animation.pt_aspeed.y<<c<<save.animation.pt_aspeed.z<<c<<
             save.animation.ke <<c<<save.animation.ake <<c<<save.animation.ake+save.animation.ke  <<c<<save.animation.pe <<c<<
             save.simulation.ke<<c<<save.simulation.ake<<c<<save.simulation.ake+save.simulation.ke<<c<<save.simulation.pe<<c<<
             save.ke_diff      <<c<<save.ake_diff      <<c<<save.ake_diff+save.ake_diff           <<c<<save.pe_diff      <<nl;
