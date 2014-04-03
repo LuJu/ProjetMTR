@@ -168,6 +168,8 @@ void InteractiveObject::updatePartInfo(float elapsed,float diff,float gravity){
 
     updateEnergyStructure(_animation_speed,speed_simulation,gravity,elapsed);
     insertDataToCurves(_curves,elapsed);
+
+    get_extremity(elapsed);
 }
 
 void InteractiveObject::updateEnergyStructure(btVector3 speed_animation, btVector3 speed_simulation, float gravity, float elapsed){
@@ -330,6 +332,7 @@ btScalar InteractiveObject::get_moment(btVector3 rotation_axis){
 //    rotation.setRotation(_body->getCenterOfMassTransform().getRotation());
 //    btVector3 rotation_axis = _rotation_animation.cross(_previous_data._rotation_animation);
     btMatrix3x3 product = (moment_matrix*rotation);
+
 
 //    qDebug()<<"vector rotation";
 //    qDebug()<<rotation_axis[0]<<" "<<rotation_axis[1]<<" "<<rotation_axis[2];

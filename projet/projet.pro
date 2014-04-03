@@ -1,7 +1,12 @@
 QT          += opengl xml widgets
 
 SOURCES     = \
-    main.cpp
+    main.cpp \
+    ../../DeeTree/wgraph/graphicbuffer.cpp \
+    ../../DeeTree/wgraph/graphicnode.cpp \
+    ../../DeeTree/wgraph/walgorithms.cpp \
+    ../../DeeTree/wgraph/wnode.cpp \
+    ../../DeeTree/wgraph/wtree.cpp
 #   UTILS   ###############
 HEADERS     += \
     /home/batman/Programmation/QtDee/utils/utils.h \
@@ -11,7 +16,12 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/maths.h \
     /home/batman/Programmation/QtDee/utils/csvparser.h \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h
+    /home/batman/Programmation/QtDee/utils/curve.h \
+    ../../DeeTree/wgraph/graphicbuffer.h \
+    ../../DeeTree/wgraph/graphicnode.h \
+    ../../DeeTree/wgraph/walgorithms.h \
+    ../../DeeTree/wgraph/wnode.h \
+    ../../DeeTree/wgraph/wtree.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \
