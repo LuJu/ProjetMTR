@@ -12,6 +12,8 @@
 
 #include "utils/csvparser.h"
 
+#include "wgraph/wtree.h"
+
 #include "interactiveobject.h"
 #include "bodyinfo.h"
 #include "joint.h"
@@ -72,6 +74,13 @@ public:
     }
 
     void exportSimulationToAnimation();
+
+    WTree<InteractiveObject> _parts_tree;
+    void buildTree(){
+        for (int i = 0; i < _parts.size(); ++i) {
+
+        }
+    }
 
 protected:
     int _mass;

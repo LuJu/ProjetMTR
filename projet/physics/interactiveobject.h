@@ -166,6 +166,7 @@ private:
         btVector3 _linear_velocity;
         btVector3 _position_simulation;
         btVector3 _position_simulation_2;
+
     }_previous_data, _current_data;
 
     //! error between the speed given by bullet and the speed obtained from calculation
@@ -196,23 +197,7 @@ private:
         return _error_2._speed_error / _error_2._ticks ;
     }
 
-    btVector3 get_extremity(float time){
-        btScalar R = _shape.get_shape().y();
-        btVector3 center_position = _animation.translationVector(time);
-        btVector3 aot = _animation.rotationVector(time);
-//        btScalar a = _animation.get_rotation_curves().x()[time];
-//        btScalar o = _animation.get_rotation_curves().y()[time];
-//        btScalar t = _animation.get_rotation_curves().z()[time];
-        qDebug()<<"a :"<<aot[0]<<"o :"<<aot[1]<<"t :"<<aot[2];
-        btVector3 r_vector(
-                    R * qCos(deg2rad(aot[2])) * qCos(deg2rad(aot[0])),
-                    R * qCos(deg2rad(aot[2])),
-                    R * qCos(deg2rad(aot[2])) * qSin(deg2rad(aot[0])));
-        qDebug()<<"a :"<<r_vector[0]<<"o :"<<r_vector[1]<<"t :"<<r_vector[2];
-        qDebug()<<"ac:"<<center_position[0]<<"oc:"<<center_position[1]<<"tc:"<<center_position[2];
-        qDebug();
-        return center_position + r_vector;
-    }
+    btVector3 get_extremity(float time);
 };
 
 #endif // INTERACTIVEOBJECT_H

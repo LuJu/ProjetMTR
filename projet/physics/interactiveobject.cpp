@@ -398,3 +398,25 @@ QString InteractiveObject::exportSimulationToAnimation(){
     output<<"end"<<nl;
     return outstring;
 }
+
+btVector3 InteractiveObject::get_extremity_animation(float time){
+    btScalar R = _shape.get_shape().y();
+    btVector3 center = _animation.translationVector(time);
+
+    btVector3 ypr = _animation.rotationVector(time);
+    btQuaternion quat;
+
+    quat.setEuler(deg2rad(ypr.y()),deg2rad(ypr.x()),deg2rad(ypr.z()));
+    QVector3D top_position(0,R/2,0);
+    quat.normalize();
+    QQuaternion qquat(quat.w(),quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z());
+    qquat= qquat.fromAxisAndAngle(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z(),rad2deg(quat.getAngle()));
+
+    top_position = qquat.rotatedVector(tp);
+
+//    qDebug()<<"top :"<<vv.x()<<"o :"<<vv.y()<<"t :"<<vv.z();
+//    qDebug()<<"quat :"<<qq;
+//    qDebug()<<"xyz :"<<ypr[0]<<"o :"<<ypr[1]<<"t :"<<ypr[2];
+
+    return center + btVector3(top_position.x(),top_position.y(),top_position.z());
+}

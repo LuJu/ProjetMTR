@@ -1,12 +1,8 @@
 QT          += opengl xml widgets
 
 SOURCES     = \
-    main.cpp \
-    ../../DeeTree/wgraph/graphicbuffer.cpp \
-    ../../DeeTree/wgraph/graphicnode.cpp \
-    ../../DeeTree/wgraph/walgorithms.cpp \
-    ../../DeeTree/wgraph/wnode.cpp \
-    ../../DeeTree/wgraph/wtree.cpp
+    main.cpp
+
 #   UTILS   ###############
 HEADERS     += \
     /home/batman/Programmation/QtDee/utils/utils.h \
@@ -16,12 +12,7 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/maths.h \
     /home/batman/Programmation/QtDee/utils/csvparser.h \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h \
-    ../../DeeTree/wgraph/graphicbuffer.h \
-    ../../DeeTree/wgraph/graphicnode.h \
-    ../../DeeTree/wgraph/walgorithms.h \
-    ../../DeeTree/wgraph/wnode.h \
-    ../../DeeTree/wgraph/wtree.h
+    /home/batman/Programmation/QtDee/utils/curve.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \
@@ -52,6 +43,16 @@ SOURCES     += \
     /home/batman/Programmation/QtDee/3d/bezierpath.cpp \
     /home/batman/Programmation/QtDee/3d/objloader.cpp
 ############################
+
+#   WTREE    ##############
+SOURCES += \
+    /home/batman/Programmation/DeeTree/wgraph/wnode.cpp \
+    /home/batman/Programmation/DeeTree/wgraph/wtree.cpp \
+    /home/batman/Programmation/DeeTree/wgraph/walgorithms.cpp
+HEADERS += \
+    /home/batman/Programmation/DeeTree/wgraph/wnode.h \
+    /home/batman/Programmation/DeeTree/wgraph/wtree.h \
+    /home/batman/Programmation/DeeTree/wgraph/walgorithms.h
 
 #   CORE     ##############
 HEADERS     += \
@@ -124,6 +125,8 @@ INCLUDEPATH += /home/batman/Programmation/QtDee
 DEPENDPATH += /home/batman/Programmation/QtDee
 INCLUDEPATH += /home/batman/Programmation/DeeCore
 DEPENDPATH += /home/batman/Programmation/DeeCore
+INCLUDEPATH += /home/batman/Programmation/DeeTree
+DEPENDPATH += /home/batman/Programmation/DeeTree
 #INCLUDEPATH += /usr/local/include/bullet/LinearMath
 # Linux
 #INCLUDEPATH *= $/usr/include/QGLViewer
