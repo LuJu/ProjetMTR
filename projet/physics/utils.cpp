@@ -1,4 +1,4 @@
-#include "btutils.h"
+#include "utils.h"
 
 float rot_x(btQuaternion q)
 {
@@ -34,3 +34,5 @@ float rot_z(btQuaternion q)
 btVector3 btQuat2euler(btQuaternion q){
     return btVector3(rot_x(q),rot_y(q),rot_z(q));
 }
+
+

@@ -15,49 +15,18 @@
 
 //#include "core/globalconfig.h"
 
-#include "animationdata.h"
+#include "animatedobject.h"
+#include "simulatedobject.h"
 #include "shape.h"
-#include "btutils.h"
+#include "utils.h"
 
 class InteractiveObject
 {
 public:
-    typedef struct pt{
-        float x,y,z;
-    }t_pt;
-
-    typedef struct energy_info{
-        float x,y,z;
-        pt pt_aspeed;
-        pt pt_speed;
-        float speed;
-        float aspeed; //angular speed
-        float ake,ke,pe;
-    }t_energy_info;
-
-    typedef struct part_info{
-        QString part_name;
-        float length;
-        t_energy_info animation, simulation;
-        float ake_diff;
-        float ke_diff;
-        float pe_diff;
-        float mean_error;
-        float mean_error_2;
-    }t_part_info;
-
-
     InteractiveObject(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),Shape::shapetype type=Shape::cube);
     InteractiveObject();
     ~InteractiveObject();
 
-
-    btVector3 getTopPosition() const {
-        btVector3 center = get_body().getCenterOfMassPosition();
-//        btTransform transform = get_body().getan
-        btQuaternion orientation = get_body().getOrientation();
-        btVector3 position = orientation.getAxis() * _shape.get_shape().getY();
-    }
     //! calculates the information about the energy of the part of the body
     /*!
         calculates the information about the energy of the part of the body \n
@@ -67,7 +36,7 @@ public:
         \return output
     */
     void updatePartInfo(float elapsed,float diff,float gravity);
-    InteractiveObject::t_part_info getEnergyInformation() const {return _energy;}
+    t_part_info getEnergyInformation() const {return _energy;}
 
     btVector3 & get_local_inertia() {return _local_inertia;}
     void set_local_inertia(btVector3 local_inertia){_local_inertia = local_inertia;}
@@ -81,7 +50,7 @@ public:
     btRigidBody & get_body();
     const btRigidBody & get_body() const ;
 
-    AnimationData& get_animation() {return _animation;}
+    AnimatedObject& get_animation() {return _animation;}
 
     bool get_animated() const {return _animated;}
     void set_animated(bool animated){_animated = animated;}
@@ -143,8 +112,9 @@ private:
     // Curves used to display data on screen
     QList<Curve> _curves;
     QList<Curve> _curves_steps;
-    AnimationData _animation;
-    AnimationData _animation_from_simulation;
+    AnimatedObject _animation;
+    SimulatedObject _simulation;
+    AnimatedObject _animation_from_simulation;
     QString _body_part_name;
     btScalar _mass;
     bool _animated;
@@ -153,32 +123,12 @@ private:
 
 
     btVector3 _calculated_simulation_speed;
-    btVector3 _animation_speed;
-    btVector3 _angular_speed_animation;
-    btVector3 _angular_speed_simulation;
-    btVector3 _rotation_vector_animation;
-    btVector3 _rotation_vector_simulation;
 
-    struct{
-        btVector3 _position_animation;
-        btVector3 _rotation_animation;
-        btVector3 _rotation_simulation;
-        btVector3 _linear_velocity;
-        btVector3 _position_simulation;
-        btVector3 _position_simulation_2;
-
-    }_previous_data, _current_data;
-
-    //! error between the speed given by bullet and the speed obtained from calculation
-    struct {
-        btScalar _speed_error;
-        btScalar _ticks;
-    }_error_1,_error_2;
 
     void appendCurve(QList<Curve>& list, int index, QString label, QColor color);
     void appendCurves(QList<Curve>& list);
     void insertDataToCurves(QList<Curve>& curves, float elapsed);
-    void updateEnergyStructure(btVector3 speed_animation, btVector3 speed_simulation, float gravity, float elapsed);
+    void updateEnergyStructure(float gravity);
     void updateAnimationFromSimulationData(float time);
     void setSimulationTransformFromAnimation(float time);
     btScalar get_density(){
@@ -190,14 +140,10 @@ private:
     btScalar get_angular_EC_simulation();
 
     btScalar get_angular_EC_animation();
-    btScalar get_mean_error() const {
-        return _error_1._speed_error / _error_1._ticks ;
-    }
-    btScalar get_mean_error_2() const {
-        return _error_2._speed_error / _error_2._ticks ;
-    }
 
-    btVector3 get_extremity(float time);
+    btVector3 get_extremity_animation(float time) const ;
+    void updateSimulation(float elapsed,float delta_t,float gravity);
+    void updateAnimation(float elapsed,float delta_t,float gravity);
 };
 
 #endif // INTERACTIVEOBJECT_H

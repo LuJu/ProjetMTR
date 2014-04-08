@@ -11,7 +11,7 @@ void DebuggingInterface::update(){
     _simulation->get_lock()->lockForRead();
     int index = part_list->currentIndex();
     InteractiveObject * part = _simulation->get_human()->_parts[index];
-    InteractiveObject::t_part_info info = part->getEnergyInformation();
+    t_part_info info = part->getEnergyInformation();
     _simulation->get_lock()->unlock();
 
     animation_position_x->setText(QString::number(info.animation.x));
@@ -32,8 +32,6 @@ void DebuggingInterface::update(){
     simulation_Pe->setText(QString::number(info.simulation.pe));
     mass->setText(QString::number(part->get_mass()));
     length->setText(QString::number(part->get_shape_struct().get_shape().y()));
-    mean_error->setText(QString::number(info.mean_error));
-    mean_error_2->setText(QString::number(info.mean_error_2));
     diff_aKe->setText(QString::number(info.ake_diff));
     diff_Ke->setText(QString::number(info.ke_diff));
     diff_Pe->setText(QString::number(info.pe_diff));

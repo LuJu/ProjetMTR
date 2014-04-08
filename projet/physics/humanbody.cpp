@@ -132,7 +132,7 @@ void HumanBody::loadObjects(QString path){
 }
 
 void HumanBody::recordStatus(){
-    InteractiveObject::part_info full_data;
+    part_info full_data;
     full_data.simulation.ake = 0;
     full_data.simulation.ke = 0;
     full_data.simulation.ake = 0;
@@ -148,7 +148,7 @@ void HumanBody::recordStatus(){
 
     for (int i = 0; i < _parts.size(); ++i) {
         InteractiveObject * object = _parts[i];
-        InteractiveObject::part_info energy = object->getEnergyInformation();
+        part_info energy = object->getEnergyInformation();
         _data_list.append(energy);
 
         full_data.animation.speed += energy.animation.speed;
@@ -182,7 +182,7 @@ void HumanBody::saveDataList(){
     QString oldname=name;
     QString ext="csv";
 
-    InteractiveObject::part_info save;
+    part_info save;
     QFile file;
     file.setFileName(name+"."+ext);
     int i = 1;
@@ -213,7 +213,7 @@ void HumanBody::saveDataList(){
                     save.simulation.x    <<c<<save.simulation.y <<c<<save.simulation.z  <<c<<
                     save.animation.speed <<c<<save.animation.ke <<c<<save.animation.ake <<c<<save.animation.pe<<c<<
                     save.simulation.speed<<c<<save.simulation.ke<<c<<save.simulation.ake<<c<<save.animation.pe<<c<<
-                    save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<c<<save.mean_error  <<nl;
+                    save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<nl;
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();
@@ -232,7 +232,7 @@ void HumanBody::savePartDataList(const QString& part_name){
     QString oldname=name;
     QString ext="csv";
 
-    InteractiveObject::part_info save;
+    part_info save;
     QFile file;
     file.setFileName(name+"."+ext);
     int i = 1;
@@ -264,7 +264,7 @@ void HumanBody::savePartDataList(const QString& part_name){
                         save.simulation.x    <<c<<save.simulation.y <<c<<save.simulation.z  <<c<<
                         save.animation.speed <<c<<save.animation.ke <<c<<save.animation.ake <<c<<save.animation.pe<<c<<
                         save.simulation.speed<<c<<save.simulation.ke<<c<<save.simulation.ake<<c<<save.animation.pe<<c<<
-                        save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<c<<save.mean_error  <<nl;
+                        save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<nl;
             }
         }
         file.close();
@@ -282,7 +282,7 @@ void HumanBody::saveCompleteDataList(){
     QString oldname=name;
     QString ext="csv";
 
-    InteractiveObject::part_info save;
+    part_info save;
     QFile file;
     file.setFileName(name+"."+ext);
     int i = 1;
@@ -313,7 +313,7 @@ void HumanBody::saveCompleteDataList(){
                     save.simulation.x    <<c<<save.simulation.y <<c<<save.simulation.z  <<c<<
                     save.animation.speed <<c<<save.animation.ke <<c<<save.animation.ake <<c<<save.animation.pe<<c<<
                     save.simulation.speed<<c<<save.simulation.ke<<c<<save.simulation.ake<<c<<save.animation.pe<<c<<
-                    save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<c<<save.mean_error  <<nl;
+                    save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<nl;
         }
         file.close();
         qDebug()<<"File successfully written : "<<file.fileName();
@@ -329,7 +329,7 @@ void HumanBody::saveFullDataList(const SimulationParameters& params){
     QString oldname=name;
     QString ext="csv";
 
-    InteractiveObject::part_info save;
+    part_info save;
     QFile file;
     file.setFileName(name+"."+ext);
     int i = 1;

@@ -1,7 +1,10 @@
 QT          += opengl xml widgets
 
 SOURCES     = \
-    main.cpp
+    main.cpp \
+    physics/utils.cpp \
+    physics/animatedobject.cpp \
+    physics/simulatedobject.cpp
 
 #   UTILS   ###############
 HEADERS     += \
@@ -12,7 +15,10 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/maths.h \
     /home/batman/Programmation/QtDee/utils/csvparser.h \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h
+    /home/batman/Programmation/QtDee/utils/curve.h \
+    physics/utils.h \
+    physics/animatedobject.h \
+    physics/simulatedobject.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \
@@ -79,26 +85,22 @@ HEADERS += \
     physics/interactiveobject.h \
     physics/simulationparameters.h \
     physics/simulation.h \
-    physics/animationdata.h \
     physics/bodyinfo.h \
     physics/humanbody.h \
     physics/debugginginterface.h \
     physics/debuggingwidget.h \
     physics/joint.h\
-    physics/shape.h \
-    physics/btutils.h
+    physics/shape.h
 SOURCES     += \
     physics/interactiveobject.cpp \
     physics/simulationparameters.cpp \
     physics/simulation.cpp \
-    physics/animationdata.cpp \
     physics/bodyinfo.cpp \
     physics/humanbody.cpp \
     physics/debugginginterface.cpp \
     physics/debuggingwidget.cpp \
     physics/joint.cpp\
-    physics/shape.cpp \
-    physics/btutils.cpp
+    physics/shape.cpp
 ############################
 
 
