@@ -12,6 +12,7 @@
         <file alias="test1">CSV/input/test1.csv</file>
         <file alias="1axe2">CSV/input/1 axe2.csv</file>
         <file alias="rotation">CSV/input/rotation.csv</file>
+        <file alias="jointvalues.csv">CSV/input/jointvalues.csv</file>
     </qresource>
     <qresource prefix="/shaders">
         <file alias="vshader.glsl">shaders/vshader.glsl</file>

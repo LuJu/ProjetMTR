@@ -48,7 +48,7 @@ public:
     void set_transform(btTransform transform){_transform = transform;}
 
     btRigidBody & get_body();
-    const btRigidBody & get_body() const ;
+//    const btRigidBody & get_body() const ;
 
     AnimatedObject& get_animation() {return _animation;}
 
@@ -75,7 +75,8 @@ public:
 
     void buildMesh();
     void setSimulationPosition(float time);
-
+    AnimatedObject _animation;
+    SimulatedObject _simulation;
 private:
 
     enum curve_data{
@@ -112,8 +113,7 @@ private:
     // Curves used to display data on screen
     QList<Curve> _curves;
     QList<Curve> _curves_steps;
-    AnimatedObject _animation;
-    SimulatedObject _simulation;
+
     AnimatedObject _animation_from_simulation;
     QString _body_part_name;
     btScalar _mass;
@@ -141,7 +141,8 @@ private:
 
     btScalar get_angular_EC_animation();
 
-    btVector3 get_extremity_animation(float time) const ;
+    btVector3 get_extremity_animation() const ;
+    btVector3 get_center_position () const;
     void updateSimulation(float elapsed,float delta_t,float gravity);
     void updateAnimation(float elapsed,float delta_t,float gravity);
 };

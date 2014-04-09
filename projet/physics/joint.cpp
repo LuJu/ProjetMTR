@@ -70,12 +70,11 @@ void Joint::buildConstraint(){
                             _parts.first->get_body(),
                             _localeB);
             }
+            ((btConeTwistConstraint *)constraint)->setLimit(M_PI_2,M_PI_2,0);
             break;
         case hinge:
             _localeA.setIdentity();_localeA.getBasis().setEulerZYX(0,M_PI_2,0);_localeA.setOrigin(_pivotA);
-//            qDebug()<<"A: "<<_pivotA.x()<<" "<<_pivotA.y()<<" "<<_pivotA.z();
             _localeB.setIdentity();_localeB.getBasis().setEulerZYX(0,M_PI_2,0);_localeB.setOrigin(_pivotB);
-//            qDebug()<<"B: "<<_pivotB.x()<<" "<<_pivotB.y()<<" "<<_pivotB.z();
             if (_parts.second != NULL){
                 constraint= new btHingeConstraint(
                             _parts.first->get_body(),
@@ -91,4 +90,35 @@ void Joint::buildConstraint(){
         }
         _constraint = (btTypedConstraint*) constraint;
     }
+}
+
+btVector3 Joint::get_world_position_simulation() const{
+    btVector3 position;
+    btVector3 parent_position = _parts.first->_simulation._current_state._position;
+    btVector3 constraint_position ;
+    switch (_type){
+    case hinge:
+    case cone:
+        constraint_position = _localeA.getOrigin();
+        break;
+    case point:
+        constraint_position = _pivotA;
+        break;
+    }
+    btVector3 position2;
+    btVector3 parent_position2 = _parts.second->_simulation._current_state._position;
+    btVector3 constraint_position2 ;
+    switch (_type){
+    case hinge:
+    case cone:
+        constraint_position = _localeB.getOrigin();
+        break;
+    case point:
+        constraint_position = _pivotB;
+        break;
+    }
+
+    position = parent_position + constraint_position;
+    position2 = parent_position2 + constraint_position2;
+    return position;
 }

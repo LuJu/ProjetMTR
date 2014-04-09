@@ -75,13 +75,14 @@ void HumanBody::loadObjects(QString path){
     }
     ignore = false;
 
-    QList<QStringList> list2 = BodyInfo::jointList();
+    const CSVParser& list2 = BodyInfo::jointList();
+    qDebug()<<list2.size();
     #ifdef DEECORE
     if (GlobalConfig::is_enabled("constraints_activated")){
     #endif
-        QStringList strlist;
         for (int i = 0; i < list2.size(); ++i) {
-            strlist = list2.at(i);
+            const QStringList& strlist = list2.at(i);;
+
             QList<InteractiveObject *>::iterator part1 = findPartByName(strlist.at(0));
             QList<InteractiveObject *>::iterator part2 = findPartByName(strlist.at(1));
             if (part1 != _parts.end() && ( part2 != _parts.end() || strlist.at(1) == "none")){
@@ -92,6 +93,7 @@ void HumanBody::loadObjects(QString path){
                 else joint._parts.second=NULL;
 
                 if (strlist.size() > 2){
+                    qDebug()<<strlist.size();
                     int n=3;
                     if (strlist.at(2) == "hinge")
                         joint._type=Joint::hinge;
@@ -101,24 +103,42 @@ void HumanBody::loadObjects(QString path){
                         joint._type=Joint::point;
                     btScalar vals[3];
                     bool good=false;
+
                     for (int id = 0; id < 3; ++id) {
-                        vals[i] = strlist.at(i+3).toFloat(&good);
+                        vals[id] = strlist.at(id+3).toFloat(&good);
                         if (good == false ) qWarning()<<"Cannot convert str to bool";
                     }
-
                     joint._pivotA=btVector3(vals[0],vals[1],vals[2]);
                     joint._localeA.setOrigin(joint._pivotA);
 
                     for (int id = 0; id < 3; ++id) {
-                        vals[i] = strlist.at(i+6).toFloat(&good);
+                        vals[id] = strlist.at(id+6).toFloat(&good);
                         if (good == false ) qWarning()<<"Cannot convert str to bool";
                     }
                     joint._pivotB=btVector3(vals[0],vals[1],vals[2]);
                     joint._localeB.setOrigin(joint._pivotB);
+
+                    for (int id = 0; id < 3; ++id) {
+                        qDebug()<<strlist.size();
+                        vals[id] = strlist.at(id+9).toFloat(&good);
+                        if (good == false ) qWarning()<<"Cannot convert str to bool";
+                    }
+                    joint._localeA.getBasis().setEulerZYX(deg2rad(vals[0]),deg2rad(vals[1]),deg2rad(vals[2]));
+
+                    for (int id = 0; id < 3; ++id) {
+                        qDebug()<<strlist.size();
+                        vals[id] = strlist.at(id+12).toFloat(&good);
+                        if (good == false ) qWarning()<<"Cannot convert str to bool";
+                    }
+                    joint._localeB.getBasis().setEulerZYX(deg2rad(vals[0]),deg2rad(vals[1]),deg2rad(vals[2]));
+
                     joint._complete =true;
 
                 }
-                _constraints.append(joint);
+                if(strlist.at(15)!="ignore")
+                    _constraints.append(joint);
+            } else {
+                qDebug()<<"parts not found for constraint";
             }
 
         }
@@ -151,11 +171,6 @@ void HumanBody::recordStatus(){
         part_info energy = object->getEnergyInformation();
         _data_list.append(energy);
 
-        full_data.animation.speed += energy.animation.speed;
-        full_data.animation.pt_aspeed.x += energy.animation.pt_aspeed.x;
-        full_data.animation.pt_aspeed.y += energy.animation.pt_aspeed.y;
-        full_data.animation.pt_aspeed.z += energy.animation.pt_aspeed.z;
-
         full_data.simulation.ake += energy.simulation.ake;
         full_data.simulation.ke += energy.simulation.ke;
         full_data.simulation.pe += energy.simulation.pe;
@@ -174,56 +189,12 @@ void HumanBody::recordStatus(){
 
 
 void HumanBody::saveDataList(){
-    QString path = "output/";
-    QChar c = ',';
-    QChar nl = '\n';
-    QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
-    name = name +"_output";
-    QString oldname=name;
-    QString ext="csv";
-
-    part_info save;
-    QFile file;
-    file.setFileName(name+"."+ext);
-    int i = 1;
-    if (QDir::setCurrent(path))
-        qDebug()<<"path set";
-    else {
-        qDebug()<<"path not set "<<path;
-    }
-    while (file.exists()){
-        qWarning()<<"File already exists";
-        name = oldname+" ("+QString::number(i)+")";
-        file.setFileName(name+"."+ext);
-        ++i;
-    }
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        qWarning()<<"Couldn't write file "<<path;
-        exit(0);
-    } else {
-        QTextStream stream(&file);
-        stream<<"id"<<c<<"x animation"<<c<<"y animation"<<c<<"z animation"<<c<<"x simulation"<<c<<" y simulation"<<c<<"z simulation"<<c<<
-                "vitesse animation" <<c<<"EC animation"  <<c<<"ECA animation" <<c<<"EP animation" <<c<<
-                "vitesse simulation"<<c<<"EC simulation" <<c<<"ECA simulation"<<c<<"EP simulation"<<c<<
-                "EC difference"     <<c<<"ECA difference"<<c<<"EP difference" <<c<<"erreur"       <<nl;
-        for (int i = 0; i < _data_list.size(); ++i) {
-            save=_data_list.at(i);
-            stream<<save.part_name<<c<<
-                    save.animation.x     <<c<<save.animation.y  <<c<<save.animation.z   <<c<<
-                    save.simulation.x    <<c<<save.simulation.y <<c<<save.simulation.z  <<c<<
-                    save.animation.speed <<c<<save.animation.ke <<c<<save.animation.ake <<c<<save.animation.pe<<c<<
-                    save.simulation.speed<<c<<save.simulation.ke<<c<<save.simulation.ake<<c<<save.animation.pe<<c<<
-                    save.ke_diff         <<c<<save.ake_diff     <<c<<save.pe_diff       <<nl;
-        }
-        file.close();
-        qDebug()<<"File successfully written : "<<file.fileName();
         for (int j = 0; j < _parts.size(); ++j) {
             savePartDataList(_parts[j]->get_body_part());
         }
-    }
 }
 
-void HumanBody::savePartDataList(const QString& part_name){
+void HumanBody::savePartDataList(const QString& part_name) const{
     QString path = "output/";
     QChar c = ',';
     QChar nl = '\n';
@@ -273,7 +244,7 @@ void HumanBody::savePartDataList(const QString& part_name){
 }
 
 
-void HumanBody::saveCompleteDataList(){
+void HumanBody::saveCompleteDataList() const{
     QString path = "output/";
     QChar c = ',';
     QChar nl = '\n';
@@ -350,7 +321,6 @@ void HumanBody::saveFullDataList(const SimulationParameters& params){
     } else {
         QTextStream stream(&file);
         stream<<"id,"<<
-                "Speed animation"   <<c<<"ASpeed animation x"<<c<<"ASpeed animation y" <<c<<"ASpeed animation z"<<c<<
                 "ECT animation (J)" <<c<<"ECA animation (J)" <<c<<"EC totale animation"<<c<<"EP animation (J)" <<c<<
                 "ECT simulation (J)"<<c<<"ECA simulation (J)"<<c<<"EC totale simulation"<<c<<"EP simulation (J)"<<c<<
                 "ECT difference (J)"<<c<<"ECA difference (J)"<<c<<"EC totale difference"<<c<<"EP difference (J)"<<c<<"duree(ms):"<<c<<params.get_duration()<<c<<"pas(ms):"<<c<<params.get_steps_duration()<<nl;
@@ -414,4 +384,10 @@ void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
 void HumanBody::setSimulationPosition(float time){
     for (int i = 0; i < _parts.size(); ++i)
         _parts[i]->setSimulationPosition(time);
+}
+
+void HumanBody::buildTree(){
+    for (int i = 0; i < _parts.size(); ++i) {
+
+    }
 }

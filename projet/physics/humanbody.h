@@ -34,9 +34,9 @@ public:
     QList<part_info> _full_data_list;
     QList<part_info> _complete_data_list;
     void saveDataList();
-    void savePartDataList(const QString& part_name);
+    void savePartDataList(const QString& part_name) const;
     void saveFullDataList(const SimulationParameters& params);
-    void saveCompleteDataList();
+    void saveCompleteDataList() const;
     void setSimulationPosition(float time);
     void updateBodyInformations(float elapsed,float diff,float gravity);
     btScalar computeWork(btScalar ke_simulation , btScalar ke_animation , btScalar ake_simulation , btScalar ake_animation , btScalar pe_simulation , btScalar pe_animation);
@@ -76,11 +76,7 @@ public:
     void exportSimulationToAnimation();
 
     WTree<InteractiveObject> _parts_tree;
-    void buildTree(){
-        for (int i = 0; i < _parts.size(); ++i) {
-
-        }
-    }
+    void buildTree();
 
 protected:
     int _mass;

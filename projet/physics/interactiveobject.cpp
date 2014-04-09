@@ -96,12 +96,12 @@ btRigidBody & InteractiveObject::get_body(){
     return *_body;
 }
 
-const btRigidBody & InteractiveObject::get_body() const {
-    if(!_body || !_motion_state){
-        qWarning()<<"body not defined";
-    }
-    return *_body;
-}
+//const btRigidBody & InteractiveObject::get_body()const {
+//    if(!_body || !_motion_state){
+//        qWarning()<<"body not defined";
+//    }
+//    return *_body;
+//}
 
 void InteractiveObject::deleteMotion(){
     if(_body)  delete _body;
@@ -357,11 +357,11 @@ QString InteractiveObject::exportSimulationToAnimation(){
     return outstring;
 }
 
-btVector3 InteractiveObject::get_extremity_animation  (float time)const{
-    btScalar R = _shape.get_shape().y()/2;
-    btVector3 center = _animation.translationVector(time);
+btVector3 InteractiveObject::get_extremity_animation  ()const{
+    btVector3 center = _animation._current_state._position;
+    btVector3 ypr = _animation._current_state._rotation;
 
-    btVector3 ypr = _animation.rotationVector(time);
+    btScalar R = _shape.get_shape().y()/2;
     btQuaternion quat;
 
     quat.setEuler(deg2rad(ypr.y()),deg2rad(ypr.x()),deg2rad(ypr.z()));
@@ -372,9 +372,10 @@ btVector3 InteractiveObject::get_extremity_animation  (float time)const{
 
     top_position = qquat.rotatedVector(top_position);
 
-//    qDebug()<<"top :"<<vv.x()<<"o :"<<vv.y()<<"t :"<<vv.z();
-//    qDebug()<<"quat :"<<qq;
-//    qDebug()<<"xyz :"<<ypr[0]<<"o :"<<ypr[1]<<"t :"<<ypr[2];
-
     return center + btVector3(top_position.x(),top_position.y(),top_position.z());
+}
+
+btVector3 InteractiveObject::get_center_position () const {
+
+
 }

@@ -45,11 +45,13 @@ public:
     }
 
     void buildConstraint();
-
+    btVector3 get_world_position();
+    btVector3 get_world_position_simulation() const;
 private:
     btTypedConstraint * _constraint;
 
 //    btTypedConstraint * _constraint_pointer;
+
 
 };
 
