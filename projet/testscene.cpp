@@ -30,7 +30,6 @@ void TestScene::draw(){
     } else if (started) {
         display3DObjects();
     }
-//    _simulation->get_mutex()->unlock();
     frameEnd();
 }
 
