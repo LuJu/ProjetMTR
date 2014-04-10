@@ -41,6 +41,7 @@ public:
     QReadWriteLock* get_lock() {return &_lock;}
 
     bool is_started() const {return _started;}
+    bool is_initiated() const {return _initiated;}
 
 public slots:
     void loop();

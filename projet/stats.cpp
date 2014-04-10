@@ -85,6 +85,7 @@ void Stats::displayStats(){
 
 
     P.ortho(window);
+
     pvm = P*V*M;
     _program->setUniformValue("P",P);
     _program->setUniformValue("pvm",pvm);
@@ -92,18 +93,20 @@ void Stats::displayStats(){
     MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 
     for (int i = 0; i < _display.size(); ++i) {
-        const QList<Curve>& curves= _display.at(i)->get_curves();
-        for (int j = 0; j < curves.size(); ++j) {
-            MeshUtils::render(curves[j],1,curves[j].get_color(),i+1);
-//            Mesh::render(curves[j],GlobalConfig::get_int("steps_duration")/10,curves[j].get_color(),i+2);
-        }
-        const QList<Curve>& curves_steps= _display.at(i)->get_curves_steps();
-        for (int j = 0; j < curves_steps.size(); ++j) {
-            if (!curves_steps[j].isEmpty()){
-                MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),i+3,true);
+        if (_selected_index == i){
+            const QList<Curve>& curves= _display.at(i)->get_curves();
+            for (int j = 0; j < curves.size(); ++j) {
+                MeshUtils::render(curves[j],1,curves[j].get_color(),i+1);
+    //            Mesh::render(curves[j],GlobalConfig::get_int("steps_duration")/10,curves[j].get_color(),i+2);
             }
+            const QList<Curve>& curves_steps= _display.at(i)->get_curves_steps();
+            for (int j = 0; j < curves_steps.size(); ++j) {
+                if (!curves_steps[j].isEmpty()){
+                    MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),i+3,true);
+                }
 
-//            MeshUtils::render(curves_steps[j],GlobalConfig::get_int("steps_duration")/10,curves_steps[j].get_color(),i+6,true);
+    //            MeshUtils::render(curves_steps[j],GlobalConfig::get_int("steps_duration")/10,curves_steps[j].get_color(),i+6,true);
+            }
         }
     }
 }
@@ -177,6 +180,7 @@ void Stats::init(){
     _ui->_type = UIState::camera2D;
     _ui->set_zoom(100);
     _ui->activateProgressiveZoom(60);
+    _selected_index = 0;
 }
 
 void Stats::keyPressEvent(QKeyEvent *keyEvent)

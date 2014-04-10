@@ -42,10 +42,7 @@ public:
     Simulation  * _simulation;
 
 private:
-//    Mesh _cube_mesh;
-//    Mesh _cylinder_mesh;
     MeshPointer _cube_mesh;
-
     QList<InteractiveObject * > _display;
 
 };

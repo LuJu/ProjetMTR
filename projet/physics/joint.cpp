@@ -58,7 +58,6 @@ void Joint::buildConstraint(){
             }
             break;
         case cone:
-
             if (_parts.second != NULL){
                 constraint= new btConeTwistConstraint(
                             _parts.first->get_body(),

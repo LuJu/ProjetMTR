@@ -10,6 +10,8 @@ void DebuggingInterface::update(){
 
     _simulation->get_lock()->lockForRead();
     int index = part_list->currentIndex();
+    if (index != _stats->_selected_index)
+        _stats->_selected_index = index ;
     InteractiveObject * part = _simulation->get_human()->_parts[index];
     t_part_info info = part->getEnergyInformation();
     _simulation->get_lock()->unlock();

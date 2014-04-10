@@ -2,7 +2,10 @@
 
 float BodyInfo::mass(const QString& body_part, float total_mass){
     float proportion;
-    QHash<QString,float> segments;
+    static QHash<QString,float> segments;
+    static bool first = true;
+    if (first){
+
 //    segments.insert("head",0);
 //    segments.insert("whole_trunk",55.1);
 //    segments.insert("thorax",20.1);
@@ -75,6 +78,7 @@ float BodyInfo::mass(const QString& body_part, float total_mass){
 
 
     segments.insert("spine",20.1);//not good
+    }
 
     QHash<QString,float>::const_iterator it = segments.find(body_part.toLower());
     if (it !=segments.end())

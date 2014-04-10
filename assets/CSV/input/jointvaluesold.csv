@@ -1,0 +1,10 @@
+pelvis;spine;hinge;0;0.15;0;0;-0.15;0;0;90;0;0;90;0;non
+spine;head;cone;0;0.3;0;0;-0.14;0;0;0;90;0;0;90;non
+pelvis;left_leg;cone;-0.18;-0.1;0;0;0.225;0;0;0;-225;0;0;-225;non
+left_leg;left_foot;hinge;0;-0.225;0;0;0.185;0;0;90;0;0;90;0;non
+pelvis;right_leg;cone;0.18;-0.1;0;0;0.225;0;0;0;45;0;0;45;non
+right_leg;right_foot;hinge;0;-0.225;0;0;0.185;0;0;90;0;0;90;0;non
+spine;left_upper_arm;cone;-0.2;-0.15;0;0;-0.18;0;0;0;180;0;0;45;non
+left_upper_arm;left_forearm;hinge;0;0.18;0;0;-0.14;0;0;90;0;0;90;0;non
+spine;right_upper_arm;cone;0.2;0.15;0;0;-0.18;0;0;0;0;0;0;90;non
+right_upper_arm;right_forearm;hinge;0;0.18;0;0;-0.14;0;0;90;0;0;90;0;non

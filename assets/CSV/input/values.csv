@@ -1,5 +1,5 @@
 body;100;
-object;pelvis;ignore
+object;pelvis;display
 scaling;;
 radius;0;0.15
 length;0;0.2
@@ -12,7 +12,7 @@ x;0;0
 y;0;0
 z;0;0
 end;;
-object;spine;ignore
+object;spine;display
 scaling;;
 radius;0;0.15
 length;0;0.28
@@ -25,7 +25,7 @@ x;0;0
 y;0;0
 z;0;0
 end;;
-object;head;ignore
+object;head;display
 scaling;;
 radius;0;0.1
 length;0;0.05
@@ -38,7 +38,7 @@ x;0;0
 y;0;0
 z;0;0
 end;;
-object;left_leg;ignore
+object;left_leg;display
 scaling;;
 radius;0;0.07
 length;0;0.45
@@ -51,7 +51,7 @@ x;0;0
 y;0;0
 z;0;0
 end;;
-object;left_foot;ignore
+object;left_foot;display
 scaling;;
 radius;0;0.05
 length;0;0.37
@@ -64,7 +64,7 @@ x;0;0
 y;0;0
 z;0;0
 end;;
-object;right_leg;ignore
+object;right_leg;display
 scaling;;
 radius;0;0.07
 length;0;0.45
@@ -77,7 +77,7 @@ x;0;0
 y;0;0
 z;0;0
 end;;
-object;right_foot;ignore
+object;right_foot;display
 scaling;;
 radius;0;0.05
 length;0;0.37

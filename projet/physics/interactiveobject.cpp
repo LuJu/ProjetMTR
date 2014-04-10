@@ -57,11 +57,6 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
     appendCurves(_curves);
     appendCurves(_curves_steps);
 
-//    _error_1._speed_error = 0;
-//    _error_1._ticks= 0;
-//    _error_2._speed_error = 0;
-//    _error_2._ticks= 0;
-
     _energy.ake_diff = 0;
     _energy.ke_diff = 0;
     _energy.length= 0;
@@ -159,7 +154,6 @@ void InteractiveObject::updateSimulation(float elapsed,float delta_t,float gravi
 
     current._angular_speed= _body->getAngularVelocity();
     current._center_of_mass_speed = _body->getLinearVelocity();
-//    current._center_of_mass_speed = _calculated_simulation_speed;
     current._rotation = btQuat2euler(rot);
     current._rotation_vector_diff = (current._rotation -previous._rotation).normalized();
 }

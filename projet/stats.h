@@ -41,7 +41,7 @@ public:
     void installDebugger();
 //    Simulation& get_simulation() {return _simulation;}
     Simulation  * _simulation;
-
+    int _selected_index;
 private:
     QList<InteractiveObject * > _display;
 

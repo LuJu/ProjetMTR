@@ -5,8 +5,11 @@
 #include "simulation.h"
 #include "humanbody.h"
 
+#include "stats.h"
+
 #include <QTimer>
 
+class Stats;
 class DebuggingInterface : public Ui::Debugging
 {
 
@@ -29,6 +32,8 @@ public:
     }
 
     void update();
+
+    Stats * _stats;
 };
 
 #endif // DEBBUGINGINTERFACE_H

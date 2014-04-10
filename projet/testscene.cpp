@@ -22,7 +22,7 @@ void TestScene::draw(){
     bool started;
     _simulation->get_lock()->lockForRead();
     _display = _simulation->get_display_list();
-    started = _simulation->is_started();
+    started = _simulation->is_initiated();
     _simulation->get_lock()->unlock();
     if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close")){
         _simulation->get_lock()->unlock();
@@ -34,6 +34,10 @@ void TestScene::draw(){
 }
 
 void TestScene::displayAnimation(){
+//    qDebug()<<"pos"<<_ui->get_camera().get_position().x()<<" "
+//                   <<_ui->get_camera().get_position().y()<<" "
+//                   <<_ui->get_camera().get_position().z()<<" ";
+
     QMatrix4x4 V = _ui->get_camera().get_view_matrix();
     QMatrix4x4 P = _ui->get_camera().get_projection_matrix();
     QMatrix4x4 M;
@@ -125,10 +129,12 @@ void TestScene::display3DObjects(){
 void TestScene::init(){
     Viewer::init();
 
+//    OBJLoader loader;
+    _ui->set_zoom(20000);
     _ui->activateProgressiveZoom(60);
-    OBJLoader loader;
-    loader.parseOBJ(":/models/cube.obj");
-    _cube_mesh = loader.get_mesh();
+//    loader.parseOBJ(":/models/cube.obj");
+    _cube_mesh = QSharedPointer<Mesh>(new Mesh);
+    MeshUtils::addFlatSurface(_cube_mesh.data());
 }
 
 void TestScene::keyPressEvent(QKeyEvent *keyEvent)

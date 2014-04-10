@@ -172,6 +172,7 @@ int main(int argc, char *argv[])
             _debugging_ui->init();
             _debugging->init();
             _debugging->move(gui.width(),600);
+            _debugging_ui->_stats = stats;
         }
     }
 

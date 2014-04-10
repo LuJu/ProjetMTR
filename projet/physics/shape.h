@@ -10,7 +10,8 @@ public:
     enum shapetype{
         cube,
         cylinder,
-        capsule
+        capsule,
+        plane
     };
 
 

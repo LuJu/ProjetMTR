@@ -32,14 +32,16 @@ void Simulation::init(const SimulationParameters& params) {
     _display = _human._parts;
     _joints = _human._constraints;
     _ground = new InteractiveObject();
-    _ground->get_shape_struct().set_shape(btVector3(3,1,3));
+//    _ground->get_shape_struct().set_shape_type(Shape::plane);
+    _ground->get_shape_struct().set_shape(btVector3(10,0.1,10));
     _ground->set_mass(0); // no gravity
-    _ground->get_transform().setOrigin(btVector3(0,-3,0));
+    _ground->get_transform().setOrigin(btVector3(0,-2,0));
 
 //    _ground->get_transform().setRotation(btQuaternion(btVector3(0,0.0,1),23));
     _ground->get_shape_struct().set_shape_type(Shape::cube);
 
     _display.append(_ground);
+    resetStep();
 }
 
 void Simulation::allocateWorld(){
@@ -53,7 +55,6 @@ void Simulation::allocateWorld(){
 }
 
 void Simulation::start(){
-        resetStep();
         _clock.reset();
         _thread = new QThread();
         moveToThread(_thread);
@@ -167,7 +168,7 @@ void Simulation::fillWorld(){
         }
         for (int i = 0; i < _joints.size(); ++i) {
             _joints[i].buildConstraint();
-//            _world->addConstraint(_joints[i].get_constraint(),true);
+            _world->addConstraint(_joints[i].get_constraint(),true);
         }
         _world_filled = true;
     } else qWarning()<<"Attempting to fill a full world" ;
