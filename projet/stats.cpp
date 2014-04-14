@@ -87,8 +87,9 @@ void Stats::displayStats(){
     P.ortho(window);
 
     pvm = P*V*M;
-    _program->setUniformValue("P",P);
-    _program->setUniformValue("pvm",pvm);
+    insertMatrices(P,V,M);
+//    _program->setUniformValue("P",P);
+//    _program->setUniformValue("pvm",pvm);
 
     MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 
@@ -139,7 +140,7 @@ void Stats::displayStatsTest(){
             bottom = value;
     }
 
-    qDebug()<<"window: "<<top<<" "<<bottom<<" "<<right;
+//    qDebug()<<"window: "<<top<<" "<<bottom<<" "<<right;
 
     window.setY(10);
     window.setHeight(-20);
@@ -148,9 +149,10 @@ void Stats::displayStatsTest(){
     window.setWidth(12000);
 
     P.ortho(window);
-    pvm = P*V*M;
-    _program->setUniformValue("P",P);
-    _program->setUniformValue("pvm",pvm);
+    insertMatrices(P,V,M);
+//    pvm = P*V*M;
+//    _program->setUniformValue("P",P);
+//    _program->setUniformValue("pvm",pvm);
 
 //    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,10);
 
@@ -168,11 +170,10 @@ void Stats::displayStatsTest(){
 }
 
 void Stats::display3DObjects(){
-    _program->bind();
-    _program->setUniformValue("shininess",(GLfloat)1.0);
+    bindProgram();
     glViewport(0,0,width(),height());
     displayStats();
-    _program->release();
+    releaseProgram();
 }
 
 void Stats::init(){

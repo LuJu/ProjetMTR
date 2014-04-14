@@ -6,6 +6,8 @@
 
 #include "interactiveobject.h"
 
+
+//! Class representing a joint between two objects
 class Joint
 {
 public:

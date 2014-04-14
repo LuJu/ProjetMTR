@@ -29,32 +29,39 @@ public:
 
     Simulation();
     ~Simulation();
+
+    //! Initiates the simulation: loads object data, etc
     void init(const SimulationParameters &params);
-    void start();
-    void stop(){_simulation_over = true;}
 
     const QList<InteractiveObject * >& get_display_list() {return  _display;}
-    bool is_over() const {return _simulation_over;}
-    float get_elapsed_realtime() const {return _elapsed_realtime;}
-    float get_elapsed_milliseconds() const {return _elapsed_simulation;}
+    float get_elapsed_realtime() const {return _elapsed_realtime;} //! Returns the realtime elapsed since the start of the simulation
+    float get_elapsed_milliseconds() const {return _elapsed_simulation;} //! Returns the simulation time elapsed since the start of the simulation
+
+
     HumanBody * get_human() {return &_human;}
     QReadWriteLock* get_lock() {return &_lock;}
 
-    bool is_started() const {return _started;}
+    void start();
+    void stop(){_simulation_over = true;}
+    bool is_started() const   {return _started;}
     bool is_initiated() const {return _initiated;}
+    bool is_over() const      {return _simulation_over;}
 
 public slots:
+    //! Thread that will run continually until the end of the simulation
     void loop();
 private:
     void update();
     void allocateWorld();
+    //! Function called when the simulation is over
     void simulationOver();
-    void stepOver();
 
+    //! Function called when a step is over
+    void stepOver();
+    //! Function called when the simulation has to be replaced at the corresponding time of the animation
     void resetStep(float time = 0);
     //! function called each step, empties the world
     void cleanWorld();
-
     //! fills the world with all the objects of the simulation
     void fillWorld();
 
@@ -73,12 +80,9 @@ private:
     QList<InteractiveObject * > _display;
     QList<Joint> _joints;
 
-
-
     btScalar _elapsed_realtime;
     btScalar _elapsed_simulation;
     btScalar _diff;
-//    double _time_beginning;
 
 
     btScalar _step_counter;

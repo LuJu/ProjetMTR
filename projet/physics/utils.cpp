@@ -35,4 +35,34 @@ btVector3 btQuat2euler(btQuaternion q){
     return btVector3(rot_x(q),rot_y(q),rot_z(q));
 }
 
+double kinetic_energy(double speed, double mass){
+    return (speed*speed*mass)/2;
+}
 
+double potential_energy(double mass, double gravitation, double height){
+    return (mass*gravitation*height);
+}
+
+btScalar get_moment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
+    btScalar m = mass;
+    btScalar R = shape.x();
+    btScalar R2 = pow(R,2);
+    btScalar h = shape.y();
+    btScalar h2 = pow(h,2);
+    btMatrix3x3 moment_matrix (m*(R2/4.0f + h2/12.0f) , 0               , 0                      ,
+                               0                      , (m * R2)/2.0f  , 0                      ,
+                               0                      , 0               , m*(R2/4.0f + h2/12.0f) );
+    btMatrix3x3 rotation;
+    rotation.setIdentity();
+    rotation[0][0] = rotation_axis[0];
+    rotation[1][0] = rotation_axis[1];
+    rotation[2][0] = rotation_axis[2];
+    rotation[1][1] = 0;
+    rotation[2][2] = 0;
+    btMatrix3x3 product = (moment_matrix*rotation);
+    return (product.getColumn(0)).length();
+}
+
+void printbtVector3(const QString& prefix,const btVector3& vector){
+    qDebug()<<prefix<<": "<<vector.x()<<" "<<vector.y()<<" "<<vector.z()<<" ";
+}

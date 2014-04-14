@@ -91,13 +91,6 @@ btRigidBody & InteractiveObject::get_body(){
     return *_body;
 }
 
-//const btRigidBody & InteractiveObject::get_body()const {
-//    if(!_body || !_motion_state){
-//        qWarning()<<"body not defined";
-//    }
-//    return *_body;
-//}
-
 void InteractiveObject::deleteMotion(){
     if(_body)  delete _body;
     if(_motion_state) delete _motion_state;
@@ -119,9 +112,9 @@ void InteractiveObject::buildMesh(){
     MeshUtils::addCapsuleShape(_mesh.data(),_shape.get_shape().y(),_shape.get_shape().x());
 }
 
-void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity){
+void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity,const btTransform& transform){
 
-    updateAnimation(elapsed,delta_t,gravity);
+    updateAnimation(elapsed,delta_t,gravity,transform);
     updateSimulation(elapsed,delta_t,gravity);
 
     updateEnergyStructure(gravity);
@@ -130,16 +123,18 @@ void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity
     _simulation._previous_state = _simulation._current_state;
 }
 
-void InteractiveObject::updateAnimation(float elapsed,float delta_t,float gravity){
+void InteractiveObject::updateAnimation(float elapsed,float delta_t,float gravity,const btTransform& transform){
     t_state_data& current = _animation._current_state;
     t_state_data& previous =_animation._previous_state;
-    current._position = _animation.translationVector(elapsed);
+    current._position = transform.getOrigin();
+//    current._position = _animation.translationVector(elapsed);
+    //    current._rotation = _animation.rotationVector(elapsed);
+    current._rotation = btQuat2euler(transform.getRotation());
 
     btVector3 animation_distance(current._position-previous._position);
 
     current._center_of_mass_speed = animation_distance/(delta_t/1000); // the diff value is in ms so a conversion is needed to be in m/s
-    current._angular_speed = (_animation.rotationVector(elapsed) - previous._rotation) / (delta_t/1000) ;
-    current._rotation = _animation.rotationVector(elapsed);
+    current._angular_speed = (current._rotation - previous._rotation) / (delta_t/1000) ;
     current._rotation_vector_diff = (current._rotation -previous._rotation).normalized();
 }
 
@@ -286,34 +281,13 @@ btVector3 InteractiveObject::speedAtTime(float time) const {
     return _animation.translationTangent(time) * 1000.0f;
 }
 
-btScalar InteractiveObject::get_moment(btVector3 rotation_axis){
-    btVector3 shape  = _shape.get_shape();
-    btScalar m = _mass;
-    btScalar R = shape.x();
-    btScalar R2 = pow(R,2);
-    btScalar h = shape.y();
-    btScalar h2 = pow(h,2);
-    btMatrix3x3 moment_matrix (m*(R2/4.0f + h2/12.0f) , 0               , 0                      ,
-                               0                      , (m * R2)/2.0f  , 0                      ,
-                               0                      , 0               , m*(R2/4.0f + h2/12.0f) );
-    btMatrix3x3 rotation;
-    rotation.setIdentity();
-    rotation[0][0] = rotation_axis[0];
-    rotation[1][0] = rotation_axis[1];
-    rotation[2][0] = rotation_axis[2];
-    rotation[1][1] = 0;
-    rotation[2][2] = 0;
-    btMatrix3x3 product = (moment_matrix*rotation);
-    return (product.getColumn(0)).length();
-}
-
 btScalar InteractiveObject::get_angular_EC_simulation(){
-    return pow(_body->getAngularVelocity().length(),2) * get_moment(_simulation._current_state._rotation_vector_diff) / 2;
+    return pow(_body->getAngularVelocity().length(),2) * get_moment(_simulation._current_state._rotation_vector_diff,_shape.get_shape(),_mass) / 2;
 
 }
 
 btScalar InteractiveObject::get_angular_EC_animation(){
-    return pow(deg2rad(_animation._current_state._angular_speed.length()),2) * get_moment(_animation._current_state._rotation_vector_diff) / 2;
+    return pow(deg2rad(_animation._current_state._angular_speed.length()),2) * get_moment(_animation._current_state._rotation_vector_diff,_shape.get_shape(),_mass) / 2;
 }
 
 QString InteractiveObject::exportSimulationToAnimation(){

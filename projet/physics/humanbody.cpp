@@ -149,6 +149,7 @@ void HumanBody::loadObjects(QString path){
     for (int i = 0; i < _parts.size(); ++i) {
         _parts[i]->buildMesh();
     }
+    buildTree();
 }
 
 void HumanBody::recordStatus(){
@@ -375,10 +376,31 @@ void HumanBody::exportSimulationToAnimation(){
 }
 
 void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
+    btTransform transform;
+    PartNode* root = _parts_tree.get_root();
+    transform.setIdentity();
+//    PartNode temp = root;
+    // compute origin matri
+    transform = root->get_data()->_animation.getWorldTransform(transform,elapsed);
+    updateInformationTree(root,transform,elapsed,diff,gravity);
     for (int i = 0; i < _parts.size(); ++i){
-        _parts[i]->updatePartInfo(elapsed,diff,gravity);
+        _parts[i]->updatePartInfo(elapsed,diff,gravity,transform);
         _complete_data_list.append(_parts[i]->getEnergyInformation());
     }
+
+}
+
+void HumanBody::updateInformationTree(const PartNode* node, const btTransform& transform, float elapsed, float diff,float gravity){
+    btTransform object_transform = node->get_data()->_animation.getWorldTransform(transform,elapsed);
+    for (int i = 0; i < node->get_number_of_children(); ++i) {
+        updateInformationTree(node->childAt(i),object_transform ,elapsed,diff,gravity);
+
+    }
+    node->get_data()->updatePartInfo(elapsed,diff,gravity,object_transform );
+//    qDebug()<<"lol"<<node->get_data()->get_animation()._current_state._position.x()<<" "
+//              <<node->get_data()->get_animation()._current_state._position.y()<<" "
+//              <<node->get_data()->get_animation()._current_state._position.z()<<" ";
+    _complete_data_list.append(node->get_data()->getEnergyInformation());
 }
 
 void HumanBody::setSimulationPosition(float time){
@@ -387,7 +409,17 @@ void HumanBody::setSimulationPosition(float time){
 }
 
 void HumanBody::buildTree(){
-    for (int i = 0; i < _parts.size(); ++i) {
+    InteractiveObject * temp;
+    QList<InteractiveObject*>::iterator it;
+    it = findPartByName("spine");
+    temp = *it;
+    int temp_id = _parts_tree.addNode(temp);
+    it = findPartByName("pelvis");
+    temp = *it;
+    _parts_tree.addNode(temp,temp_id);
+    qDebug()<<_parts_tree.get_number_of_levels();
+    qDebug()<<_parts_tree.get_root()->get_number_of_children();
+    qDebug()<<_parts_tree.size();
+    qDebug()<<_parts_tree.size();
 
-    }
 }

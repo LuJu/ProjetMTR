@@ -52,11 +52,12 @@ void TestScene::displayAnimation(){
         obj = _display.at(i);
         if (obj->get_animated()){
             transform.setIdentity();
-            btVector3 rotation_degrees = obj->get_animation().rotationVector(elapsed);
+            btVector3 rotation_degrees = obj->get_animation()._current_state._rotation;
             quat.setEuler(deg2rad(rotation_degrees.y()),
                           deg2rad(rotation_degrees.x()),
                           deg2rad(rotation_degrees.z()));
-            btVector3 translation(obj->get_animation().translationVector(elapsed));
+            btVector3 translation(obj->get_animation()._current_state._position);
+//            qDebug()<<"translation :"<<translation.x()<<" "<<translation.y()<<" "<<translation.z()<<" ";
             transform.setRotation(quat);
             transform.setOrigin(translation);
             transform.getOpenGLMatrix(matrix);
@@ -96,9 +97,7 @@ void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4
     case Shape::cube:
     case Shape::cylinder:
         M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
-        pvm = P*V*M;
-        _program->setUniformValue("M",M);
-        _program->setUniformValue("pvm",pvm);
+        insertMatrices(P,V,M);
         switch (obj->get_shape_struct().get_shape_type()) {
         case Shape::cube:
             _cube_mesh->render();
@@ -106,9 +105,7 @@ void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4
         }
         break;
         case Shape::capsule:
-        pvm = P*V*M;
-        _program->setUniformValue("M",M);
-        _program->setUniformValue("pvm",pvm);
+        insertMatrices(P,V,M);
         obj->get_mesh()->render();
         break;
     default:
@@ -117,13 +114,11 @@ void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4
 }
 
 void TestScene::display3DObjects(){
-    _program->bind();
-    _program->setUniformValue("shininess",(GLfloat)1.0);
+    bindProgram();
     glViewport(0,0,width(),height());
     if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
-    _program->setUniformValue("shininess",(GLfloat).5);
     if (GlobalConfig::is_enabled("display_animation")) displayAnimation();
-    _program->release();
+    releaseProgram();
 }
 
 void TestScene::init(){

@@ -4,9 +4,14 @@
 #include "btBulletDynamicsCommon.h"
 
 
+/*!
+        Class representing a 3d shape (cube, capsule, etc)
+    */
 class Shape
 {
 public:
+
+    //! defines the shape type
     enum shapetype{
         cube,
         cylinder,
@@ -14,54 +19,52 @@ public:
         plane
     };
 
-
     Shape():
-//        _shape_collision(NULL),
         _shape(cube) {
         set_shape(btVector3(0,0,0));
     }
     Shape(btVector3 shape, shapetype type):
-//        _shape_collision(NULL),
-//        collision_shape_outdated(true),
         _shape(type){
         set_shape(shape);
     }
 
     ~Shape(){
-//        if (_shape_collision)
-//            delete _shape_collision;
     }
 
     shapetype get_shape_type() const {
         return _shape;
     }
     void set_shape_type(shapetype type){
-
         _shape = type;
-//        collision_shape_outdated = true;
     }
 
     float get_density(float mass) const;
+    //! Returns the volume of the object
     float get_volume() const;
-//    float get_radius() const;
-//    float get_length() const;
+    //! Returns a pointer to a new collision shape instance following the definition of the Shape object, the caller takes the ownership of the instance returned
     btCollisionShape * newCollisionShape();
-    btCollisionShape * buildCollisionShape();
-    shapetype _shape;
+
+    /*! contains data of the size of the object \n
+        The nature of the data depends on the type of the shape \n
+        For a capsule : x containst the radius, y the length
+    */
+    btVector3 _shape_vector;
+
     btVector3 get_shape() const;
     void set_shape(const btVector3 &shape);
-    btScalar _radius;
-    btScalar _length;
-    btVector3 _shape_vector; // cube
-
-//    bool collision_shape_outdated;
-
 private:
 //    btCollisionShape * _shape_collision;
-
+    btCollisionShape * buildCollisionShape();
     btScalar cylinderVolume()const;
     btScalar cubeVolume() const;
     btScalar capsuleVolume()const;
+
+    shapetype _shape;
+
+    //! Not used
+    btScalar _radius;
+    //! Not used
+    btScalar _length;
 };
 
 #endif // HAPE_H

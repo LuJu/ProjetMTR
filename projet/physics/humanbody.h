@@ -19,6 +19,8 @@
 #include "joint.h"
 #include "simulationparameters.h"
 
+
+typedef WNode<InteractiveObject> PartNode;
 class HumanBody
 {
 public:
@@ -77,7 +79,7 @@ public:
 
     WTree<InteractiveObject> _parts_tree;
     void buildTree();
-
+    void updateInformationTree(const PartNode* node, const btTransform &transform, float elapsed, float diff, float gravity);
 protected:
     int _mass;
 

@@ -20,6 +20,10 @@
 #include "shape.h"
 #include "utils.h"
 
+/*! \class InteractiveObject
+        This class contains the definition of an object in the scene, (both the simulation and the animation data \n
+        The animation data is containted in the _animation object, and the simulation object is defined by several objects _motion_state, _body etc)
+    */
 class InteractiveObject
 {
 public:
@@ -35,7 +39,7 @@ public:
         \param  input
         \return output
     */
-    void updatePartInfo(float elapsed,float diff,float gravity);
+    void updatePartInfo(float elapsed, float diff, float gravity, const btTransform &transform);
     t_part_info getEnergyInformation() const {return _energy;}
 
     btVector3 & get_local_inertia() {return _local_inertia;}
@@ -70,6 +74,7 @@ public:
     QString exportSimulationToAnimation();
 
 
+    //! Returns a smart pointer to the mesh representing the object
     MeshPointer& get_mesh(){return _mesh;}
     Shape& get_shape_struct(){return _shape;}
 
@@ -94,28 +99,31 @@ private:
         SIMULATION_Y,
         NUMBER_OF_CURVES
     };
-
-    void __build(const btVector3& origin, const btVector3& shape,Shape::shapetype type);
-    Shape _shape;
-    void deleteMotion();
-    void buildMotion();
-    MeshPointer _mesh;
-
-    btVector3 speedAtTime(float time) const;
     //! disabled
     InteractiveObject(const InteractiveObject& object);
-    btDefaultMotionState * _motion_state;
+    void __build(const btVector3& origin, const btVector3& shape,Shape::shapetype type);
+    void deleteMotion();
+    void buildMotion();
+
+    Shape _shape;
+    MeshPointer _mesh;
+
+    //    returns the animation speed vector at time (might not be working)
+    btVector3 speedAtTime(float time) const;
+
     btTransform _transform;
 
+    // Objects used for the simulation
+    btDefaultMotionState * _motion_state;
     btVector3 _local_inertia;
     btRigidBody * _body;
     btCollisionShape *_collision_shape;
-    // Curves used to display data on screen
-    QList<Curve> _curves;
-    QList<Curve> _curves_steps;
+    ////
+    QList<Curve> _curves; //! The curves recorded at each update of the status of objects
+    QList<Curve> _curves_steps; //! The curves recorded at each step of the simulation
 
-    AnimatedObject _animation_from_simulation;
-    QString _body_part_name;
+    AnimatedObject _animation_from_simulation; //! The animation obtained from the simulation at each time. Is not used for the moment
+    QString _body_part_name; //! Name of the body part
     btScalar _mass;
     bool _animated;
 
@@ -135,7 +143,7 @@ private:
         return _mass / _shape.get_volume();
     }
 
-    btScalar get_moment(btVector3 rotation_axis);
+//    btScalar get_moment(btVector3 rotation_axis);
 
     btScalar get_angular_EC_simulation();
 
@@ -144,7 +152,9 @@ private:
     btVector3 get_extremity_animation() const ;
     btVector3 get_center_position () const;
     void updateSimulation(float elapsed,float delta_t,float gravity);
-    void updateAnimation(float elapsed,float delta_t,float gravity);
+    void updateAnimation(float elapsed, float delta_t, float gravity, const btTransform &transform);
+
+
 };
 
 #endif // INTERACTIVEOBJECT_H

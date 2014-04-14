@@ -8,6 +8,8 @@
 
 #include "utils/geometry.h"
 
+
+//! Class representing the parameters of a simulation : duration, steps duration, gravity etc
 class SimulationParameters
 {
 public:

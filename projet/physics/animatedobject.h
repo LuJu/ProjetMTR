@@ -9,7 +9,10 @@
 #include "utils.h"
 
 
-
+//! An animated 3D object
+/*!
+        Represents an animated 3D object. The values of the movement at each time is contained in the three 3DCurves
+    */
 class AnimatedObject
 {
 public:
@@ -50,7 +53,7 @@ public:
     Curve3d& get_translation_curves() {return _translation_curves;}
 
     state_data _current_state, _previous_state;
-
+    const btTransform getWorldTransform(const btTransform parent,float time) const;
 
 private:
     Curve3d _scaling_curves;
