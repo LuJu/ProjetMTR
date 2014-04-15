@@ -19,30 +19,30 @@ DebuggingWidget * _debugging;
 DebuggingInterface * _debugging_ui;
 
 
-
-void speedTest(){
+//! Function to do quick tests
+void quickTest(){
 }
 
+
+//Redirects the debug messages
 void customMessageHandler(QtMsgType type, const char *msg)
 {
-//    _debugging_ui->log(msg);
     Debugger::customMessageHandler(type,msg);
 }
-void customMessageHandler2(QtMsgType type, const char *msg)
-{
-    Debugger::customMessageHandler(type,msg);
-}
-
 void firstConfiguration(){
-    GlobalConfig::defaultValue("zoom",QVariant(1));
-    qDebug()<<GlobalConfig::get_int("zoom");
+    GlobalConfig::defaultValue("zoom",QVariant(9000));
+    GlobalConfig::defaultValue("quaternion_w",QVariant(0.999962));
+    GlobalConfig::defaultValue("quaternion_x",QVariant(-0.00830986));
+    GlobalConfig::defaultValue("quaternion_y",QVariant(0.00131711));
+    GlobalConfig::defaultValue("quaternion_z",QVariant(-0.00231517));
 
     GlobalConfig::defaultValue("duration",QVariant(10000));
     GlobalConfig::defaultValue("steps_duration",QVariant(100));
     GlobalConfig::defaultValue("coefficient",QVariant(1));
-    GlobalConfig::defaultValue("ups",QVariant(30));
+    GlobalConfig::defaultValue("ups",QVariant(60));
     GlobalConfig::defaultValue("body_mass",QVariant(70));
     GlobalConfig::defaultValue("input_location",QVariant("values.csv"));
+    GlobalConfig::defaultValue("constraints_activated",QVariant("true"));
 
     GlobalConfig::defaultValue("output_fps",QVariant("true"));
     GlobalConfig::defaultValue("debug_output_debug",QVariant("true"));
@@ -51,8 +51,22 @@ void firstConfiguration(){
     GlobalConfig::defaultValue("display_ui",QVariant("true"));
     GlobalConfig::defaultValue("display_animation",QVariant("true"));
     GlobalConfig::defaultValue("display_simulation",QVariant("true"));
+    GlobalConfig::defaultValue("display_animation_stats",QVariant("true"));
+    GlobalConfig::defaultValue("display_curves_normalized",QVariant("true"));
     GlobalConfig::defaultValue("automatic_close",QVariant("true"));
     GlobalConfig::defaultValue("automatic_start",QVariant("true"));
+    GlobalConfig::defaultValue("shaders",QVariant("true"));
+    GlobalConfig::defaultValue("automatic_stats_progression",QVariant("true"));
+    GlobalConfig::defaultValue("automatic",QVariant("true"));
+
+    GlobalConfig::defaultValue("display_error",QVariant("true"));
+    GlobalConfig::defaultValue("display_stats",QVariant("true"));
+    GlobalConfig::defaultValue("display_speed",QVariant("true"));
+    GlobalConfig::defaultValue("display_simulation_window",QVariant("true"));
+    GlobalConfig::defaultValue("display_simulation_stats",QVariant("true"));
+    GlobalConfig::defaultValue("display_diff",QVariant("true"));
+    GlobalConfig::defaultValue("debugging",QVariant("true"));
+
 }
 
 
@@ -101,26 +115,20 @@ int main(int argc, char *argv[])
     Stats * stats;
 
     int ret=0;
-//    qInstallMsgHandler(Debugger::customMessageHandler); //redirect the messages
     qDebug()<<"LAUNCHING PROGRAM";
-    GlobalConfig::loadConfiguration("Windel","ETS");
+    GlobalConfig::loadConfiguration("ETS","FacialAnimation");
     firstConfiguration();
     parseArguments(argc,argv);
     GlobalConfig::saveConfiguration();
-//    GlobalConfig::parseArguments(argc, argv);
-    speedTest();
+    quickTest();
 
     Simulation * simulation = new Simulation();
-
-//    gui._main_viewer = true;
-//    stats->_main_viewer = false;
 
     if (GlobalConfig::is_enabled("display_simulation_window"))
     {
         gui._simulation = simulation;
         gui.setWindowTitle("Physics simulation");
         gui.move(0,0);
-//        gui._main_viewer = true;
         if (GlobalConfig::is_enabled("display_stats")) {
             stats=new Stats(&gui);
             stats->setWindowFlags( Qt::Window);
@@ -128,7 +136,6 @@ int main(int argc, char *argv[])
             stats->setWindowTitle("Stats");
             stats->move(gui.width(),0);
             stats->setGeometry(gui.width(),0,700,300);
-//            stats->_main_viewer = false;
         }
         if (GlobalConfig::is_enabled("debugging")){
             _debugging_ui = NULL;
@@ -139,11 +146,10 @@ int main(int argc, char *argv[])
             _debugging_ui->setupUi(_debugging);
             _debugging->_interface = _debugging_ui;
             _debugging_ui->_simulation=simulation;
-            qInstallMsgHandler(customMessageHandler);
 
-        } else {
-            qInstallMsgHandler(customMessageHandler2);
         }
+        qInstallMsgHandler(customMessageHandler);
+
     }
 
     SimulationParameters params;

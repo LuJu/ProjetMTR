@@ -19,7 +19,7 @@
 #include "joint.h"
 #include "simulationparameters.h"
 
-
+//! Contains the information about all parts of the body
 typedef WNode<InteractiveObject> PartNode;
 class HumanBody
 {

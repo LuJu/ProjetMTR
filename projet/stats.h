@@ -15,6 +15,8 @@
 #include "utils/maths.h"
 #include "utils/csvparser.h"
 #include "3d/meshutils.h"
+
+//! Displays the curves representing the measures done
 class Stats : public Viewer
 {
     Q_OBJECT

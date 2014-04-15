@@ -11,7 +11,7 @@
 class SimulatedObject
 {
 public:
-    SimulatedObject();
+    SimulatedObject(){}
 
     state_data _previous_state,_current_state;
 };

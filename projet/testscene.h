@@ -16,6 +16,11 @@
 #include "utils/csvparser.h"
 #include "3d/meshutils.h"
 #include "3d/objloader.h"
+
+//! Main viewer of the program
+/*!
+        Displays the scene with the different objects
+    */
 class TestScene : public Viewer
 {
     Q_OBJECT

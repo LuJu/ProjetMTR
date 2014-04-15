@@ -22,6 +22,8 @@
 #include "interactiveobject.h"
 #include "joint.h"
 
+
+//! Main class of the program: runs the simulation and the animation
 class Simulation : public QObject
 {
     Q_OBJECT

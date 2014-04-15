@@ -6,6 +6,8 @@
 #include <QHash>
 
 #include "utils/csvparser.h"
+
+//! Static class that is used to gather the standard information on a human body (mass of each part etc)
 class BodyInfo
 {
 public:

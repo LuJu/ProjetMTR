@@ -1,11 +1,9 @@
 QT          += opengl xml widgets
 
 SOURCES     = \
-    main.cpp \
-    physics/utils.cpp \
-    physics/animatedobject.cpp \
-    physics/simulatedobject.cpp
+    main.cpp
 
+# library QtDee
 #   UTILS   ###############
 HEADERS     += \
     /home/batman/Programmation/QtDee/utils/utils.h \
@@ -15,16 +13,15 @@ HEADERS     += \
     /home/batman/Programmation/QtDee/utils/maths.h \
     /home/batman/Programmation/QtDee/utils/csvparser.h \
     /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h \
-    physics/utils.h \
-    physics/animatedobject.h \
-    physics/simulatedobject.h
+    /home/batman/Programmation/QtDee/utils/curve.h
 SOURCES     += \
     /home/batman/Programmation/QtDee/utils/maths.cpp \
     /home/batman/Programmation/QtDee/utils/csvparser.cpp \
     /home/batman/Programmation/QtDee/utils/curve.cpp
 ############################
 
+
+# library QtDee
 #   3D         #############
 HEADERS += \
     /home/batman/Programmation/QtDee/3d/3d.h \
@@ -50,16 +47,13 @@ SOURCES     += \
     /home/batman/Programmation/QtDee/3d/objloader.cpp
 ############################
 
+# library WTree
 #   WTREE    ##############
-SOURCES += \
-    /home/batman/Programmation/DeeTree/wgraph/wnode.cpp \
-    /home/batman/Programmation/DeeTree/wgraph/wtree.cpp \
-    /home/batman/Programmation/DeeTree/wgraph/walgorithms.cpp
 HEADERS += \
     /home/batman/Programmation/DeeTree/wgraph/wnode.h \
-    /home/batman/Programmation/DeeTree/wgraph/wtree.h \
-    /home/batman/Programmation/DeeTree/wgraph/walgorithms.h
+    /home/batman/Programmation/DeeTree/wgraph/wtree.h
 
+# Core program
 #   CORE     ##############
 HEADERS     += \
     /home/batman/Programmation/DeeCore/core/globalconfig.h \
@@ -90,17 +84,20 @@ HEADERS += \
     physics/debugginginterface.h \
     physics/debuggingwidget.h \
     physics/joint.h\
-    physics/shape.h
+    physics/shape.h \
+    physics/utils.h \
+    physics/animatedobject.h \
+    physics/simulatedobject.h
 SOURCES     += \
     physics/interactiveobject.cpp \
-    physics/simulationparameters.cpp \
     physics/simulation.cpp \
     physics/bodyinfo.cpp \
     physics/humanbody.cpp \
     physics/debugginginterface.cpp \
-    physics/debuggingwidget.cpp \
     physics/joint.cpp\
-    physics/shape.cpp
+    physics/shape.cpp \
+    physics/utils.cpp \
+    physics/animatedobject.cpp
 ############################
 
 
@@ -113,14 +110,16 @@ SOURCES     += \
     stats.cpp
 ############################
 
+# FORMS
+FORMS += \
+    physics/Debugging.ui
 
 
 INSTALLS += target sources
 
 unix:!macx:!symbian: LIBS += -L$usr/lib/x86_64-linux-gnu/
-#INCLUDEPATH += $/usr/local/include/bullet/LinearMath
-#INCLUDEPATH += $/usr/lib/x86_64-linux-gnu
 
+#Library dependencies
 INCLUDEPATH += /usr/local/include/bullet
 DEPENDPATH += /usr/local/include/bullet
 INCLUDEPATH += /home/batman/Programmation/QtDee
@@ -129,18 +128,16 @@ INCLUDEPATH += /home/batman/Programmation/DeeCore
 DEPENDPATH += /home/batman/Programmation/DeeCore
 INCLUDEPATH += /home/batman/Programmation/DeeTree
 DEPENDPATH += /home/batman/Programmation/DeeTree
-#INCLUDEPATH += /usr/local/include/bullet/LinearMath
+
 # Linux
-#INCLUDEPATH *= $/usr/include/QGLViewer
-LIBS *= -L/usr/lib -L/usr/local/lib -lQGLViewer -lGLU -lglut  -lBulletDynamics -lBulletCollision -lLinearMath -lBulletSoftBody
-#FORMS += \
-#dialog.ui
+# libs for bullet and opengl
+LIBS *= -L/usr/lib -L/usr/local/lib -lGLU -lglut  -lBulletDynamics -lBulletCollision -lLinearMath -lBulletSoftBody
 
 OTHER_FILES += \
     ../assets/shaders/fshader.glsl \
     ../assets/shaders/vshader.glsl \
     ../assets/shaders/gshader.glsl \
-    ../../../.config/Windel/ETS.conf
+    /User/batman/.config/Windel/ETS.conf
 
 CONFIG(debug,debug|release){
     QMAKE_CXXFLAGS += -std=c++0x
@@ -148,8 +145,7 @@ CONFIG(debug,debug|release){
     QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder
 }
 
-FORMS += \
-    physics/Debugging.ui
 
+#ressource file
 RESOURCES += \
     ../assets/ressources.qrc
