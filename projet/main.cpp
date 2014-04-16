@@ -148,7 +148,11 @@ int main(int argc, char *argv[])
             _debugging_ui->_simulation=simulation;
 
         }
-        //qInstallMsgHandler(customMessageHandler);
+#ifdef QT_4_
+        qInstallMsgHandler(customMessageHandler);
+#else
+        qInstallMessageHandler(customMessageHandler);
+#endif
 
     }
 
