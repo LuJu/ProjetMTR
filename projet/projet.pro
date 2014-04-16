@@ -6,72 +6,72 @@ SOURCES     = \
 # library QtDee
 #   UTILS   ###############
 HEADERS     += \
-    /home/batman/Programmation/QtDee/utils/utils.h \
-    /home/batman/Programmation/QtDee/utils/triplet.h \
-    /home/batman/Programmation/QtDee/utils/extendedtriplet.h \
-    /home/batman/Programmation/QtDee/utils/geometry.h \
-    /home/batman/Programmation/QtDee/utils/maths.h \
-    /home/batman/Programmation/QtDee/utils/csvparser.h \
-    /home/batman/Programmation/QtDee/utils/typedefinitions.h \
-    /home/batman/Programmation/QtDee/utils/curve.h
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/utils.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/triplet.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/extendedtriplet.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/geometry.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/maths.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/csvparser.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/typedefinitions.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/curve.h
 SOURCES     += \
-    /home/batman/Programmation/QtDee/utils/maths.cpp \
-    /home/batman/Programmation/QtDee/utils/csvparser.cpp \
-    /home/batman/Programmation/QtDee/utils/curve.cpp
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/maths.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/csvparser.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/utils/curve.cpp
 ############################
 
 
 # library QtDee
 #   3D         #############
 HEADERS += \
-    /home/batman/Programmation/QtDee/3d/3d.h \
-    /home/batman/Programmation/QtDee/3d/graphicobject3d.h \
-    /home/batman/Programmation/QtDee/3d/vertex.h \
-    /home/batman/Programmation/QtDee/3d/transform.h \
-    /home/batman/Programmation/QtDee/3d/material.h \
-    /home/batman/Programmation/QtDee/3d/mesh.h \
-    /home/batman/Programmation/QtDee/3d/meshutils.h \
-    /home/batman/Programmation/QtDee/3d/movementpath.h \
-    /home/batman/Programmation/QtDee/3d/bezierpath.h \
-    /home/batman/Programmation/QtDee/3d/objloader.h
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/3d.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/graphicobject3d.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/vertex.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/transform.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/material.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/mesh.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/meshutils.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/movementpath.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/bezierpath.h \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/objloader.h
 
 SOURCES     += \
-    /home/batman/Programmation/QtDee/3d/graphicobject3d.cpp \
-    /home/batman/Programmation/QtDee/3d/vertex.cpp \
-    /home/batman/Programmation/QtDee/3d/transform.cpp \
-    /home/batman/Programmation/QtDee/3d/material.cpp \
-    /home/batman/Programmation/QtDee/3d/mesh.cpp \
-    /home/batman/Programmation/QtDee/3d/meshutils.cpp \
-    /home/batman/Programmation/QtDee/3d/movementpath.cpp \
-    /home/batman/Programmation/QtDee/3d/bezierpath.cpp \
-    /home/batman/Programmation/QtDee/3d/objloader.cpp
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/graphicobject3d.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/vertex.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/transform.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/material.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/mesh.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/meshutils.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/movementpath.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/bezierpath.cpp \
+    /home/paulinamonroy/Documents/ETS/Qt-Dee/3d/objloader.cpp
 ############################
 
 # library WTree
 #   WTREE    ##############
 HEADERS += \
-    /home/batman/Programmation/DeeTree/wgraph/wnode.h \
-    /home/batman/Programmation/DeeTree/wgraph/wtree.h
+    /home/paulinamonroy/Documents/ETS/DeeTree/wgraph/wnode.h \
+    /home/paulinamonroy/Documents/ETS/DeeTree/wgraph/wtree.h
 
 # Core program
 #   CORE     ##############
 HEADERS     += \
-    /home/batman/Programmation/DeeCore/core/globalconfig.h \
-    /home/batman/Programmation/DeeCore/core/inputmanager.h \
-    /home/batman/Programmation/DeeCore/core/uistate.h \
-    /home/batman/Programmation/DeeCore/core/debugger.h \
-    /home/batman/Programmation/DeeCore/core/timing.h \
-    /home/batman/Programmation/DeeCore/core/viewer.h \
-    /home/batman/Programmation/DeeCore/core/camera.h \
-    /home/batman/Programmation/DeeCore/core/core.h
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/globalconfig.h \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/inputmanager.h \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/uistate.h \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/debugger.h \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/timing.h \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/viewer.h \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/camera.h \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/core.h
 SOURCES     += \
-    /home/batman/Programmation/DeeCore/core/globalconfig.cpp \
-    /home/batman/Programmation/DeeCore/core/inputmanager.cpp \
-    /home/batman/Programmation/DeeCore/core/uistate.cpp \
-    /home/batman/Programmation/DeeCore/core/debugger.cpp \
-    /home/batman/Programmation/DeeCore/core/viewer.cpp \
-    /home/batman/Programmation/DeeCore/core/camera.cpp \
-    /home/batman/Programmation/DeeCore/core/timing.cpp
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/globalconfig.cpp \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/inputmanager.cpp \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/uistate.cpp \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/debugger.cpp \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/viewer.cpp \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/camera.cpp \
+    /home/paulinamonroy/Documents/ETS/DeeCore/core/timing.cpp
 ############################
 
 #   PHYSICS        #########
@@ -122,12 +122,12 @@ unix:!macx:!symbian: LIBS += -L$usr/lib/x86_64-linux-gnu/
 #Library dependencies
 INCLUDEPATH += /usr/local/include/bullet
 DEPENDPATH += /usr/local/include/bullet
-INCLUDEPATH += /home/batman/Programmation/QtDee
-DEPENDPATH += /home/batman/Programmation/QtDee
-INCLUDEPATH += /home/batman/Programmation/DeeCore
-DEPENDPATH += /home/batman/Programmation/DeeCore
-INCLUDEPATH += /home/batman/Programmation/DeeTree
-DEPENDPATH += /home/batman/Programmation/DeeTree
+INCLUDEPATH += /home/paulinamonroy/Documents/ETS/Qt-Dee
+DEPENDPATH += /home/paulinamonroy/Documents/ETS/Qt-Dee
+INCLUDEPATH += /home/paulinamonroy/Documents/ETS/DeeCore
+DEPENDPATH += /home/paulinamonroy/Documents/ETS/DeeCore
+INCLUDEPATH += /home/paulinamonroy/Documents/ETS/DeeTree
+DEPENDPATH += /home/paulinamonroy/Documents/ETS/DeeTree
 
 # Linux
 # libs for bullet and opengl
