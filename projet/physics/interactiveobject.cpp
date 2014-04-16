@@ -126,10 +126,11 @@ void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity
 void InteractiveObject::updateAnimation(float elapsed,float delta_t,float gravity,const btTransform& transform){
     t_state_data& current = _animation._current_state;
     t_state_data& previous =_animation._previous_state;
-    bool new_method = false;
+    bool new_method = true;
     if (new_method){
         current._position = transform.getOrigin();
         current._rotation = btQuat2euler(transform.getRotation());
+        current._rotation = _animation.rotationVector(elapsed);
     } else {
         current._position = _animation.translationVector(elapsed);
         current._rotation = _animation.rotationVector(elapsed);

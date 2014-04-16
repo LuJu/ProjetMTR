@@ -57,6 +57,7 @@ void TestScene::displayAnimation(){
                           deg2rad(rotation_degrees.x()),
                           deg2rad(rotation_degrees.z()));
             btVector3 translation(obj->get_animation()._current_state._position);
+            toString("position",translation);
 //            qDebug()<<"translation :"<<translation.x()<<" "<<translation.y()<<" "<<translation.z()<<" ";
             transform.setRotation(quat);
             transform.setOrigin(translation);

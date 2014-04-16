@@ -387,7 +387,7 @@ void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
         qWarning()<<"No root in part tree";
     }
     for (int i = 0; i < _parts.size(); ++i){
-        _parts[i]->updatePartInfo(elapsed,diff,gravity,transform);
+//        _parts[i]->updatePartInfo(elapsed,diff,gravity,transform);
         _complete_data_list.append(_parts[i]->getEnergyInformation());
     }
 
@@ -395,13 +395,12 @@ void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
 
 void HumanBody::updateInformationTree(const PartNode* node, const btTransform& transform, float elapsed, float diff,float gravity){
     btTransform object_transform = node->get_data()->_animation.getWorldTransform(transform,elapsed);
+    qDebug()<<"parent part "<<node->get_data()->get_body_part();
     for (int i = 0; i < node->get_number_of_children(); ++i) {
+        qDebug()<<"part "<<node->childAt(i)->get_data()->get_body_part();
         updateInformationTree(node->childAt(i),object_transform ,elapsed,diff,gravity);
     }
     node->get_data()->updatePartInfo(elapsed,diff,gravity,object_transform );
-//    qDebug()<<"lol"<<node->get_data()->get_animation()._current_state._position.x()<<" "
-//              <<node->get_data()->get_animation()._current_state._position.y()<<" "
-//              <<node->get_data()->get_animation()._current_state._position.z()<<" ";
     _complete_data_list.append(node->get_data()->getEnergyInformation());
 }
 
@@ -413,11 +412,11 @@ void HumanBody::setSimulationPosition(float time){
 void HumanBody::buildTree(){
     InteractiveObject * temp;
     QList<InteractiveObject*>::iterator it;
-    it = findPartByName("spine");
+    it = findPartByName("pelvis");
     if (it != _parts.end()){
         temp = *it;
         int temp_id = _parts_tree.addNode(temp);
-        it = findPartByName("pelvis");
+        it = findPartByName("spine");
         if (it != _parts.end()){
             temp = *it;
             _parts_tree.addNode(temp,temp_id);

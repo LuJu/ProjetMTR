@@ -4,8 +4,8 @@ scaling;;
 radius;0;0.15
 length;0;0.2
 translation;;
-x;0;0;10000;3
-y;0;1;10000;0
+x;0;0
+y;0;1
 z;0;0
 rotation;;
 x;0;0

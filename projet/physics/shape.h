@@ -2,6 +2,7 @@
 #define SHAPE_H
 
 #include "btBulletDynamicsCommon.h"
+#include "utils.h"
 
 
 /*!

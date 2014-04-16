@@ -14,13 +14,12 @@ const btTransform AnimatedObject::getWorldTransform(const btTransform parent, fl
     btVector3 rotation;
     transform.setIdentity();
     transform.setOrigin(translationVector(time));
-//    printbtVector3("vector",transform.getOrigin());
+
     rotation = rotationVector(time);
     quat.setEuler(deg2rad(rotation.y()),deg2rad(rotation.x()),deg2rad(rotation.z()));
-    transform.setRotation(quat);
+//    transform.setRotation(quat);
     object_transform_matrix = transform;
     transform_matrix = object_transform_matrix * parent;
-//    printbtVector3("vector2",parent.getOrigin());
-//    printbtVector3("final",transform_matrix.getOrigin());
+
     return transform_matrix;
 }

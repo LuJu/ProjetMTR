@@ -72,6 +72,12 @@ void Joint::buildConstraint(){
             ((btConeTwistConstraint *)constraint)->setLimit(M_PI_2,M_PI_2,0);
             break;
         case hinge:
+            _pivotA = _parts.second->_animation.translationVector(0);
+            _pivotB = btVector3(0,-_parts.second->get_shape_struct().get_shape().y()/2,0);
+//            _pivotB = _parts.second->_animation._current_state._position;oignée de main, mais que la presse avait alors décidé de ne pas publier la photo pour ne pas donner une image positive du dirigeant du Troisième Reich23.
+            toString("pA:",_pivotA);
+            toString("pB:",_pivotB);
+
             _localeA.setIdentity();_localeA.getBasis().setEulerZYX(0,M_PI_2,0);_localeA.setOrigin(_pivotA);
             _localeB.setIdentity();_localeB.getBasis().setEulerZYX(0,M_PI_2,0);_localeB.setOrigin(_pivotB);
             if (_parts.second != NULL){
@@ -81,6 +87,15 @@ void Joint::buildConstraint(){
                             _localeA,
                             _localeB);
                 ((btHingeConstraint*)constraint)->setLimit(btScalar(-M_PI_4), btScalar(M_PI_2));
+//                _localeA.setIdentity();_localeA.getBasis().setEulerZYX(0,M_PI_2,0);_localeA.setOrigin(_pivotA);
+//                _localeB.setIdentity();_localeB.getBasis().setEulerZYX(0,M_PI_2,0);_localeB.setOrigin(_pivotB);
+//                if (_parts.second != NULL){
+//                    constraint= new btHingeConstraint(
+//                                _parts.first->get_body(),
+//                                _parts.second->get_body(),
+//                                _localeA,
+//                                _localeB);
+//                    ((btHingeConstraint*)constraint)->setLimit(btScalar(-M_PI_4), btScalar(M_PI_2));
             } else
                 qWarning()<<"cannot create hinge constraint on one object";
             break;
