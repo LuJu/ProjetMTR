@@ -126,11 +126,14 @@ void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity
 void InteractiveObject::updateAnimation(float elapsed,float delta_t,float gravity,const btTransform& transform){
     t_state_data& current = _animation._current_state;
     t_state_data& previous =_animation._previous_state;
-    current._position = transform.getOrigin();
-//    current._position = _animation.translationVector(elapsed);
-    //    current._rotation = _animation.rotationVector(elapsed);
-    current._rotation = btQuat2euler(transform.getRotation());
-
+    bool new_method = false;
+    if (new_method){
+        current._position = transform.getOrigin();
+        current._rotation = btQuat2euler(transform.getRotation());
+    } else {
+        current._position = _animation.translationVector(elapsed);
+        current._rotation = _animation.rotationVector(elapsed);
+    }
     btVector3 animation_distance(current._position-previous._position);
 
     current._center_of_mass_speed = animation_distance/(delta_t/1000); // the diff value is in ms so a conversion is needed to be in m/s
@@ -278,6 +281,7 @@ void InteractiveObject::updateAnimationFromSimulationData(float time){
 }
 
 btVector3 InteractiveObject::speedAtTime(float time) const {
+    toString("initial speed",_animation.translationTangent(time));
     return _animation.translationTangent(time) * 1000.0f;
 }
 

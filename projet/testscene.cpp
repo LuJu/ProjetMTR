@@ -125,8 +125,8 @@ void TestScene::init(){
     Viewer::init();
 
 //    OBJLoader loader;
-    _ui->set_zoom(20000);
-    _ui->activateProgressiveZoom(60);
+    _ui->set_zoom(100);
+    _ui->activateProgressiveZoom(3);
 //    loader.parseOBJ(":/models/cube.obj");
     _cube_mesh = QSharedPointer<Mesh>(new Mesh);
     MeshUtils::addFlatSurface(_cube_mesh.data());
