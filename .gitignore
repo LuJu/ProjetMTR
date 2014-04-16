@@ -1,0 +1,32 @@
+compilation_debug/
+compilation_release/
+.git/
+projet/projet.pro.user
+projet/projet.pro
+Documents/
+documentation/
+doxygen
+assets/CSV/output/
+
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
