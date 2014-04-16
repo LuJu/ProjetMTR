@@ -36,8 +36,8 @@ void firstConfiguration(){
     GlobalConfig::defaultValue("quaternion_y",QVariant(0.00131711));
     GlobalConfig::defaultValue("quaternion_z",QVariant(-0.00231517));
 
-    GlobalConfig::defaultValue("duration",QVariant(10000));
-    GlobalConfig::defaultValue("steps_duration",QVariant(100));
+    GlobalConfig::defaultValue("duration",QVariant(100000));
+    GlobalConfig::defaultValue("steps_duration",QVariant(10000));
     GlobalConfig::defaultValue("coefficient",QVariant(1));
     GlobalConfig::defaultValue("ups",QVariant(60));
     GlobalConfig::defaultValue("body_mass",QVariant(70));
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
             _debugging_ui->_simulation=simulation;
 
         }
-        qInstallMsgHandler(customMessageHandler);
+        //qInstallMsgHandler(customMessageHandler);
 
     }
 

@@ -41,7 +41,7 @@ void Stats::displayStats(){
     for (int i = 0; i < _display.size(); ++i) {
         const QList<Curve>& curves= _display.at(i)->get_curves();
         for (int j = 0; j < curves.size(); ++j) {
-            value = (curves[j].end()-1).key();
+            value = 50;
             if (right < value)
                 right = value;
             value = curves[j].get_max();
