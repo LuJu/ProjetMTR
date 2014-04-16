@@ -30,7 +30,7 @@ void customMessageHandler(QtMsgType type, const char *msg)
     Debugger::customMessageHandler(type,msg);
 }
 void firstConfiguration(){
-    GlobalConfig::defaultValue("zoom",QVariant(9000));
+    GlobalConfig::defaultValue("zoom",QVariant(100));
     GlobalConfig::defaultValue("quaternion_w",QVariant(0.999962));
     GlobalConfig::defaultValue("quaternion_x",QVariant(-0.00830986));
     GlobalConfig::defaultValue("quaternion_y",QVariant(0.00131711));

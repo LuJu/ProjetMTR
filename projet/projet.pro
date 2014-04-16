@@ -137,7 +137,7 @@ OTHER_FILES += \
     ../assets/shaders/fshader.glsl \
     ../assets/shaders/vshader.glsl \
     ../assets/shaders/gshader.glsl \
-    /User/batman/.config/Windel/ETS.conf
+      /home/batman/.config/ETS/FacialAnimation.conf
 
 CONFIG(debug,debug|release){
     QMAKE_CXXFLAGS += -std=c++0x
