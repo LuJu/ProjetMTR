@@ -56,8 +56,8 @@ void TestScene::displayAnimation(){
             quat.setEuler(deg2rad(rotation_degrees.y()),
                           deg2rad(rotation_degrees.x()),
                           deg2rad(rotation_degrees.z()));
-            btVector3 translation(obj->get_animation()._current_state._position);
-            toString("position",translation);
+            btVector3 translation(obj->get_animation()._current_state._center_of_mass_world_position);
+//            toString("position",translation);
 //            qDebug()<<"translation :"<<translation.x()<<" "<<translation.y()<<" "<<translation.z()<<" ";
             transform.setRotation(quat);
             transform.setOrigin(translation);

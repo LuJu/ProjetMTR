@@ -72,9 +72,9 @@ void Joint::buildConstraint(){
             ((btConeTwistConstraint *)constraint)->setLimit(M_PI_2,M_PI_2,0);
             break;
         case hinge:
-            _pivotA = _parts.second->_animation.translationVector(0);
+            _pivotA = _parts.second->_animation.extremityTranslationVector(0) + _parts.first->_animation.centerToBaseVector(0);
             _pivotB = btVector3(0,-_parts.second->get_shape_struct().get_shape().y()/2,0);
-//            _pivotB = _parts.second->_animation._current_state._position;oignée de main, mais que la presse avait alors décidé de ne pas publier la photo pour ne pas donner une image positive du dirigeant du Troisième Reich23.
+//            _pivotB = _parts.second->_animation._current_state._position;
             toString("pA:",_pivotA);
             toString("pB:",_pivotB);
 
@@ -108,7 +108,7 @@ void Joint::buildConstraint(){
 
 btVector3 Joint::get_world_position_simulation() const{
     btVector3 position;
-    btVector3 parent_position = _parts.first->_simulation._current_state._position;
+    btVector3 parent_position = _parts.first->_simulation._current_state._center_of_mass_world_position;
     btVector3 constraint_position ;
     switch (_type){
     case hinge:
@@ -120,7 +120,7 @@ btVector3 Joint::get_world_position_simulation() const{
         break;
     }
     btVector3 position2;
-    btVector3 parent_position2 = _parts.second->_simulation._current_state._position;
+    btVector3 parent_position2 = _parts.second->_simulation._current_state._center_of_mass_world_position;
     btVector3 constraint_position2 ;
     switch (_type){
     case hinge:

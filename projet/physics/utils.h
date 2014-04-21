@@ -40,9 +40,9 @@ typedef struct part_info{
 }t_part_info;
 
 typedef struct state_data{
-        btVector3 _position;
+        btVector3 _center_of_mass_world_position;
         btVector3 _rotation;
-        btVector3 _center_of_mass_speed;
+        btVector3 _center_of_mass_world_speed;
         btVector3 _angular_speed;
         btVector3 _rotation_vector_diff;
 //        btVector3 _center_of_mass_speed;

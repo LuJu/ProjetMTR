@@ -22,6 +22,7 @@ void HumanBody::loadObjects(QString path){
     int i=0;
     InteractiveObject * object = NULL;
     bool ignore = false;
+    float mass;
     qDebug()<<path;
     while (list[i].at(0)!="parts_end"){
         for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
@@ -34,10 +35,16 @@ void HumanBody::loadObjects(QString path){
                         object = new InteractiveObject();
                         object->get_shape_struct().set_shape_type(Shape::capsule);
                         object->set_body_part(temp.at(1));
-                        if ((BodyInfo::mass(temp.at(1),_mass)==0)){
+                        mass = BodyInfo::mass(temp.at(1),_mass);
+                        if (temp.size() == 5 ){
+                            if (temp.at(4) == "zeromass") mass = 0.0f;
+                            QString parent = temp.at(3);
+                            object->set_parent_body_part(parent);
+                        }
+                        if (mass==0.0f){
                             qWarning()<<"Object mass null for part: "<<temp.at(1);
                         }
-                        object->set_mass(BodyInfo::mass(temp.at(1),_mass));
+                        object->set_mass(BodyInfo::mass(temp.at(1),mass));
                     }
                 }
                 else if (!ignore){
@@ -380,8 +387,6 @@ void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
     PartNode* root = _parts_tree.get_root();
     transform.setIdentity();
     if (root){
-        // compute origin matrix
-        transform = root->get_data()->_animation.getWorldTransform(transform,elapsed);
         updateInformationTree(root,transform,elapsed,diff,gravity);
     } else {
         qWarning()<<"No root in part tree";
@@ -394,37 +399,59 @@ void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
 }
 
 void HumanBody::updateInformationTree(const PartNode* node, const btTransform& transform, float elapsed, float diff,float gravity){
-    btTransform object_transform = node->get_data()->_animation.getWorldTransform(transform,elapsed);
-    qDebug()<<"parent part "<<node->get_data()->get_body_part();
+    btTransform object_transform = node->get_data()->_animation.getWorldBaseTransform(transform,elapsed);
+    node->get_data()->updatePartInfo(elapsed,diff,gravity,object_transform );
     for (int i = 0; i < node->get_number_of_children(); ++i) {
-        qDebug()<<"part "<<node->childAt(i)->get_data()->get_body_part();
         updateInformationTree(node->childAt(i),object_transform ,elapsed,diff,gravity);
     }
-    node->get_data()->updatePartInfo(elapsed,diff,gravity,object_transform );
     _complete_data_list.append(node->get_data()->getEnergyInformation());
-}
-
-void HumanBody::setSimulationPosition(float time){
-    for (int i = 0; i < _parts.size(); ++i)
-        _parts[i]->setSimulationPosition(time);
 }
 
 void HumanBody::buildTree(){
     InteractiveObject * temp;
+    PartNode * parent;
     QList<InteractiveObject*>::iterator it;
-    it = findPartByName("pelvis");
-    if (it != _parts.end()){
-        temp = *it;
-        int temp_id = _parts_tree.addNode(temp);
-        it = findPartByName("spine");
-        if (it != _parts.end()){
-            temp = *it;
-            _parts_tree.addNode(temp,temp_id);
-        }
-//        qDebug()<<_parts_tree.get_number_of_levels();
-//        qDebug()<<_parts_tree.get_root()->get_number_of_children();
-//        qDebug()<<_parts_tree.size();
-//        qDebug()<<_parts_tree.size();
+    int number_of_parts = _parts.size();
+    it = findPartByParentName("root");
+    bool inserted[number_of_parts];
+    bool complete = false;
+    for (int i = 0; i < _parts.size(); ++i) {
+        inserted[i] = false;
     }
+
+    while ( complete == false){
+        for (int j = 0; j < number_of_parts; ++j) {
+            if(inserted[j] == false){
+                temp = _parts[j];
+                if (temp->get_parent_body_part() == "root"){
+                    _parts_tree.addNode(temp->get_body_part(),temp);
+                    inserted[j] = true;
+                } else {
+                    parent = _parts_tree.get_node_by_name(temp->get_parent_body_part());
+                    if (parent!=NULL){
+                        _parts_tree.addNode(temp->get_body_part(),temp,parent->get_id());
+                        inserted[j] = true;
+                    }
+                }
+            }
+        }
+
+
+        complete = true;
+        for (int i = 0; i < number_of_parts; ++i) {
+            if (inserted[i] == false) complete = false;
+        }
+    }
+
+
+//    if (it != _parts.end()){
+//        temp = *it;
+//        int temp_id = _parts_tree.addNode(temp);
+//        it = findPartByName("spine");
+//        if (it != _parts.end()){
+//            temp = *it;
+//            _parts_tree.addNode(temp,temp_id);
+//        }
+//    }
 
 }

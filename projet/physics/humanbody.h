@@ -64,6 +64,16 @@ public:
         return _parts.end();
     }
 
+    QList<InteractiveObject * >::iterator findPartByParentName(const QString& name){
+        QList<InteractiveObject * >::iterator i;
+        InteractiveObject * value;
+        for (i = _parts.begin(); i != _parts.end(); ++i) {
+            value = *i;
+            if (value->get_parent_body_part() == name) return i;
+        }
+        return _parts.end();
+    }
+
 //    QList<InteractiveObject * >::iterator findPartByBody(btRigidBody* body){
 //        QList<InteractiveObject * >::iterator i;
 //        InteractiveObject * value;

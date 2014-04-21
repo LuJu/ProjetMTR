@@ -35,9 +35,6 @@ public:
     /*!
         calculates the information about the energy of the part of the body \n
         This is where the kinetic energy and speed and potential energy are calculated
-        \n Status  1 : not implemented
-        \param  input
-        \return output
     */
     void updatePartInfo(float elapsed, float diff, float gravity, const btTransform &transform);
     t_part_info getEnergyInformation() const {return _energy;}
@@ -61,6 +58,8 @@ public:
 
     const QString& get_body_part() const {return _body_part_name;}
     void set_body_part(const QString& body_part){_body_part_name = body_part;}
+    const QString& get_parent_body_part() const {return _parent_body_part_name;}
+    void set_parent_body_part(const QString& parent_body_part_name){_parent_body_part_name = parent_body_part_name;}
 
     btDefaultMotionState * get_motion_state(){
         if(!_motion_state)
@@ -124,6 +123,7 @@ private:
 
     AnimatedObject _animation_from_simulation; //! The animation obtained from the simulation at each time. Is not used for the moment
     QString _body_part_name; //! Name of the body part
+    QString _parent_body_part_name; //! Name of the parent
     btScalar _mass;
     bool _animated;
 
@@ -136,14 +136,14 @@ private:
     void appendCurve(QList<Curve>& list, int index, QString label, QColor color);
     void appendCurves(QList<Curve>& list);
     void insertDataToCurves(QList<Curve>& curves, float elapsed);
+
+    //! updates the structure that will be used for exportation
     void updateEnergyStructure(float gravity);
     void updateAnimationFromSimulationData(float time);
     void setSimulationTransformFromAnimation(float time);
     btScalar get_density(){
         return _mass / _shape.get_volume();
     }
-
-//    btScalar get_moment(btVector3 rotation_axis);
 
     btScalar get_angular_EC_simulation();
 
