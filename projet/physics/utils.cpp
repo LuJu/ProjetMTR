@@ -63,6 +63,6 @@ btScalar get_moment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
     return (product.getColumn(0)).length();
 }
 
-void toString(const QString& prefix,const btVector3& vector){
+void toString(const btVector3& vector,const QString& prefix){
     qDebug()<<prefix<<": "<<vector.x()<<" "<<vector.y()<<" "<<vector.z()<<" ";
 }

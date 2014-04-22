@@ -52,7 +52,7 @@ typedef struct state_data{
 btScalar get_moment(btVector3 rotation_axis,btVector3 shape, btScalar mass);
 double kinetic_energy(double speed, double mass);
 double potential_energy(double mass, double gravitation, double height);
-void toString(const QString& prefix,const btVector3& vector);
+void toString(const btVector3& vector, const QString& prefix);
 
 
 #endif // BTUTILS_H

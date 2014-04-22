@@ -133,15 +133,12 @@ void Simulation::resetStep(float time){
     cleanWorld();
     _human.setSimulationPosition(time);
     fillWorld();
-//    btVector3 position = _joints.at(0).get_world_position_simulation();
-//    qDebug()<<"updates :"<<_updates_since_last_step<<" / ";
     _updates_since_last_step = 0;
     _step_counter = 0;
 }
 
 void Simulation::stepOver(){
     _human.recordStatus();
-//    qDebug()<<"time step over: "<<_clock.getTimeMilliseconds();
     resetStep(_elapsed_simulation);
 }
 
@@ -177,10 +174,17 @@ void Simulation::fillWorld(){
 
 void Simulation::simulationOver()
 {
+    //Setting path to save files
+    QString path = "output/";
+    if (QDir::setCurrent(path))
+        qDebug()<<"path set";
+    else
+        qDebug()<<"path not set "<<path;
+
      _human.saveDataList();
      _human.saveFullDataList(_params);
      _human.saveCompleteDataList();
-     _human.exportSimulationToAnimation();
+//     _human.exportSimulationToAnimation();
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";
      if (_params.get_automatic_close())

@@ -60,7 +60,7 @@ btCollisionShape *Shape::buildCollisionShape(){
             break;
         case capsule:
             collision_shape  = new btCapsuleShape(_shape_vector.x(),_shape_vector.y());
-            toString("shape",_shape_vector);
+//            toString(_shape_vector,"shape");
             break;
         case plane:
             collision_shape  = new btStaticPlaneShape(btVector3(0,1,0),1);

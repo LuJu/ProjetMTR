@@ -1,5 +1,5 @@
 body;100;
-object;pelvis;display;root;zeromass
+object;pelvis;display;root;mass
 scaling;;
 radius;0;0.1
 length;0;0.8
@@ -12,7 +12,7 @@ x;0;0
 y;0;0
 z;0;45
 end;;
-object;spine;display;pelvis;zeromass
+object;spine;display;pelvis;mass
 scaling;;
 radius;0;0.1
 length;0;0.3

@@ -88,6 +88,7 @@ InteractiveObject::~InteractiveObject(){
 btRigidBody & InteractiveObject::get_body(){
     if(!_body || !_motion_state){
         buildMotion();
+        qDebug()<<"build lolo";
     }
     return *_body;
 }

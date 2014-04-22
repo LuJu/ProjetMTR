@@ -75,8 +75,9 @@ void Joint::buildConstraint(){
             _pivotA = _parts.second->_animation.extremityTranslationVector(0) + _parts.first->_animation.centerToBaseVector(0);
             _pivotB = btVector3(0,-_parts.second->get_shape_struct().get_shape().y()/2,0);
 //            _pivotB = _parts.second->_animation._current_state._position;
-            toString("pA:",_pivotA);
-            toString("pB:",_pivotB);
+
+//            toString(_pivotA,"pA:");
+//            toString(_pivotB,"pB:");
 
             _localeA.setIdentity();_localeA.getBasis().setEulerZYX(0,M_PI_2,0);_localeA.setOrigin(_pivotA);
             _localeB.setIdentity();_localeB.getBasis().setEulerZYX(0,M_PI_2,0);_localeB.setOrigin(_pivotB);
