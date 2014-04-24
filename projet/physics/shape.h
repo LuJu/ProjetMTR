@@ -29,7 +29,7 @@ public:
         set_shape(shape);
     }
 
-    ~Shape(){
+    virtual ~Shape(){
     }
 
     shapetype get_shape_type() const {
@@ -53,6 +53,7 @@ public:
 
     btVector3 get_shape() const;
     void set_shape(const btVector3 &shape);
+    void deleteCollisionShape(btCollisionShape * collision_shape);
 private:
 //    btCollisionShape * _shape_collision;
     btCollisionShape * buildCollisionShape();

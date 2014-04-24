@@ -40,6 +40,7 @@ public:
     void saveFullDataList(const SimulationParameters& params);
     void saveCompleteDataList() const;
     void setSimulationPosition(float time);
+    void setSimulationPositionTree(const PartNode* node, const btTransform& transform, float elapsed);
     void updateBodyInformations(float elapsed,float diff,float gravity);
     btScalar computeWork(btScalar ke_simulation , btScalar ke_animation , btScalar ake_simulation , btScalar ake_animation , btScalar pe_simulation , btScalar pe_animation);
 

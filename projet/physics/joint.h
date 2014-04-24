@@ -18,20 +18,9 @@ public:
     };
 
     explicit Joint();
+    explicit Joint(const Joint& other);
     ~Joint();
     QPair<InteractiveObject* ,InteractiveObject* > _parts;
-    constraints_types _type;
-
-
-    btVector3 _pivotA;
-    btVector3 _pivotB;
-    btTransform _localeA;
-    btTransform _localeB;
-
-    btScalar _limit[5];
-    bool _limited;
-    bool _complete;
-
 
     btVector3 get_position() const {
         btVector3 pos1 = _parts.first->get_body().getCenterOfMassTransform().getOrigin();
@@ -41,16 +30,32 @@ public:
     }
 
     btTypedConstraint* get_constraint(){
-        if (!_constraint)
-            //build constraint
+        if (!_constraint){
+            qWarning()<<"requiring uninitialized constraint pointer";
+        }
         return _constraint;
     }
-
     void buildConstraint();
     btVector3 get_world_position();
     btVector3 get_world_position_simulation() const;
+
+    constraints_types _type;
+    btVector3 _pivotA;
+    btVector3 _pivotB;
+    btTransform _localeA;
+    btTransform _localeB;
+
+    btScalar _limit[5];
+    bool _limited;
+    bool _complete;
+
+    Joint& operator=( const Joint& other ) ;
+
+
+
 private:
     btTypedConstraint * _constraint;
+    void deleteConstraint();
 
 //    btTypedConstraint * _constraint_pointer;
 

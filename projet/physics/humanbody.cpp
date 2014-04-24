@@ -9,9 +9,6 @@ HumanBody::~HumanBody(){
     for (int i = 0; i < _parts.size(); ++i) {
         delete _parts[i];
     }
-    for (int i = 0; i < _constraints.size(); ++i) {
-        delete _constraints[i].get_constraint();
-    }
 }
 
 void HumanBody::loadObjects(QString path){
@@ -23,7 +20,7 @@ void HumanBody::loadObjects(QString path){
     InteractiveObject * object = NULL;
     bool ignore = false;
     float mass;
-    qDebug()<<path;
+    qDebug()<<"parsing file "<<path;
     while (list[i].at(0)!="parts_end"){
         for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
             temp= list[i];
@@ -160,19 +157,6 @@ void HumanBody::loadObjects(QString path){
 
 void HumanBody::recordStatus(){
     part_info full_data;
-    full_data.simulation.ake = 0;
-    full_data.simulation.ke = 0;
-    full_data.simulation.ake = 0;
-
-    full_data.animation.speed = 0;
-    full_data.animation.ake = 0;
-    full_data.animation.ke = 0;
-    full_data.animation.ake = 0;
-
-    full_data.ake_diff = 0;
-    full_data.ke_diff = 0;
-    full_data.pe_diff = 0;
-
     for (int i = 0; i < _parts.size(); ++i) {
         InteractiveObject * object = _parts[i];
         part_info energy = object->getEnergyInformation();
@@ -215,8 +199,8 @@ void HumanBody::savePartDataList(const QString& part_name) const{
         if (_data_list[i].part_name == part_name){
             save=_data_list.at(i);
             parser<<save.part_name<<
-                    save.animation.x     <<save.animation.y  <<save.animation.z   <<
-                    save.simulation.x    <<save.simulation.y <<save.simulation.z  <<
+                    save.animation.position.x     <<save.animation.position.y  <<save.animation.position.z   <<
+                    save.simulation.position.x    <<save.simulation.position.y <<save.simulation.position.z  <<
                     save.animation.speed <<save.animation.ke <<save.animation.ake <<save.animation.pe<<
                     save.simulation.speed<<save.simulation.ke<<save.simulation.ake<<save.animation.pe<<
                     save.ke_diff         <<save.ake_diff     <<save.pe_diff;
@@ -241,8 +225,8 @@ void HumanBody::saveCompleteDataList() const{
     for (int i = 0; i <  _complete_data_list.size(); ++i) {
         save=_complete_data_list.at(i);
         parser<<save.part_name<<
-                save.animation.x     <<save.animation.y  <<save.animation.z   <<
-                save.simulation.x    <<save.simulation.y <<save.simulation.z  <<
+                save.animation.position.x     <<save.animation.position.y  <<save.animation.position.z   <<
+                save.simulation.position.x    <<save.simulation.position.y <<save.simulation.position.z  <<
                 save.animation.speed <<save.animation.ke <<save.animation.ake <<save.animation.pe<<
                 save.simulation.speed<<save.simulation.ke<<save.simulation.ake<<save.animation.pe<<
                 save.ke_diff         <<save.ake_diff     <<save.pe_diff;
@@ -274,43 +258,6 @@ void HumanBody::saveFullDataList(const SimulationParameters& params){
 
 }
 
-void HumanBody::exportSimulationToAnimation(){
-    QString path = "output/";
-    QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
-    name = name +"_output_animation";
-    QString oldname=name;
-    QString ext="csv";
-    QFile file;
-    file.setFileName(name+"."+ext);
-    int i = 1;
-    if (QDir::setCurrent(path))
-        qDebug()<<"path set";
-    else {
-        qDebug()<<"path not set "<<path;
-    }
-    while (file.exists()){
-        qWarning()<<"File already exists";
-        name = oldname+" ("+QString::number(i)+")";
-        file.setFileName(name+"."+ext);
-        ++i;
-    }
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        qWarning()<<"Couldn't write file "<<path;
-        exit(0);
-    } else {
-        QTextStream stream(&file);
-        QChar c(';');
-        QChar ln('\n');
-        stream<<"body"<<c<<_mass<<c<<ln;
-        for (int i = 0; i < _parts.size(); ++i) {
-            stream << _parts[i]->exportSimulationToAnimation();
-        }
-        stream<<"parts_end"<<c<<ln;
-        file.close();
-        qDebug()<<"File successfully written : "<<file.fileName();
-    }
-}
-
 void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
     btTransform transform;
     PartNode* root = _parts_tree.get_root();
@@ -321,10 +268,8 @@ void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
         qWarning()<<"No root in part tree";
     }
     for (int i = 0; i < _parts.size(); ++i){
-//        _parts[i]->updatePartInfo(elapsed,diff,gravity,transform);
         _complete_data_list.append(_parts[i]->getEnergyInformation());
     }
-
 }
 
 void HumanBody::updateInformationTree(const PartNode* node, const btTransform& transform, float elapsed, float diff,float gravity){
@@ -336,10 +281,29 @@ void HumanBody::updateInformationTree(const PartNode* node, const btTransform& t
     _complete_data_list.append(node->get_data()->getEnergyInformation());
 }
 
+void HumanBody::setSimulationPositionTree(const PartNode* node, const btTransform& transform, float elapsed){
+    btTransform object_transform = node->get_data()->_animation.getWorldBaseTransform(transform,elapsed);
+    if (elapsed == 0.0f)
+        node->get_data()->setInitialPosition(object_transform);
+    else node->get_data()->setSimulationPosition2(object_transform,elapsed);
+    for (int i = 0; i < node->get_number_of_children(); ++i) {
+        setSimulationPositionTree(node->childAt(i),object_transform ,elapsed);
+
+    }
+}
 
 void HumanBody::setSimulationPosition(float time){
-    for (int i = 0; i < _parts.size(); ++i)
-        _parts[i]->setSimulationPosition(time);
+    btTransform transform;
+    PartNode* root = _parts_tree.get_root();
+    transform.setIdentity();
+    if (root){
+        setSimulationPositionTree(root,transform,time);
+    } else {
+        qWarning()<<"No root in part tree";
+    }
+//    setSimulationPositionTree(root,transform,time);
+//    for (int i = 0; i < _parts.size(); ++i)
+//        _parts[i]->setSimulationPosition(time);
 }
 
 

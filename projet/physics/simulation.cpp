@@ -14,7 +14,7 @@ Simulation::Simulation():
 
 Simulation::~Simulation(){
     if (_initiated){
-        delete _ground;
+//        delete _ground;
         delete _world;
         delete _sequentialImpulseConstraintSolver;
         delete _broadphase;
@@ -32,13 +32,10 @@ void Simulation::init(const SimulationParameters& params) {
     _display = _human._parts;
     _joints = _human._constraints;
     _ground = new InteractiveObject();
-//    _ground->get_shape_struct().set_shape_type(Shape::plane);
     _ground->get_shape_struct().set_shape(btVector3(10,0.1,10));
     _ground->set_mass(0); // no gravity
     _ground->get_transform().setOrigin(btVector3(0,-2,0));
-
-//    _ground->get_transform().setRotation(btQuaternion(btVector3(0,0.0,1),23));
-    _ground->get_shape_struct().set_shape_type(Shape::cube);
+//    _ground->get_shape_struct().set_shape_type(Shape::cube);
 
     _display.append(_ground);
     resetStep();

@@ -8,11 +8,11 @@ x;0;0;10000;3
 y;0;0;10000;0
 z;0;0
 rotation;;
-x;0;0
+x;0;0;
 y;0;0
-z;0;45
+z;0;0;1000;180
 end;;
-object;spine;display;pelvis;mass
+object;spine;display;pelvis;zeromass
 scaling;;
 radius;0;0.1
 length;0;0.3
@@ -21,9 +21,9 @@ x;0;0
 y;0;1
 z;0;0
 rotation;;
-x;0;0
+x;0;89
 y;0;0
-z;0;45
+z;0;34
 end;;
 object;head;ignore;pelvis;zeromass
 scaling;;

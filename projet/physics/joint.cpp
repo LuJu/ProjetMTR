@@ -4,7 +4,9 @@ Joint::Joint():
     _constraint(NULL),
     _type(point),
     _limited(false),
-    _complete(false)
+    _complete(false),
+    _pivotA(btScalar(0),btScalar(0),btScalar(0)),
+    _pivotB(btScalar(0),btScalar(0),btScalar(0))
 {
     _parts.first = NULL;
     _parts.second= NULL;
@@ -13,8 +15,59 @@ Joint::Joint():
     }
 }
 
+Joint::Joint(const Joint& other):
+    _constraint(NULL),
+    _type(other._type),
+    _limited(other._limited),
+    _complete(other._complete),
+    _pivotA(other._pivotA),
+    _pivotB(other._pivotB),
+    _localeA(other._localeA),
+    _localeB(other._localeB)
+
+{
+    _parts.first = other._parts.first;
+    _parts.second = other._parts.second;
+    qDebug()<<"copy called";
+}
+
+Joint& Joint::operator=( const Joint& other ) {
+    _constraint = NULL;
+    _type=other._type;
+    _limited=other._limited;
+    _complete=other._complete;
+    _pivotA=other._pivotA;
+    _pivotB=other._pivotB;
+    _localeA=other._localeA;
+    _localeB=other._localeB;
+    _parts.first = other._parts.first;
+    _parts.second = other._parts.second;
+    qDebug()<<"copy assignment called";
+    return *this;
+}
+
+
+
 Joint::~Joint(){
-    if (_constraint) delete _constraint;
+    deleteConstraint();
+}
+
+void Joint::deleteConstraint(){
+    if (_constraint != NULL)
+        switch (_type) {
+        case point:
+            delete (btPoint2PointConstraint*) _constraint;
+            break;
+        case cone:
+            delete (btConeTwistConstraint*) _constraint;
+            break;
+        case hinge:
+            delete (btHingeConstraint*) _constraint;
+            break;
+        default:
+            break;
+        }
+    _constraint = NULL;
 }
 
 void Joint::buildConstraint(){
@@ -26,8 +79,7 @@ void Joint::buildConstraint(){
     if (_parts.second != NULL)
         second_shape = _parts.second->get_shape_struct().get_shape();
 
-    if (_constraint != NULL)
-        delete _constraint;
+    deleteConstraint();
     if (!_complete){ // only points
 
         if (_parts.second != NULL){

@@ -17,17 +17,17 @@ void DebuggingInterface::update(){
 
         t_part_info info = part->getEnergyInformation();
 
-        animation_position_x->setText(QString::number(info.animation.x));
-        animation_position_y->setText(QString::number(info.animation.y));
-        animation_position_z->setText(QString::number(info.animation.z));
+        animation_position_x->setText(QString::number(info.animation.position.x));
+        animation_position_y->setText(QString::number(info.animation.position.y));
+        animation_position_z->setText(QString::number(info.animation.position.z));
         animation_speed->setText(QString::number(info.animation.speed));
         animation_aspeed->setText(QString::number(info.animation.aspeed));
         animation_Ke->setText(QString::number(info.animation.ke));
         animation_aKe->setText(QString::number(info.animation.ake));
         animation_Pe->setText(QString::number(info.animation.pe));
-        simulation_position_x->setText(QString::number(info.simulation.x));
-        simulation_position_y->setText(QString::number(info.simulation.y));
-        simulation_position_z->setText(QString::number(info.simulation.z));
+        simulation_position_x->setText(QString::number(info.simulation.position.x));
+        simulation_position_y->setText(QString::number(info.simulation.position.y));
+        simulation_position_z->setText(QString::number(info.simulation.position.z));
         simulation_speed->setText(QString::number(info.simulation.speed));
         simulation_aspeed->setText(QString::number(info.simulation.aspeed));
         simulation_Ke->setText(QString::number(info.simulation.ke));

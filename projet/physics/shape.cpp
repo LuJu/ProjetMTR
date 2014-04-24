@@ -74,3 +74,20 @@ btCollisionShape * Shape::newCollisionShape(){
     btCollisionShape * collision_shape = buildCollisionShape();
     return collision_shape;
 }
+
+void Shape::deleteCollisionShape(btCollisionShape * collision_shape){
+    switch (_shape){
+        case cube:
+            delete((btBoxShape*)collision_shape);
+            break;
+        case cylinder:
+            delete((btCylinderShape*)collision_shape);
+            break;
+        case capsule:
+            delete((btCapsuleShape*)collision_shape);
+            break;
+        case plane:
+//            collision_shape  = new btStaticPlaneShape(btVector3(0,1,0),1);
+        break;
+    }
+}

@@ -81,6 +81,8 @@ public:
     void setSimulationPosition(float time);
     AnimatedObject _animation;
     SimulatedObject _simulation;
+    void setSimulationPosition2(btTransform transform, float time);
+    void setInitialPosition(btTransform transform);
 private:
 
     enum curve_data{
@@ -121,7 +123,6 @@ private:
     QList<Curve> _curves; //! The curves recorded at each update of the status of objects
     QList<Curve> _curves_steps; //! The curves recorded at each step of the simulation
 
-    AnimatedObject _animation_from_simulation; //! The animation obtained from the simulation at each time. Is not used for the moment
     QString _body_part_name; //! Name of the body part
     QString _parent_body_part_name; //! Name of the parent
     btScalar _mass;
@@ -139,8 +140,7 @@ private:
 
     //! updates the structure that will be used for exportation
     void updateEnergyStructure(float gravity);
-    void updateAnimationFromSimulationData(float time);
-    void setSimulationTransformFromAnimation(float time);
+    void setSimulationTransformFromAnimation();
     btScalar get_density(){
         return _mass / _shape.get_volume();
     }
@@ -150,7 +150,6 @@ private:
     btScalar get_angular_EC_animation();
 
     btVector3 get_extremity_animation() const ;
-    btVector3 get_center_position () const;
     void updateSimulation(float elapsed,float delta_t,float gravity);
     void updateAnimation(float elapsed, float delta_t, float gravity, const btTransform &transform);
 
