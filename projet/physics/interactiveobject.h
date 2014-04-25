@@ -83,6 +83,9 @@ public:
     SimulatedObject _simulation;
     void setSimulationPosition2(btTransform transform, float time);
     void setInitialPosition(btTransform transform);
+
+    int _center_of_mass_proportion;
+
 private:
 
     enum curve_data{

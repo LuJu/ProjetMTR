@@ -124,7 +124,7 @@ void Joint::buildConstraint(){
             ((btConeTwistConstraint *)constraint)->setLimit(M_PI_2,M_PI_2,0);
             break;
         case hinge:
-            _pivotA = _parts.second->_animation.extremityTranslationVector(0) + _parts.first->_animation.centerToBaseVector(0);
+            _pivotA = _parts.second->_animation._current_state._center_of_mass_world_position + _parts.first->_animation.centerToBaseVector(0);
             _pivotB = btVector3(0,-_parts.second->get_shape_struct().get_shape().y()/2,0);
 //            _pivotB = _parts.second->_animation._current_state._position;
 

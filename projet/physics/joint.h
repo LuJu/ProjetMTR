@@ -31,7 +31,7 @@ public:
 
     btTypedConstraint* get_constraint(){
         if (!_constraint){
-            qWarning()<<"requiring uninitialized constraint pointer";
+            qWarning()<<"requesting uninitialized constraint pointer";
         }
         return _constraint;
     }
