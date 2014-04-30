@@ -71,10 +71,10 @@ void Stats::displayStats(){
         float log = 1 / (qLn(zoom) / qLn(10));
         zoom = zoom ;
 
-        qDebug()<<"zoom: "<<log;
+//        qDebug()<<"zoom: "<<log;
         if (log < 0) log = 0;
         log = log * 1000;
-        qDebug()<<"log : "<<log;
+//        qDebug()<<"log : "<<log;
         int height = log;
         right = _ui->get_camera().get_position().x() * 6;
         top = _ui->get_camera().get_position().y() / 2;
@@ -82,7 +82,7 @@ void Stats::displayStats(){
         window.setY(topint);
         window.setHeight(-height);
     //    qDebug()<<"top: "<<top + height/2;
-        qDebug()<<"height : "<<- height;
+//        qDebug()<<"height : "<<- height;
         window.setX(right);
         window.setWidth(width()*6);
 

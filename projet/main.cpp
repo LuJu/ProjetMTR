@@ -3,7 +3,7 @@
 
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "testscene.h"
+#include "scene.h"
 #include "stats.h"
 #include "core/core.h"
 #include "utils/geometry.h"
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QGLFormat b;
-    TestScene gui;
+    Scene gui;
     Stats * stats;
 
     int ret=0;

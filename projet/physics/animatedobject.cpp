@@ -21,15 +21,17 @@ const btTransform AnimatedObject::getWorldBaseTransform(const btTransform parent
     object_transform.setRotation(quat);
     buffer = btQuat2euler(quat);
 //    buffer = btVector3(rad2deg(buffer.x()),rad2deg(buffer.y()),rad2deg(buffer.z()));
-    toString(rotation,"before");
-    toString(buffer,"after");
+//    toString(rotation,"before");
+//    toString(buffer,"after");
 
     final_transform.setIdentity();
 //    final_transform.setOrigin(parent.getOrigin() + object_transform.getOrigin());
 //    final_transform.setRotation(parent.getRotation() * object_transform.getRotation());
 //    final_transform = object_transform  * parent;
-    btTransform parent_inv = parent.inverse();
+//    btTransform parent_inv = parent.inverse();
     final_transform = parent * object_transform  ;
 
     return final_transform;
 }
+
+

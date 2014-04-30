@@ -21,17 +21,17 @@
 /*!
         Displays the scene with the different objects
     */
-class TestScene : public Viewer
+class Scene : public Viewer
 {
     Q_OBJECT
 public slots :
 //void simulationOver();
 
 public:
-    ~TestScene();
-    TestScene(QGLContext * context);
-    TestScene();
-    TestScene(QWidget * parent);
+    ~Scene();
+    Scene(QGLContext * context);
+    Scene();
+    Scene(QWidget * parent);
 //    TestScene(QWidget * parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 )
 //        : Viewer ( parent, shareWidget,f ){}
     virtual void draw();
@@ -51,6 +51,7 @@ public:
 private:
     MeshPointer _cube_mesh;
     QList<InteractiveObject * > _display;
+    QList<InteractiveObject * > _scenery;
 
 };
 

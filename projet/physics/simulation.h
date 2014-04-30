@@ -36,6 +36,7 @@ public:
     void init(const SimulationParameters &params);
 
     const QList<InteractiveObject * >& get_display_list() {return  _display;}
+    const QList<InteractiveObject * >& get_scenery() {return  _scenery;}
     float get_elapsed_realtime() const {return _elapsed_realtime;} //! Returns the realtime elapsed since the start of the simulation
     float get_elapsed_milliseconds() const {return _elapsed_simulation;} //! Returns the simulation time elapsed since the start of the simulation
 
@@ -49,7 +50,7 @@ public:
     bool is_initiated() const {return _initiated;}
     bool is_over() const      {return _simulation_over;}
 
-public slots:
+private slots:
     //! Thread that will run continually until the end of the simulation
     void loop();
 private:
@@ -57,6 +58,8 @@ private:
     void allocateWorld();
     //! Function called when the simulation is over
     void simulationOver();
+
+    InteractiveObject * allocateGround() const;
 
     //! Function called when a step is over
     void stepOver();
@@ -75,12 +78,13 @@ private:
     btCollisionDispatcher *_dispatcher;
     btDefaultCollisionConfiguration *_collisionConfiguration;
     btSequentialImpulseConstraintSolver *_sequentialImpulseConstraintSolver;
-    InteractiveObject * _ground;
 
     QThread * _thread;
     HumanBody _human;
+    //animated objects
     QList<InteractiveObject * > _display;
-    QList<Joint> _joints;
+    //unanimated objects
+    QList<InteractiveObject * > _scenery;
 
     btScalar _elapsed_realtime;
     btScalar _elapsed_simulation;

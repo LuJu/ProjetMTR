@@ -72,7 +72,7 @@ void HumanBody::loadObjects(QString path){
         }
         if (!ignore){
             _parts.append(object);
-            object->set_local_inertia(btVector3(0,0,0));
+//            object->set_local_inertia(btVector3(0,0,0));
             object->set_animated(true);
         }
         i++;
@@ -83,20 +83,25 @@ void HumanBody::loadObjects(QString path){
     #ifdef DEECORE
     if (GlobalConfig::is_enabled("constraints_activated")){
     #endif
-        for (int i = 0; i < list2.size(); ++i) {
-            const QStringList& strlist = list2.at(i);;
+    QList<InteractiveObject *>::iterator part1 = _parts.begin();
+        for (int i = 0; i < _parts.size(); ++i) {
+//            const QStringList& strlist = list2.at(i);;
+            const QStringList strlist;
 
-            QList<InteractiveObject *>::iterator part1 = findPartByName(strlist.at(0));
-            QList<InteractiveObject *>::iterator part2 = findPartByName(strlist.at(1));
-            if (part1 != _parts.end() && ( part2 != _parts.end() || strlist.at(1) == "none")){
+//            QList<InteractiveObject *>::iterator part1 = _parts[i];
+            QList<InteractiveObject *>::iterator part2 = findPartByName((*part1)->get_parent_body_part());
+            if (part1 != _parts.end() && ( part2 != _parts.end())){
                 Joint joint;
                 joint._parts.first = *part1;
                 if (part2 != _parts.end())
                     joint._parts.second= *part2;
                 else joint._parts.second=NULL;
 
+                joint._complete =true;
+                joint._type=Joint::hinge;
+
                 if (strlist.size() > 2){
-                    qDebug()<<strlist.size();
+//                    qDebug()<<strlist.size();
                     int n=3;
                     if (strlist.at(2) == "hinge")
                         joint._type=Joint::hinge;
@@ -122,14 +127,14 @@ void HumanBody::loadObjects(QString path){
                     joint._localeB.setOrigin(joint._pivotB);
 
                     for (int id = 0; id < 3; ++id) {
-                        qDebug()<<strlist.size();
+//                        qDebug()<<strlist.size();
                         vals[id] = strlist.at(id+9).toFloat(&good);
                         if (good == false ) qWarning()<<"Cannot convert str to bool";
                     }
                     joint._localeA.getBasis().setEulerZYX(deg2rad(vals[0]),deg2rad(vals[1]),deg2rad(vals[2]));
 
                     for (int id = 0; id < 3; ++id) {
-                        qDebug()<<strlist.size();
+//                        qDebug()<<strlist.size();
                         vals[id] = strlist.at(id+12).toFloat(&good);
                         if (good == false ) qWarning()<<"Cannot convert str to bool";
                     }
@@ -138,11 +143,13 @@ void HumanBody::loadObjects(QString path){
                     joint._complete =true;
 
                 }
-                if(strlist.at(15)!="ignore")
+//                if(strlist.at(15)!="ignore")
                     _constraints.append(joint);
             } else {
                 qDebug()<<"parts not found for constraint";
             }
+
+            part1++;
 
         }
     #ifdef DEECORE

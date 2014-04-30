@@ -39,14 +39,14 @@ public:
     void updatePartInfo(float elapsed, float diff, float gravity, const btTransform &transform);
     t_part_info getEnergyInformation() const {return _energy;}
 
-    btVector3 & get_local_inertia() {return _local_inertia;}
-    void set_local_inertia(btVector3 local_inertia){_local_inertia = local_inertia;}
+//    btVector3 & get_local_inertia() {return _local_inertia;}
+//    void set_local_inertia(btVector3 local_inertia){_local_inertia = local_inertia;}
 
     btScalar get_mass() const {return _mass;}
     void set_mass(btScalar mass){_mass = mass;}
 
-    btTransform & get_transform() {return _transform;}
-    void set_transform(btTransform transform){_transform = transform;}
+    const btTransform& get_original_transform() const {return _original_transform;}
+    void set_original_transform(const btTransform& transform){_original_transform = transform;}
 
     btRigidBody & get_body();
 //    const btRigidBody & get_body() const ;
@@ -62,9 +62,10 @@ public:
     void set_parent_body_part(const QString& parent_body_part_name){_parent_body_part_name = parent_body_part_name;}
 
     btDefaultMotionState * get_motion_state(){
-        if(!_motion_state)
+        if(!_simulation._motion_state)
             qWarning()<<"Motion state not defined";
-        return _motion_state;
+        return _simulation._motion_state;
+//        return _motion_state;
     }
 
     const QList<Curve>& get_curves() const {return _curves;}
@@ -115,14 +116,8 @@ private:
     //    returns the animation speed vector at time (might not be working)
     btVector3 speedAtTime(float time) const;
 
-    btTransform _transform;
+    btTransform _original_transform;
 
-    // Objects used for the simulation
-    btDefaultMotionState * _motion_state;
-    btVector3 _local_inertia;
-    btRigidBody * _body;
-    btCollisionShape *_collision_shape;
-    ////
     QList<Curve> _curves; //! The curves recorded at each update of the status of objects
     QList<Curve> _curves_steps; //! The curves recorded at each step of the simulation
 

@@ -1,27 +1,28 @@
-#include "testscene.h"
+#include "scene.h"
 
-TestScene::~TestScene(){
+Scene::~Scene(){
 }
 
-TestScene::TestScene(QGLContext *context):
+Scene::Scene(QGLContext *context):
     Viewer(context){
 
 }
-TestScene::TestScene(QWidget *parent):
+Scene::Scene(QWidget *parent):
     Viewer(parent){
 
 }
-TestScene::TestScene():
+Scene::Scene():
     Viewer(){
 
 }
 
-void TestScene::draw(){
+void Scene::draw(){
     Viewer::draw();
 //    _simulation->loop();
     bool started;
     _simulation->get_lock()->lockForRead();
     _display = _simulation->get_display_list();
+    _scenery = _simulation->get_scenery();
     started = _simulation->is_initiated();
     _simulation->get_lock()->unlock();
     if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close")){
@@ -33,7 +34,7 @@ void TestScene::draw(){
     frameEnd();
 }
 
-void TestScene::displayAnimation(){
+void Scene::displayAnimation(){
 //    qDebug()<<"pos"<<_ui->get_camera().get_position().x()<<" "
 //                   <<_ui->get_camera().get_position().y()<<" "
 //                   <<_ui->get_camera().get_position().z()<<" ";
@@ -73,7 +74,7 @@ void TestScene::displayAnimation(){
 }
 
 
-void TestScene::displaySimulation(){
+void Scene::displaySimulation(){
     QMatrix4x4 V = _ui->get_camera().get_view_matrix();
     QMatrix4x4 P = _ui->get_camera().get_projection_matrix();
     QMatrix4x4 M;
@@ -90,9 +91,20 @@ void TestScene::displaySimulation(){
                 );
         displayObject(obj,P,V,M,pvm);
     }
+
+    for (int i = 0; i < _scenery.size(); ++i) {
+        InteractiveObject * obj = _scenery.at(i);
+        obj->get_motion_state()->m_graphicsWorldTrans.getOpenGLMatrix( matrix );
+        M=QMatrix4x4(matrix[0] ,matrix[4] ,matrix[8] ,matrix[12],
+                matrix[1] ,matrix[5] ,matrix[9] ,matrix[13],
+                matrix[2] ,matrix[6] ,matrix[10],matrix[14],
+                matrix[3], matrix[7], matrix[11],matrix[15]
+                );
+        displayObject(obj,P,V,M,pvm);
+    }
 }
 
-void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4& V, QMatrix4x4& M, QMatrix4x4 pvm){
+void Scene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4& V, QMatrix4x4& M, QMatrix4x4 pvm){
     btVector3 local_scale =obj->get_shape_struct().get_shape();
     switch (obj->get_shape_struct().get_shape_type()) {
     case Shape::cube:
@@ -114,7 +126,7 @@ void TestScene::displayObject(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4
     }
 }
 
-void TestScene::displayPoints(){
+void Scene::displayPoints(){
     QMatrix4x4 V = _ui->get_camera().get_view_matrix();
     QMatrix4x4 P = _ui->get_camera().get_projection_matrix();
     QMatrix4x4 M;
@@ -133,7 +145,7 @@ void TestScene::displayPoints(){
     }
 }
 
-void TestScene::displayObjectPoints(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4& V, QMatrix4x4& M, QMatrix4x4 pvm){
+void Scene::displayObjectPoints(InteractiveObject * obj, QMatrix4x4& P, QMatrix4x4& V, QMatrix4x4& M, QMatrix4x4 pvm){
     btVector3 local_scale =obj->get_shape_struct().get_shape();
     switch (obj->get_shape_struct().get_shape_type()) {
     case Shape::cube:
@@ -156,7 +168,7 @@ void TestScene::displayObjectPoints(InteractiveObject * obj, QMatrix4x4& P, QMat
     }
 }
 
-void TestScene::display3DObjects(){
+void Scene::display3DObjects(){
     bindProgram();
     glViewport(0,0,width(),height());
     if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
@@ -165,7 +177,7 @@ void TestScene::display3DObjects(){
     releaseProgram();
 }
 
-void TestScene::init(){
+void Scene::init(){
     Viewer::init();
 
 //    OBJLoader loader;
@@ -176,7 +188,7 @@ void TestScene::init(){
     MeshUtils::addFlatSurface(_cube_mesh.data());
 }
 
-void TestScene::keyPressEvent(QKeyEvent *keyEvent)
+void Scene::keyPressEvent(QKeyEvent *keyEvent)
 {
     bool simulation_started = false;
     _simulation->get_lock()->lockForRead();
@@ -192,12 +204,12 @@ void TestScene::keyPressEvent(QKeyEvent *keyEvent)
     }
 }
 
-void TestScene::keyReleaseEvent(QKeyEvent *keyEvent)
+void Scene::keyReleaseEvent(QKeyEvent *keyEvent)
 {
     Viewer::keyReleaseEvent(keyEvent);
 }
 
-void TestScene::closeEvent(QCloseEvent * event){
+void Scene::closeEvent(QCloseEvent * event){
     Viewer::closeEvent(event);
     _simulation->get_lock()->lockForRead();
     _simulation->stop();

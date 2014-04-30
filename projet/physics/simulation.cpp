@@ -14,12 +14,14 @@ Simulation::Simulation():
 
 Simulation::~Simulation(){
     if (_initiated){
-//        delete _ground;
         delete _world;
         delete _sequentialImpulseConstraintSolver;
         delete _broadphase;
         delete _dispatcher;
         delete _collisionConfiguration;
+        for (int i = 0; i < _scenery.size(); ++i) {
+            delete _scenery[i];
+        }
     }
 }
 
@@ -30,15 +32,22 @@ void Simulation::init(const SimulationParameters& params) {
     _human.set_mass(params.get_body_mass());
     _human.loadObjects(params.get_input_location());
     _display = _human._parts;
-    _joints = _human._constraints;
-    _ground = new InteractiveObject();
-    _ground->get_shape_struct().set_shape(btVector3(10,0.1,10));
-    _ground->set_mass(0); // no gravity
-    _ground->get_transform().setOrigin(btVector3(0,-2,0));
-//    _ground->get_shape_struct().set_shape_type(Shape::cube);
-
-    _display.append(_ground);
+    InteractiveObject *ground = allocateGround();
+    _scenery.append(ground);
     resetStep();
+    btRigidBody * body = &(ground->get_body());
+    _world->addRigidBody(body);
+}
+
+InteractiveObject * Simulation::allocateGround() const {
+    InteractiveObject * ground = new InteractiveObject();
+    ground->get_shape_struct().set_shape(btVector3(10,0.1,10));
+    ground->set_mass(0); // no gravity
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(btVector3(0,-2,0));
+    ground->set_original_transform(transform);
+    return ground;
 }
 
 void Simulation::allocateWorld(){
@@ -105,21 +114,7 @@ void Simulation::update(){
     _diff =  clock_time-_elapsed_realtime;
     _elapsed_realtime=clock_time;
     _elapsed_simulation=_elapsed_simulation+progression_ms;
-//    InteractiveObject * obj = _display.at(0);
-//    obj->get_body().setLinearVelocity(btVector3(0,0,0));
-//    qDebug()<<"1: "<<obj->get_body().getCenterOfMassPosition().x()<<" "
-//              <<obj->get_body().getCenterOfMassPosition().y()<<" "
-//                <<obj->get_body().getCenterOfMassPosition().z()<<" ";
-//    qDebug()<<"velocity: "<<obj->get_body().getLinearVelocity().x()<<" "
-//           <<obj->get_body().getLinearVelocity().y()<<" "
-//          <<obj->get_body().getLinearVelocity().z()<<" ";
     _world->stepSimulation(progression_s ,1,btScalar(1.0/(ups)));
-//    qDebug()<<"2: "<<obj->get_body().getCenterOfMassPosition().x()<<" "
-//           <<obj->get_body().getCenterOfMassPosition().y()<<" "
-//          <<obj->get_body().getCenterOfMassPosition().z()<<" ";
-//    qDebug()<<"velocity: "<<obj->get_body().getLinearVelocity().x()<<" "
-//           <<obj->get_body().getLinearVelocity().y()<<" "
-//          <<obj->get_body().getLinearVelocity().z()<<" ";
     _step_counter+=progression_ms; // conversion from seconds to ms
     _end_counter+=progression_ms;
     _ups_counter+=progression_ms;
@@ -141,9 +136,10 @@ void Simulation::stepOver(){
 
 void Simulation::cleanWorld(){
     btRigidBody * body;
+    QList<Joint> * _joints = &_human._constraints;
     if (_world_filled){
-        for (int i = 0; i < _joints.size(); ++i) {
-            _world->removeConstraint(_joints[i].get_constraint());
+        for (int i = 0; i < _joints->size(); ++i) {
+            _world->removeConstraint(_joints->at(i).get_constraint());
         }
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
@@ -155,14 +151,15 @@ void Simulation::cleanWorld(){
 
 void Simulation::fillWorld(){
     btRigidBody * body = NULL;
+    QList<Joint> * _joints = &_human._constraints;
     if (!_world_filled){
         for (int i = 0; i < _display.size(); ++i) {
             body = &(_display[i]->get_body());
             _world->addRigidBody(body);
         }
-        for (int i = 0; i < _joints.size(); ++i) {
-            _joints[i].buildConstraint();
-            _world->addConstraint(_joints[i].get_constraint(),true);
+        for (int i = 0; i < _joints->size(); ++i) {
+            (*_joints)[i].buildConstraint();
+            _world->addConstraint(_joints->at(i).get_constraint(),true);
         }
         _world_filled = true;
     } else qWarning()<<"Attempting to fill a full world" ;
@@ -181,7 +178,6 @@ void Simulation::simulationOver()
      _human.saveDataList();
      _human.saveFullDataList(_params);
      _human.saveCompleteDataList();
-//     _human.exportSimulationToAnimation();
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";
      if (_params.get_automatic_close())

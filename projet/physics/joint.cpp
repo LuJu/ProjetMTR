@@ -24,11 +24,9 @@ Joint::Joint(const Joint& other):
     _pivotB(other._pivotB),
     _localeA(other._localeA),
     _localeB(other._localeB)
-
 {
     _parts.first = other._parts.first;
     _parts.second = other._parts.second;
-    qDebug()<<"copy called";
 }
 
 Joint& Joint::operator=( const Joint& other ) {
@@ -42,7 +40,6 @@ Joint& Joint::operator=( const Joint& other ) {
     _localeB=other._localeB;
     _parts.first = other._parts.first;
     _parts.second = other._parts.second;
-    qDebug()<<"copy assignment called";
     return *this;
 }
 
@@ -110,6 +107,11 @@ void Joint::buildConstraint(){
             }
             break;
         case cone:
+            _pivotA = btVector3(0,_parts.first->get_shape_struct().get_shape().y()/2,0);
+//            _pivotA = _parts.first->_animation.centerToBaseVector(0);
+            _pivotB = btVector3(0,-_parts.second->get_shape_struct().get_shape().y()/2,0);
+            /*_localeA.setIdentity();_localeA.getBasis().setEulerZYX(0,M_PI_2,0);*/_localeA.setOrigin(_pivotA);
+            /*_localeB.setIdentity();_localeB.getBasis().setEulerZYX(0,M_PI_2,0);*/_localeB.setOrigin(_pivotB);
             if (_parts.second != NULL){
                 constraint= new btConeTwistConstraint(
                             _parts.first->get_body(),
@@ -124,8 +126,14 @@ void Joint::buildConstraint(){
             ((btConeTwistConstraint *)constraint)->setLimit(M_PI_2,M_PI_2,0);
             break;
         case hinge:
-            _pivotA = _parts.second->_animation._current_state._center_of_mass_world_position + _parts.first->_animation.centerToBaseVector(0);
-            _pivotB = btVector3(0,-_parts.second->get_shape_struct().get_shape().y()/2,0);
+//            _pivotA = _parts.second->_animation._current_state._center_of_mass_world_position + _parts.first->_animation.centerToBaseVector(0);
+//            _pivotB = btVector3(0,-_parts.second->get_shape_struct().get_shape().y()/2,0);
+            _pivotA = btVector3(0,-_parts.first->get_shape_struct().get_shape().y()/2,0);
+            qDebug()<<_parts.first->get_body_part();
+//            _pivotA = btVector3(0,_parts.first->get_shape_struct().get_shape().y()/2,0);
+//            _pivotA = _parts.first->_animation.centerToBaseVector(0);
+            qDebug()<<_parts.second->get_body_part();
+            _pivotB = _parts.first->_animation.extremityTranslationVector(0) - btVector3(0,_parts.second->get_shape_struct().get_shape().y()/2,0);
 //            _pivotB = _parts.second->_animation._current_state._position;
 
 //            toString(_pivotA,"pA:");

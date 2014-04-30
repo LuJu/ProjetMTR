@@ -47,20 +47,6 @@ typedef struct part_info{
     part_info():part_name(),length(0.0f),animation(),simulation(),ake_diff(0.0f),ke_diff(0.0f),pe_diff(0.0f){}
 }t_part_info;
 
-//void initialize_simple_point(t_simple_point * point){
-//    point->x = 0.0f;
-//    point->y = 0.0f;
-//    point->z = 0.0f;
-//}
-
-//void initialize_energy_info(t_energy_info * info){
-
-//}
-
-//initialize_part_info(t_part_info * part){
-//    part->ake_diff = 0.0f;
-//}
-
 typedef struct state_data{
         btVector3 _center_of_mass_world_position;
         btVector3 _rotation;

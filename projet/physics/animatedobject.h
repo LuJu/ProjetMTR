@@ -89,25 +89,6 @@ public:
         return btVector3(qquat.rotatedVector(base_position).x(),qquat.rotatedVector(base_position).y(),qquat.rotatedVector(base_position).z());
     }
 
-
-//    btVector3 get_extremity_animation  () const{
-//        btVector3 center = _animation._current_state._center_of_mass_position;
-//        btVector3 ypr = _animation._current_state._rotation;
-
-//        btScalar R = _shape.get_shape().y()/2;
-//        btQuaternion quat;
-
-//        quat.setEuler(deg2rad(ypr.y()),deg2rad(ypr.x()),deg2rad(ypr.z()));
-//        QVector3D top_position(0,R,0);
-//        quat.normalize();
-//        QQuaternion qquat(quat.w(),quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z());
-//        qquat= qquat.fromAxisAndAngle(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z(),rad2deg(quat.getAngle()));
-
-//        top_position = qquat.rotatedVector(top_position);
-
-//        return center + btVector3(top_position.x(),top_position.y(),top_position.z());
-//    }
-
     btVector3 centerToBaseVector()const{
 
         btVector3 ypr = _current_state._rotation;

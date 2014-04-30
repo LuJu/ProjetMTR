@@ -2,21 +2,13 @@
 
 InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& shape,Shape::shapetype type):
     _mass(1),
-    _animated(false),
-    _body(NULL),
-    _motion_state(NULL),
-    _local_inertia(btVector3(0,0,0)),
-    _collision_shape(NULL){
+    _animated(false){
     __build(origin,shape,type);
 }
 
 InteractiveObject::InteractiveObject():
     _mass(1),
-    _animated(false),
-    _body(NULL),
-    _motion_state(NULL),
-    _local_inertia(btVector3(0,0,0)),
-    _collision_shape(NULL){
+    _animated(false){
     __build(btVector3(0,0,0),btVector3(1,1,1),Shape::cube);
 }
 
@@ -24,6 +16,21 @@ void InteractiveObject::appendCurve(QList<Curve>& list, int index,QString label,
     Curve& c= list[index];
     c.set_color(color);
     c.set_label(label);
+}
+
+InteractiveObject::~InteractiveObject(){
+}
+
+void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,Shape::shapetype type){
+    _shape = Shape(shape,type);
+    _animation._shape = &_shape;
+    _simulation._shape = &_shape;
+
+    _original_transform.setIdentity();
+    _original_transform.setOrigin(origin);
+
+    appendCurves(_curves);
+    appendCurves(_curves_steps);
 }
 
 void InteractiveObject::appendCurves(QList<Curve>& list){
@@ -44,48 +51,15 @@ void InteractiveObject::appendCurves(QList<Curve>& list){
     appendCurve(list,SIMULATION_Y,"Animation KE",QColor(0,255,255));
 }
 
-void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,Shape::shapetype type){
-    _shape = Shape(shape,type);
-    _animation._shape = &_shape;
-
-    _transform.setIdentity();
-    _transform.setOrigin(origin);
-
-    appendCurves(_curves);
-    appendCurves(_curves_steps);
-}
-
-InteractiveObject::~InteractiveObject(){
-//    if(_body)  delete _body;
-//    if(_motion_state) delete _motion_state;
-//    if(_collision_shape) delete _collision_shape;
-    deleteMotion();
-}
-
 btRigidBody & InteractiveObject::get_body(){
-    if(!_body || !_motion_state){
-        buildMotion();
-        qDebug()<<"build lolo";
-    }
-    return *_body;
+    return _simulation.get_body(_mass,_original_transform);
 }
 
 void InteractiveObject::deleteMotion(){
-    if(_body != NULL){
-        delete _body; _body = NULL;}
-    if(_motion_state != NULL){
-        delete _motion_state; _motion_state = NULL;}
-    if(_collision_shape != NULL) {
-        _shape.deleteCollisionShape(_collision_shape); _collision_shape = NULL;}
 }
 
 void InteractiveObject::buildMotion(){
-    deleteMotion();
-    _collision_shape = _shape.newCollisionShape();
-    _collision_shape->calculateLocalInertia(_mass,_local_inertia);
-    _motion_state = new btDefaultMotionState(_transform);
-    btRigidBody::btRigidBodyConstructionInfo construction_info(_mass, _motion_state, _collision_shape , _local_inertia);
-    _body = new btRigidBody(construction_info);
+    _simulation.buildMotion(_mass,_original_transform);
 }
 
 void InteractiveObject::buildMesh(){
@@ -127,14 +101,14 @@ void InteractiveObject::updateAnimation(float elapsed,float delta_t,float gravit
 void InteractiveObject::updateSimulation(float elapsed,float delta_t,float gravity){
     t_state_data& current = _simulation._current_state;
     t_state_data& previous =_simulation._previous_state;
-    current._center_of_mass_world_position = _body->getCenterOfMassPosition();
+    current._center_of_mass_world_position = _simulation._body->getCenterOfMassPosition();
 
     btVector3 simulation_distance = current._center_of_mass_world_position-previous._center_of_mass_world_position;
-    btQuaternion rot = _body->getCenterOfMassTransform().getRotation();
+    btQuaternion rot = _simulation._body->getCenterOfMassTransform().getRotation();
     _calculated_simulation_speed = simulation_distance/(delta_t/1000);
 
-    current._angular_speed= _body->getAngularVelocity();
-    current._center_of_mass_world_speed = _body->getLinearVelocity();
+    current._angular_speed= _simulation._body->getAngularVelocity();
+    current._center_of_mass_world_speed = _simulation._body->getLinearVelocity();
     current._rotation = btQuat2euler(rot);
     current._rotation_vector_diff = (current._rotation -previous._rotation).normalized();
 }
@@ -214,8 +188,7 @@ void InteractiveObject::setSimulationTransformFromAnimation(){
 
     translation = _animation._current_state._center_of_mass_world_position;
     transform.setOrigin(translation);
-    set_transform(transform);
-//    _simulation._previous_state = _animation._previous_state;
+    _original_transform = transform;
 }
 
 void InteractiveObject::setSimulationPosition(float time){
@@ -240,9 +213,9 @@ void InteractiveObject::setSimulationPosition(float time){
 //                                          deg2rad(_animation._current_state._angular_speed.y()),
 //                                          deg2rad(_animation._current_state._angular_speed.z())));
         _animation._previous_state._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
-        _simulation._previous_state._center_of_mass_world_position = _body->getCenterOfMassPosition();
+        _simulation._previous_state._center_of_mass_world_position = _simulation._body->getCenterOfMassPosition();
 //        _simulation._previous_state._position_2 = _animation._previous_state._position;
-        _simulation._previous_state._center_of_mass_world_speed = _body->getLinearVelocity();
+        _simulation._previous_state._center_of_mass_world_speed = _simulation._body->getLinearVelocity();
         _animation._previous_state._rotation = _animation.rotationVector(0.0f);
         _calculated_simulation_speed = _animation._current_state._center_of_mass_world_speed;
     }
@@ -296,9 +269,9 @@ void InteractiveObject::setSimulationPosition2(btTransform transform, float time
 //                                          deg2rad(_animation._current_state._angular_speed.y()),
 //                                          deg2rad(_animation._current_state._angular_speed.z())));
         _animation._previous_state._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
-        _simulation._previous_state._center_of_mass_world_position = _body->getCenterOfMassPosition();
+        _simulation._previous_state._center_of_mass_world_position = _simulation._body->getCenterOfMassPosition();
         //        _simulation._previous_state._position_2 = _animation._previous_state._position;
-        _simulation._previous_state._center_of_mass_world_speed = _body->getLinearVelocity();
+        _simulation._previous_state._center_of_mass_world_speed = _simulation._body->getLinearVelocity();
         _animation._previous_state._rotation = _animation.rotationVector(0.0f);
         _calculated_simulation_speed = _animation._current_state._center_of_mass_world_speed;
     }
@@ -324,8 +297,8 @@ void InteractiveObject::setInitialPosition(btTransform transform){
         _animation._current_state._angular_speed = _animation.rotationTangent(0.0f) ;
         body.setLinearVelocity(_animation._current_state._center_of_mass_world_speed);
         _animation._previous_state._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
-        _simulation._previous_state._center_of_mass_world_position = _body->getCenterOfMassPosition();
-        _simulation._previous_state._center_of_mass_world_speed = _body->getLinearVelocity();
+        _simulation._previous_state._center_of_mass_world_position = _simulation._body->getCenterOfMassPosition();
+        _simulation._previous_state._center_of_mass_world_speed = _simulation._body->getLinearVelocity();
         _animation._previous_state._rotation = _animation.rotationVector(0.0f);
         _calculated_simulation_speed = _animation._current_state._center_of_mass_world_speed;
 }
@@ -338,7 +311,7 @@ btVector3 InteractiveObject::speedAtTime(float time) const {
 }
 
 btScalar InteractiveObject::get_angular_EC_simulation(){
-    return pow(_body->getAngularVelocity().length(),2) * get_moment(_simulation._current_state._rotation_vector_diff,_shape.get_shape(),_mass) / 2;
+    return pow(_simulation._body->getAngularVelocity().length(),2) * get_moment(_simulation._current_state._rotation_vector_diff,_shape.get_shape(),_mass) / 2;
 }
 
 btScalar InteractiveObject::get_angular_EC_animation(){
