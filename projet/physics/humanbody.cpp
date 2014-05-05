@@ -33,15 +33,26 @@ void HumanBody::loadObjects(QString path){
                         object->get_shape_struct().set_shape_type(Shape::capsule);
                         object->set_body_part(temp.at(1));
                         mass = BodyInfo::mass(temp.at(1),_mass);
-                        if (temp.size() == 5 ){
+                        if (temp.size() >= 5 ){
                             if (temp.at(4) == "zeromass") mass = 0.0f;
                             QString parent = temp.at(3);
                             object->set_parent_body_part(parent);
+                            if (temp.size() >= 6){
+                                object->set_center_of_mass_proportion(temp.at(5).toFloat());
+                                if (temp.size() >= 7){
+                                    mass=temp.at(6).toFloat();
+                                }
+                            }
+                        } else {
+                            qWarning()<<"Incorrect CSV file structure";
                         }
                         if (mass==0.0f){
                             qWarning()<<"Object mass null for part: "<<temp.at(1);
                         }
                         object->set_mass(BodyInfo::mass(temp.at(1),mass));
+                        if (temp.size() >= 7){
+                            object->set_mass(temp.at(6).toFloat());
+                        }
                     }
                 }
                 else if (!ignore){
@@ -72,89 +83,11 @@ void HumanBody::loadObjects(QString path){
         }
         if (!ignore){
             _parts.append(object);
-//            object->set_local_inertia(btVector3(0,0,0));
             object->set_animated(true);
         }
         i++;
     }
     ignore = false;
-
-    const CSVParser& list2 = BodyInfo::jointList();
-    #ifdef DEECORE
-    if (GlobalConfig::is_enabled("constraints_activated")){
-    #endif
-    QList<InteractiveObject *>::iterator part1 = _parts.begin();
-        for (int i = 0; i < _parts.size(); ++i) {
-//            const QStringList& strlist = list2.at(i);;
-            const QStringList strlist;
-
-//            QList<InteractiveObject *>::iterator part1 = _parts[i];
-            QList<InteractiveObject *>::iterator part2 = findPartByName((*part1)->get_parent_body_part());
-            if (part1 != _parts.end() && ( part2 != _parts.end())){
-                Joint joint;
-                joint._parts.first = *part1;
-                if (part2 != _parts.end())
-                    joint._parts.second= *part2;
-                else joint._parts.second=NULL;
-
-                joint._complete =true;
-                joint._type=Joint::hinge;
-
-                if (strlist.size() > 2){
-//                    qDebug()<<strlist.size();
-                    int n=3;
-                    if (strlist.at(2) == "hinge")
-                        joint._type=Joint::hinge;
-                    else if (strlist.at(2) == "cone")
-                        joint._type=Joint::cone;
-                    else if (strlist.at(2) == "point")
-                        joint._type=Joint::point;
-                    btScalar vals[3];
-                    bool good=false;
-
-                    for (int id = 0; id < 3; ++id) {
-                        vals[id] = strlist.at(id+3).toFloat(&good);
-                        if (good == false ) qWarning()<<"Cannot convert str to bool";
-                    }
-                    joint._pivotA=btVector3(vals[0],vals[1],vals[2]);
-                    joint._localeA.setOrigin(joint._pivotA);
-
-                    for (int id = 0; id < 3; ++id) {
-                        vals[id] = strlist.at(id+6).toFloat(&good);
-                        if (good == false ) qWarning()<<"Cannot convert str to bool";
-                    }
-                    joint._pivotB=btVector3(vals[0],vals[1],vals[2]);
-                    joint._localeB.setOrigin(joint._pivotB);
-
-                    for (int id = 0; id < 3; ++id) {
-//                        qDebug()<<strlist.size();
-                        vals[id] = strlist.at(id+9).toFloat(&good);
-                        if (good == false ) qWarning()<<"Cannot convert str to bool";
-                    }
-                    joint._localeA.getBasis().setEulerZYX(deg2rad(vals[0]),deg2rad(vals[1]),deg2rad(vals[2]));
-
-                    for (int id = 0; id < 3; ++id) {
-//                        qDebug()<<strlist.size();
-                        vals[id] = strlist.at(id+12).toFloat(&good);
-                        if (good == false ) qWarning()<<"Cannot convert str to bool";
-                    }
-                    joint._localeB.getBasis().setEulerZYX(deg2rad(vals[0]),deg2rad(vals[1]),deg2rad(vals[2]));
-
-                    joint._complete =true;
-
-                }
-//                if(strlist.at(15)!="ignore")
-                    _constraints.append(joint);
-            } else {
-                qDebug()<<"parts not found for constraint";
-            }
-
-            part1++;
-
-        }
-    #ifdef DEECORE
-    }
-    #endif
 
     for (int i = 0; i < _parts.size(); ++i) {
         _parts[i]->buildMesh();
@@ -280,7 +213,7 @@ void HumanBody::updateBodyInformations(float elapsed,float diff,float gravity){
 }
 
 void HumanBody::updateInformationTree(const PartNode* node, const btTransform& transform, float elapsed, float diff,float gravity){
-    btTransform object_transform = node->get_data()->_animation.getWorldBaseTransform(transform,elapsed);
+    btTransform object_transform = node->get_data()->_animation.getWorldTransform(transform,elapsed);
     node->get_data()->updatePartInfo(elapsed,diff,gravity,object_transform );
     for (int i = 0; i < node->get_number_of_children(); ++i) {
         updateInformationTree(node->childAt(i),object_transform ,elapsed,diff,gravity);
@@ -289,7 +222,7 @@ void HumanBody::updateInformationTree(const PartNode* node, const btTransform& t
 }
 
 void HumanBody::setSimulationPositionTree(const PartNode* node, const btTransform& transform, float elapsed){
-    btTransform object_transform = node->get_data()->_animation.getWorldBaseTransform(transform,elapsed);
+    btTransform object_transform = node->get_data()->_animation.getWorldTransform(transform,elapsed);
     if (elapsed == 0.0f)
         node->get_data()->setInitialPosition(object_transform);
     else node->get_data()->setSimulationPosition2(object_transform,elapsed);

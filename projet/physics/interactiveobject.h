@@ -35,21 +35,19 @@ public:
     /*!
         calculates the information about the energy of the part of the body \n
         This is where the kinetic energy and speed and potential energy are calculated
+
     */
     void updatePartInfo(float elapsed, float diff, float gravity, const btTransform &transform);
     t_part_info getEnergyInformation() const {return _energy;}
-
-//    btVector3 & get_local_inertia() {return _local_inertia;}
-//    void set_local_inertia(btVector3 local_inertia){_local_inertia = local_inertia;}
-
     btScalar get_mass() const {return _mass;}
     void set_mass(btScalar mass){_mass = mass;}
+    btScalar get_center_of_mass_proportion() const {return _center_of_mass_proportion;}
+    void set_center_of_mass_proportion(btScalar center_of_mass_proportion){_center_of_mass_proportion = center_of_mass_proportion;}
 
     const btTransform& get_original_transform() const {return _original_transform;}
     void set_original_transform(const btTransform& transform){_original_transform = transform;}
 
-    btRigidBody & get_body();
-//    const btRigidBody & get_body() const ;
+    btRigidBody * get_body(){ return _simulation.get_body(_mass,_original_transform,_center_of_mass_proportion); }
 
     AnimatedObject& get_animation() {return _animation;}
 
@@ -61,12 +59,7 @@ public:
     const QString& get_parent_body_part() const {return _parent_body_part_name;}
     void set_parent_body_part(const QString& parent_body_part_name){_parent_body_part_name = parent_body_part_name;}
 
-    btDefaultMotionState * get_motion_state(){
-        if(!_simulation._motion_state)
-            qWarning()<<"Motion state not defined";
-        return _simulation._motion_state;
-//        return _motion_state;
-    }
+    btDefaultMotionState * get_motion_state() const{return _simulation.get_motion_state(); }
 
     const QList<Curve>& get_curves() const {return _curves;}
     const QList<Curve>& get_curves_steps() const {return _curves_steps;}
@@ -84,8 +77,6 @@ public:
     SimulatedObject _simulation;
     void setSimulationPosition2(btTransform transform, float time);
     void setInitialPosition(btTransform transform);
-
-    int _center_of_mass_proportion;
 
 private:
 
@@ -113,9 +104,6 @@ private:
     Shape _shape;
     MeshPointer _mesh;
 
-    //    returns the animation speed vector at time (might not be working)
-    btVector3 speedAtTime(float time) const;
-
     btTransform _original_transform;
 
     QList<Curve> _curves; //! The curves recorded at each update of the status of objects
@@ -124,6 +112,7 @@ private:
     QString _body_part_name; //! Name of the body part
     QString _parent_body_part_name; //! Name of the parent
     btScalar _mass;
+    btScalar _center_of_mass_proportion;
     bool _animated;
 
     t_part_info _energy;
@@ -142,14 +131,8 @@ private:
     btScalar get_density(){
         return _mass / _shape.get_volume();
     }
-
-    btScalar get_angular_EC_simulation();
-
-    btScalar get_angular_EC_animation();
-
-    btVector3 get_extremity_animation() const ;
-    void updateSimulation(float elapsed,float delta_t,float gravity);
-    void updateAnimation(float elapsed, float delta_t, float gravity, const btTransform &transform);
+    void updateSimulation(float delta_t);
+    void updateAnimation(float delta_t, const btTransform &transform);
 
 
 };

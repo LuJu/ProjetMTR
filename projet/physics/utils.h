@@ -11,9 +11,6 @@
         This file contains several functions used for calculation purposes : physical calculations of energies, ect
         It also contains usefull plain data structures for simulations
     */
-//float rot_x(btQuaternion q);
-//float rot_y(btQuaternion q);
-//float rot_z(btQuaternion q);
 float rot_x(float x , float y , float z , float w);
 float rot_y(float x , float y , float z , float w);
 float rot_z(float x , float y , float z , float w);
@@ -47,6 +44,7 @@ typedef struct part_info{
     part_info():part_name(),length(0.0f),animation(),simulation(),ake_diff(0.0f),ke_diff(0.0f),pe_diff(0.0f){}
 }t_part_info;
 
+
 typedef struct state_data{
         btVector3 _center_of_mass_world_position;
         btVector3 _rotation;
@@ -62,10 +60,16 @@ typedef struct state_data{
 
 }t_state_data;
 
-btScalar get_moment(btVector3 rotation_axis,btVector3 shape, btScalar mass);
-double kinetic_energy(double speed, double mass);
-double potential_energy(double mass, double gravitation, double height);
-void toString(const btVector3& vector, const QString& prefix);
-void toString(const btQuaternion& quaternion,const QString& prefix);
+typedef struct state_information{
+    state_data _current,_previous;
+    state_information():_current(),_previous(){}
+}t_state_information;
+
+btScalar kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass);
+double translationKineticEnergy(double speed, double mass);
+double potentialEnergy(double mass, double gravitation, double height);
+
+btScalar angularKineticEnergy();
+btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape , btScalar mass);
 
 #endif // BTUTILS_H

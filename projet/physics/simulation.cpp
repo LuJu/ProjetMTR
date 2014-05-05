@@ -35,17 +35,17 @@ void Simulation::init(const SimulationParameters& params) {
     InteractiveObject *ground = allocateGround();
     _scenery.append(ground);
     resetStep();
-    btRigidBody * body = &(ground->get_body());
+    btRigidBody * body = ground->get_body();
     _world->addRigidBody(body);
 }
 
 InteractiveObject * Simulation::allocateGround() const {
     InteractiveObject * ground = new InteractiveObject();
-    ground->get_shape_struct().set_shape(btVector3(10,0.1,10));
+    ground->get_shape_struct().set_shape(btVector3(5,0.01,5));
     ground->set_mass(0); // no gravity
     btTransform transform;
     transform.setIdentity();
-    transform.setOrigin(btVector3(0,-2,0));
+    transform.setOrigin(btVector3(0,-1,0));
     ground->set_original_transform(transform);
     return ground;
 }
@@ -142,7 +142,7 @@ void Simulation::cleanWorld(){
             _world->removeConstraint(_joints->at(i).get_constraint());
         }
         for (int i = 0; i < _display.size(); ++i) {
-            body = &(_display[i]->get_body());
+            body = _display[i]->get_body();
             _world->removeRigidBody(body);
         }
         _world_filled = false; //indicates that the world is now empty
@@ -154,7 +154,7 @@ void Simulation::fillWorld(){
     QList<Joint> * _joints = &_human._constraints;
     if (!_world_filled){
         for (int i = 0; i < _display.size(); ++i) {
-            body = &(_display[i]->get_body());
+            body = _display[i]->get_body();
             _world->addRigidBody(body);
         }
         for (int i = 0; i < _joints->size(); ++i) {

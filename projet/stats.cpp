@@ -166,10 +166,7 @@ void Stats::displayStatsTest(){
 //        MeshUtils::render(curves[i],1,curves[i].get_color(),i+1);right
     }
     MeshUtils::render(curves[0],1 ,QColor(255,0,255),1);
-//    qDebug()<<"sizeb:"<<curves[0].size();
-//    qDebug()<<"size:"<<curves[3].size();
-//    qDebug()<<"value"<<curves[3].value( curves[3].keys()[curves[3].keys().size()-2]);
-//    qDebug()<<"value2"<<curves[3].value(curves[3].keys()[curves[3].keys().size()-1]);
+
     MeshUtils::render(curves[3],1,QColor(0,0,255),1);
 
 }

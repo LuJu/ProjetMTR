@@ -69,4 +69,10 @@ private:
     btScalar _length;
 };
 
+class CapsuleShape : public Shape{
+
+
+
+};
+
 #endif // HAPE_H

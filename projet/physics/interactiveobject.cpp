@@ -2,12 +2,15 @@
 
 InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& shape,Shape::shapetype type):
     _mass(1),
+    _center_of_mass_proportion(.5f),
     _animated(false){
+    qDebug()<<"Not default constructor called";
     __build(origin,shape,type);
 }
 
 InteractiveObject::InteractiveObject():
     _mass(1),
+    _center_of_mass_proportion(.5f),
     _animated(false){
     __build(btVector3(0,0,0),btVector3(1,1,1),Shape::cube);
 }
@@ -23,8 +26,8 @@ InteractiveObject::~InteractiveObject(){
 
 void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,Shape::shapetype type){
     _shape = Shape(shape,type);
-    _animation._shape = &_shape;
-    _simulation._shape = &_shape;
+    _animation.set_shape(&_shape);
+    _simulation.set_shape (&_shape);
 
     _original_transform.setIdentity();
     _original_transform.setOrigin(origin);
@@ -51,15 +54,13 @@ void InteractiveObject::appendCurves(QList<Curve>& list){
     appendCurve(list,SIMULATION_Y,"Animation KE",QColor(0,255,255));
 }
 
-btRigidBody & InteractiveObject::get_body(){
-    return _simulation.get_body(_mass,_original_transform);
-}
+
 
 void InteractiveObject::deleteMotion(){
 }
 
 void InteractiveObject::buildMotion(){
-    _simulation.buildMotion(_mass,_original_transform);
+    _simulation.buildMotion(_mass,_original_transform,_center_of_mass_proportion);
 }
 
 void InteractiveObject::buildMesh(){
@@ -70,45 +71,39 @@ void InteractiveObject::buildMesh(){
 
 void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity,const btTransform& transform){
 
-    updateAnimation(elapsed,delta_t,gravity,transform);
-    updateSimulation(elapsed,delta_t,gravity);
+    _animation._information._previous = _animation._information._current;
+    _simulation._information._previous = _simulation._information._current;
+
+    updateAnimation(delta_t,transform);
+    updateSimulation(delta_t);
 
     updateEnergyStructure(gravity);
     insertDataToCurves(_curves,elapsed);
-    _animation._previous_state = _animation._current_state;
-    _simulation._previous_state = _simulation._current_state;
 }
 
-void InteractiveObject::updateAnimation(float elapsed,float delta_t,float gravity,const btTransform& transform){
-    t_state_data& current = _animation._current_state;
-    t_state_data& previous =_animation._previous_state;
-    bool new_method = true;
-    if (new_method){
-        current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
-        current._rotation = btQuat2euler(transform.getRotation());
-//        current._rotation = _animation.rotationVector(elapsed);
-    } else {
-        current._center_of_mass_world_position = _animation.extremityTranslationVector(elapsed);
-        current._rotation = _animation.rotationVector(elapsed);
-    }
-    btVector3 animation_distance(current._center_of_mass_world_position-previous._center_of_mass_world_position);
+void InteractiveObject::updateAnimation(float delta_t,const btTransform& transform){
+    t_state_data& current = _animation._information._current;
+    t_state_data& previous =_animation._information._previous;
+    current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
+    current._rotation = btQuat2euler(transform.getRotation());
+    btVector3 animation_distance(current._center_of_mass_world_position - previous._center_of_mass_world_position);
 
     current._center_of_mass_world_speed = animation_distance/(delta_t/1000); // the diff value is in ms so a conversion is needed to be in m/s
     current._angular_speed = (current._rotation - previous._rotation) / (delta_t/1000) ;
     current._rotation_vector_diff = (current._rotation -previous._rotation).normalized();
 }
 
-void InteractiveObject::updateSimulation(float elapsed,float delta_t,float gravity){
-    t_state_data& current = _simulation._current_state;
-    t_state_data& previous =_simulation._previous_state;
-    current._center_of_mass_world_position = _simulation._body->getCenterOfMassPosition();
+void InteractiveObject::updateSimulation(float delta_t){
+    t_state_data& current = _simulation._information._current;
+    t_state_data& previous =_simulation._information._previous;
+    current._center_of_mass_world_position = get_body()->getCenterOfMassPosition();
 
     btVector3 simulation_distance = current._center_of_mass_world_position-previous._center_of_mass_world_position;
-    btQuaternion rot = _simulation._body->getCenterOfMassTransform().getRotation();
+    btQuaternion rot = get_body()->getCenterOfMassTransform().getRotation();
     _calculated_simulation_speed = simulation_distance/(delta_t/1000);
 
-    current._angular_speed= _simulation._body->getAngularVelocity();
-    current._center_of_mass_world_speed = _simulation._body->getLinearVelocity();
+    current._angular_speed= get_body()->getAngularVelocity();
+    current._center_of_mass_world_speed = get_body()->getLinearVelocity();
     current._rotation = btQuat2euler(rot);
     current._rotation_vector_diff = (current._rotation -previous._rotation).normalized();
 }
@@ -117,35 +112,35 @@ void InteractiveObject::updateEnergyStructure(float gravity){
 
     _energy.part_name = _body_part_name;
 
-    _energy.animation.position.x = _animation._current_state._center_of_mass_world_position.x();
-    _energy.animation.position.y = _animation._current_state._center_of_mass_world_position.y();
-    _energy.animation.position.z = _animation._current_state._center_of_mass_world_position.z();
+    _energy.animation.position.x = _animation._information._current._center_of_mass_world_position.x();
+    _energy.animation.position.y = _animation._information._current._center_of_mass_world_position.y();
+    _energy.animation.position.z = _animation._information._current._center_of_mass_world_position.z();
 
-    _energy.simulation.position.x = _simulation._current_state._center_of_mass_world_position.x();
-    _energy.simulation.position.y = _simulation._current_state._center_of_mass_world_position.y();
-    _energy.simulation.position.z = _simulation._current_state._center_of_mass_world_position.z();
+    _energy.simulation.position.x = _simulation._information._current._center_of_mass_world_position.x();
+    _energy.simulation.position.y = _simulation._information._current._center_of_mass_world_position.y();
+    _energy.simulation.position.z = _simulation._information._current._center_of_mass_world_position.z();
 
-    _energy.animation.speed = _animation._current_state._center_of_mass_world_speed.length();
-    _energy.simulation.speed = (_simulation._current_state._center_of_mass_world_speed.length());
+    _energy.animation.speed = _animation._information._current._center_of_mass_world_speed.length();
+    _energy.simulation.speed = (_simulation._information._current._center_of_mass_world_speed.length());
 
-    _energy.animation.aspeed = _animation._current_state._angular_speed.length();
-    _energy.animation.pt_aspeed.x = _animation._current_state._angular_speed.x();
-    _energy.animation.pt_aspeed.y = _animation._current_state._angular_speed.y();
-    _energy.animation.pt_aspeed.z = _animation._current_state._angular_speed.z();
+    _energy.animation.aspeed = _animation._information._current._angular_speed.length();
+    _energy.animation.pt_aspeed.x = _animation._information._current._angular_speed.x();
+    _energy.animation.pt_aspeed.y = _animation._information._current._angular_speed.y();
+    _energy.animation.pt_aspeed.z = _animation._information._current._angular_speed.z();
 
-    _energy.simulation.aspeed =      rad2deg(_simulation._current_state._angular_speed.length());
-    _energy.simulation.pt_aspeed.x = rad2deg(_simulation._current_state._angular_speed.x());
-    _energy.simulation.pt_aspeed.y = rad2deg(_simulation._current_state._angular_speed.y());
-    _energy.simulation.pt_aspeed.z = rad2deg(_simulation._current_state._angular_speed.z());
+    _energy.simulation.aspeed =      rad2deg(_simulation._information._current._angular_speed.length());
+    _energy.simulation.pt_aspeed.x = rad2deg(_simulation._information._current._angular_speed.x());
+    _energy.simulation.pt_aspeed.y = rad2deg(_simulation._information._current._angular_speed.y());
+    _energy.simulation.pt_aspeed.z = rad2deg(_simulation._information._current._angular_speed.z());
 
-    _energy.animation.ke  = kinetic_energy( _animation._current_state._center_of_mass_world_speed.length(),_mass);
-    _energy.simulation.ke = kinetic_energy( _simulation._current_state._center_of_mass_world_speed.length(),_mass);
+    _energy.animation.ke  = translationKineticEnergy( _animation._information._current._center_of_mass_world_speed.length(),_mass);
+    _energy.simulation.ke = translationKineticEnergy( _simulation._information._current._center_of_mass_world_speed.length(),_mass);
 
-    _energy.animation.pe  = potential_energy(_mass,-gravity,_animation._current_state._center_of_mass_world_position.y());
-    _energy.simulation.pe = potential_energy(_mass,-gravity,_simulation._current_state._center_of_mass_world_position.y());
+    _energy.animation.pe  = potentialEnergy(_mass,-gravity,_animation._information._current._center_of_mass_world_position.y());
+    _energy.simulation.pe = potentialEnergy(_mass,-gravity,_simulation._information._current._center_of_mass_world_position.y());
 
-    _energy.animation.ake = get_angular_EC_animation();
-    _energy.simulation.ake = get_angular_EC_simulation();
+    _energy.animation.ake = angularKineticEnergy(_animation._information._current._angular_speed,_animation._information._current._rotation_vector_diff,_shape.get_shape(),_mass);
+    _energy.simulation.ake = angularKineticEnergy(get_body()->getAngularVelocity(),_simulation._information._current._rotation_vector_diff,_shape.get_shape(),_mass);
 
     _energy.ake_diff = _energy.animation.ake - _energy.simulation.ake;
     _energy.ke_diff =  _energy.animation.ke - _energy.simulation.ke;
@@ -180,13 +175,13 @@ void InteractiveObject::setSimulationTransformFromAnimation(){
     btTransform transform;
 
     transform.setIdentity();
-    rotation = _animation._current_state._rotation;
+    rotation = _animation._information._current._rotation;
     quat.setEuler(deg2rad(rotation.y()),
                   deg2rad(rotation.x()),
                   deg2rad(rotation.z()));
     transform.setRotation(quat);
 
-    translation = _animation._current_state._center_of_mass_world_position;
+    translation = _animation._information._current._center_of_mass_world_position;
     transform.setOrigin(translation);
     _original_transform = transform;
 }
@@ -197,141 +192,76 @@ void InteractiveObject::setSimulationPosition(float time){
 
     setSimulationTransformFromAnimation();
     buildMotion();
-    btRigidBody& body = get_body();
+    btRigidBody * body = get_body();
     if (time != 0) {
 //        buildMotion();
-        body.setLinearVelocity(_animation._current_state._center_of_mass_world_speed);
-        body.setAngularVelocity(btVector3(deg2rad(_animation._current_state._angular_speed.x()),
-                                          deg2rad(_animation._current_state._angular_speed.y()),
-                                          deg2rad(_animation._current_state._angular_speed.z())));
+        body->setLinearVelocity(_animation._information._current._center_of_mass_world_speed);
+        body->setAngularVelocity(btVector3(deg2rad(_animation._information._current._angular_speed.x()),
+                                          deg2rad(_animation._information._current._angular_speed.y()),
+                                          deg2rad(_animation._information._current._angular_speed.z())));
     } else { // if the simulation is starting
 
-//        _animation._current_state._center_of_mass_world_speed = speedAtTime(0.0f);
-//        _animation._current_state._angular_speed = _animation.rotationTangent(time) ;
-//        body.setLinearVelocity(_animation._current_state._center_of_mass_world_speed);
-//        body.setAngularVelocity(btVector3(deg2rad(_animation._current_state._angular_speed.x()),
-//                                          deg2rad(_animation._current_state._angular_speed.y()),
-//                                          deg2rad(_animation._current_state._angular_speed.z())));
-        _animation._previous_state._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
-        _simulation._previous_state._center_of_mass_world_position = _simulation._body->getCenterOfMassPosition();
-//        _simulation._previous_state._position_2 = _animation._previous_state._position;
-        _simulation._previous_state._center_of_mass_world_speed = _simulation._body->getLinearVelocity();
-        _animation._previous_state._rotation = _animation.rotationVector(0.0f);
-        _calculated_simulation_speed = _animation._current_state._center_of_mass_world_speed;
+//        _animation._information._current._center_of_mass_world_speed = speedAtTime(0.0f);
+//        _animation._information._current._angular_speed = _animation.rotationTangent(time) ;
+//        body->setLinearVelocity(_animation._information._current._center_of_mass_world_speed);
+//        body->setAngularVelocity(btVector3(deg2rad(_animation._information._current._angular_speed.x()),
+//                                          deg2rad(_animation._information._current._angular_speed.y()),
+//                                          deg2rad(_animation._information._current._angular_speed.z())));
+        _animation._information._previous._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
+        _simulation._information._previous._center_of_mass_world_position = body->getCenterOfMassPosition();
+//        _simulation._information._previous._position_2 = _animation._information._previous._position;
+        _simulation._information._previous._center_of_mass_world_speed = body->getLinearVelocity();
+        _animation._information._previous._rotation = _animation.rotationVector(0.0f);
+        _calculated_simulation_speed = _animation._information._current._center_of_mass_world_speed;
     }
 
-    _simulation._previous_state._center_of_mass_world_speed = _animation._current_state._center_of_mass_world_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
+    _simulation._information._previous._center_of_mass_world_speed = _animation._information._current._center_of_mass_world_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
 }
-
-
-
-//t_state_data& current = _animation._current_state;
-//t_state_data& previous =_animation._previous_state;
-//bool new_method = true;
-//if (new_method){
-//    current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
-//    current._rotation = btQuat2euler(transform.getRotation());
-////        current._rotation = _animation.rotationVector(elapsed);
-//} else {
-//    current._center_of_mass_world_position = _animation.extremityTranslationVector(elapsed);
-//    current._rotation = _animation.rotationVector(elapsed);
-//}
-//btVector3 animation_distance(current._center_of_mass_world_position-previous._center_of_mass_world_position);
-
-//current._center_of_mass_world_speed = animation_distance/(delta_t/1000); // the diff value is in ms so a conversion is needed to be in m/s
-//current._angular_speed = (current._rotation - previous._rotation) / (delta_t/1000) ;
-//current._rotation_vector_diff = (current._rotation -previous._rotation).normalized();
-
-
 
 void InteractiveObject::setSimulationPosition2(btTransform transform, float time){
 
     if (time != 0) insertDataToCurves(_curves_steps,time);
-    t_state_data& current = _animation._current_state;
+    t_state_data& current = _animation._information._current;
     current._rotation = btQuat2euler(transform.getRotation());
     current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
 
     setSimulationTransformFromAnimation();
     buildMotion();
-    btRigidBody& body = get_body();
+    btRigidBody * body = get_body();
     if (time != 0) {
         buildMotion();
-        body.setLinearVelocity(_animation._current_state._center_of_mass_world_speed);
-        body.setAngularVelocity(btVector3(deg2rad(_animation._current_state._angular_speed.x()),
-                                          deg2rad(_animation._current_state._angular_speed.y()),
-                                          deg2rad(_animation._current_state._angular_speed.z())));
+        body->setLinearVelocity(_animation._information._current._center_of_mass_world_speed);
+        body->setAngularVelocity(btVector3(deg2rad(_animation._information._current._angular_speed.x()),
+                                          deg2rad(_animation._information._current._angular_speed.y()),
+                                          deg2rad(_animation._information._current._angular_speed.z())));
     } else { // if the simulation is starting
-
-        _animation._current_state._center_of_mass_world_speed = speedAtTime(0.0f);
-        _animation._current_state._angular_speed = _animation.rotationTangent(time) ;
-        body.setLinearVelocity(_animation._current_state._center_of_mass_world_speed);
-//        body.setAngularVelocity(btVector3(deg2rad(_animation._current_state._angular_speed.x()),
-//                                          deg2rad(_animation._current_state._angular_speed.y()),
-//                                          deg2rad(_animation._current_state._angular_speed.z())));
-        _animation._previous_state._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
-        _simulation._previous_state._center_of_mass_world_position = _simulation._body->getCenterOfMassPosition();
-        //        _simulation._previous_state._position_2 = _animation._previous_state._position;
-        _simulation._previous_state._center_of_mass_world_speed = _simulation._body->getLinearVelocity();
-        _animation._previous_state._rotation = _animation.rotationVector(0.0f);
-        _calculated_simulation_speed = _animation._current_state._center_of_mass_world_speed;
+        body->setLinearVelocity(_animation._information._current._center_of_mass_world_speed);
+//        body.setAngularVelocity(btVector3(deg2rad(_animation._information._current._angular_speed.x()),
+//                                          deg2rad(_animation._information._current._angular_speed.y()),
+//                                          deg2rad(_animation._information._current._angular_speed.z())));
+        _animation._information._previous._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
+        _simulation._information._previous._center_of_mass_world_position = body->getCenterOfMassPosition();
+        //        _simulation._information._previous._position_2 = _animation._information._previous._position;
+        _simulation._information._previous._center_of_mass_world_speed = body->getLinearVelocity();
+        _animation._information._previous._rotation = _animation.rotationVector(0.0f);
+        _calculated_simulation_speed = _animation._information._current._center_of_mass_world_speed;
     }
 }
 
-//    _simulation._previous_state._center_of_mass_world_speed = _animation._current_state._center_of_mass_world_speed; // sets the previous speed to the same as currens speed to avoid calculation errors
-////    updateAnimationFromSimulationData(time);
-//}
-
-
 void InteractiveObject::setInitialPosition(btTransform transform){
 
-        t_state_data& current = _animation._current_state;
+        t_state_data& current = _animation._information._current;
         current._rotation = btQuat2euler(transform.getRotation());
         current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
 
         setSimulationTransformFromAnimation();
         buildMotion();
-        btRigidBody& body = get_body();
+        btRigidBody* body = get_body();
          // if the simulation is starting
-
-        _animation._current_state._center_of_mass_world_speed = speedAtTime(0.0f);
-        _animation._current_state._angular_speed = _animation.rotationTangent(0.0f) ;
-        body.setLinearVelocity(_animation._current_state._center_of_mass_world_speed);
-        _animation._previous_state._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
-        _simulation._previous_state._center_of_mass_world_position = _simulation._body->getCenterOfMassPosition();
-        _simulation._previous_state._center_of_mass_world_speed = _simulation._body->getLinearVelocity();
-        _animation._previous_state._rotation = _animation.rotationVector(0.0f);
-        _calculated_simulation_speed = _animation._current_state._center_of_mass_world_speed;
-}
-
-//WRONG needs to be changed
-btVector3 InteractiveObject::speedAtTime(float time) const {
-//    toString("initial speed",_animation.translationTangent(time));
-    return _animation.comSpeedAtTime(time) * 1000.0f;
-//    return _animation.translationTangent(time) * 1000.0f;
-}
-
-btScalar InteractiveObject::get_angular_EC_simulation(){
-    return pow(_simulation._body->getAngularVelocity().length(),2) * get_moment(_simulation._current_state._rotation_vector_diff,_shape.get_shape(),_mass) / 2;
-}
-
-btScalar InteractiveObject::get_angular_EC_animation(){
-    return pow(deg2rad(_animation._current_state._angular_speed.length()),2) * get_moment(_animation._current_state._rotation_vector_diff,_shape.get_shape(),_mass) / 2;
-}
-
-btVector3 InteractiveObject::get_extremity_animation  ()const{
-    btVector3 center = _animation._current_state._center_of_mass_world_position;
-    btVector3 ypr = _animation._current_state._rotation;
-
-    btScalar R = _shape.get_shape().y()/2;
-    btQuaternion quat;
-
-    quat.setEuler(deg2rad(ypr.y()),deg2rad(ypr.x()),deg2rad(ypr.z()));
-    QVector3D top_position(0,R,0);
-    quat.normalize();
-    QQuaternion qquat(quat.w(),quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z());
-    qquat= qquat.fromAxisAndAngle(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z(),rad2deg(quat.getAngle()));
-
-    top_position = qquat.rotatedVector(top_position);
-
-    return center + btVector3(top_position.x(),top_position.y(),top_position.z());
+        body->setLinearVelocity(_animation._information._current._center_of_mass_world_speed);
+        _animation._information._previous._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
+        _simulation._information._previous._center_of_mass_world_position = body->getCenterOfMassPosition();
+        _simulation._information._previous._center_of_mass_world_speed = body->getLinearVelocity();
+        _animation._information._previous._rotation = _animation.rotationVector(0.0f);
+        _calculated_simulation_speed = _animation._information._current._center_of_mass_world_speed;
 }

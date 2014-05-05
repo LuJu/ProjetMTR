@@ -35,16 +35,11 @@ void Scene::draw(){
 }
 
 void Scene::displayAnimation(){
-//    qDebug()<<"pos"<<_ui->get_camera().get_position().x()<<" "
-//                   <<_ui->get_camera().get_position().y()<<" "
-//                   <<_ui->get_camera().get_position().z()<<" ";
-
     QMatrix4x4 V = _ui->get_camera().get_view_matrix();
     QMatrix4x4 P = _ui->get_camera().get_projection_matrix();
     QMatrix4x4 M;
     QMatrix4x4 pvm;
     btScalar matrix[16];
-    float elapsed = _simulation->get_elapsed_milliseconds();
 
     btTransform transform;
     btQuaternion quat;
@@ -53,13 +48,11 @@ void Scene::displayAnimation(){
         obj = _display.at(i);
         if (obj->get_animated()){
             transform.setIdentity();
-            btVector3 rotation_degrees = obj->get_animation()._current_state._rotation;
+            btVector3 rotation_degrees = obj->get_animation()._information._current._rotation;
             quat.setEuler(deg2rad(rotation_degrees.y()),
                           deg2rad(rotation_degrees.x()),
                           deg2rad(rotation_degrees.z()));
-            btVector3 translation(obj->get_animation()._current_state._center_of_mass_world_position);
-//            toString("position",translation);
-//            qDebug()<<"translation :"<<translation.x()<<" "<<translation.y()<<" "<<translation.z()<<" ";
+            btVector3 translation(obj->get_animation()._information._current._center_of_mass_world_position);
             transform.setRotation(quat);
             transform.setOrigin(translation);
             transform.getOpenGLMatrix(matrix);
@@ -160,7 +153,6 @@ void Scene::displayObjectPoints(InteractiveObject * obj, QMatrix4x4& P, QMatrix4
         break;
         case Shape::capsule:
         insertMatrices(P,V,M);
-//        obj->get_mesh()->render();
         MeshUtils::render(Point3df(0,0,0));
         break;
     default:
@@ -179,11 +171,8 @@ void Scene::display3DObjects(){
 
 void Scene::init(){
     Viewer::init();
-
-//    OBJLoader loader;
     _ui->set_zoom(100);
     _ui->activateProgressiveZoom(3);
-//    loader.parseOBJ(":/models/cube.obj");
     _cube_mesh = QSharedPointer<Mesh>(new Mesh);
     MeshUtils::addFlatSurface(_cube_mesh.data());
 }
