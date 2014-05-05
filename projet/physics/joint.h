@@ -5,6 +5,7 @@
 #include <QPair>
 
 #include "interactiveobject.h"
+#include "debuggingutils.h"
 
 
 //! Class representing a joint between two objects

@@ -90,7 +90,9 @@ void InteractiveObject::updateAnimation(float delta_t,const btTransform& transfo
 
     current._center_of_mass_world_speed = animation_distance/(delta_t/1000); // the diff value is in ms so a conversion is needed to be in m/s
     current._angular_speed = (current._rotation - previous._rotation) / (delta_t/1000) ;
-    current._rotation_vector_diff = (current._rotation -previous._rotation).normalized();
+    current._rotation_vector_diff = current._rotation -previous._rotation;
+    if (current._rotation_vector_diff.length() != 0)
+        current._rotation_vector_diff.normalize();
 }
 
 void InteractiveObject::updateSimulation(float delta_t){
@@ -105,7 +107,9 @@ void InteractiveObject::updateSimulation(float delta_t){
     current._angular_speed= get_body()->getAngularVelocity();
     current._center_of_mass_world_speed = get_body()->getLinearVelocity();
     current._rotation = btQuat2euler(rot);
-    current._rotation_vector_diff = (current._rotation -previous._rotation).normalized();
+    current._rotation_vector_diff = current._rotation -previous._rotation;
+    if (current._rotation_vector_diff.length() != 0)
+        current._rotation_vector_diff.normalize();
 }
 
 void InteractiveObject::updateEnergyStructure(float gravity){
@@ -139,8 +143,24 @@ void InteractiveObject::updateEnergyStructure(float gravity){
     _energy.animation.pe  = potentialEnergy(_mass,-gravity,_animation._information._current._center_of_mass_world_position.y());
     _energy.simulation.pe = potentialEnergy(_mass,-gravity,_simulation._information._current._center_of_mass_world_position.y());
 
-    _energy.animation.ake = angularKineticEnergy(_animation._information._current._angular_speed,_animation._information._current._rotation_vector_diff,_shape.get_shape(),_mass);
-    _energy.simulation.ake = angularKineticEnergy(get_body()->getAngularVelocity(),_simulation._information._current._rotation_vector_diff,_shape.get_shape(),_mass);
+    btVector3 aspeed_rad_animation, aspeed_rad_simulation;
+    aspeed_rad_animation = btVector3(deg2rad(_animation._information._current._angular_speed.x()),
+                                     deg2rad(_animation._information._current._angular_speed.y()),
+                                     deg2rad(_animation._information._current._angular_speed.z()));
+    aspeed_rad_simulation = _simulation._information._current._angular_speed;
+
+    if (_animation._information._current._rotation_vector_diff.length() == 0){
+        qDebug()<<"no a speed animation";
+        _energy.animation.ake = 0;
+    } else {
+        _energy.animation.ake = angularKineticEnergy(aspeed_rad_animation,_animation._information._current._rotation_vector_diff,_shape.get_shape(),_mass);
+    }
+    if (_animation._information._current._rotation_vector_diff.length() == 0){
+        qDebug()<<"no a speed simulation";
+        _energy.simulation.ake = 0;
+    } else {
+        _energy.simulation.ake = angularKineticEnergy(aspeed_rad_simulation,_simulation._information._current._rotation_vector_diff,_shape.get_shape(),_mass);
+    }
 
     _energy.ake_diff = _energy.animation.ake - _energy.simulation.ake;
     _energy.ke_diff =  _energy.animation.ke - _energy.simulation.ke;
@@ -220,7 +240,7 @@ void InteractiveObject::setSimulationPosition(float time){
 
 void InteractiveObject::setSimulationPosition2(btTransform transform, float time){
 
-    if (time != 0) insertDataToCurves(_curves_steps,time);
+    insertDataToCurves(_curves_steps,time);// records the data for the curves
     t_state_data& current = _animation._information._current;
     current._rotation = btQuat2euler(transform.getRotation());
     current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
@@ -228,24 +248,16 @@ void InteractiveObject::setSimulationPosition2(btTransform transform, float time
     setSimulationTransformFromAnimation();
     buildMotion();
     btRigidBody * body = get_body();
-    if (time != 0) {
-        buildMotion();
-        body->setLinearVelocity(_animation._information._current._center_of_mass_world_speed);
-        body->setAngularVelocity(btVector3(deg2rad(_animation._information._current._angular_speed.x()),
-                                          deg2rad(_animation._information._current._angular_speed.y()),
-                                          deg2rad(_animation._information._current._angular_speed.z())));
-    } else { // if the simulation is starting
-        body->setLinearVelocity(_animation._information._current._center_of_mass_world_speed);
-//        body.setAngularVelocity(btVector3(deg2rad(_animation._information._current._angular_speed.x()),
-//                                          deg2rad(_animation._information._current._angular_speed.y()),
-//                                          deg2rad(_animation._information._current._angular_speed.z())));
-        _animation._information._previous._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
-        _simulation._information._previous._center_of_mass_world_position = body->getCenterOfMassPosition();
-        //        _simulation._information._previous._position_2 = _animation._information._previous._position;
-        _simulation._information._previous._center_of_mass_world_speed = body->getLinearVelocity();
-        _animation._information._previous._rotation = _animation.rotationVector(0.0f);
-        _calculated_simulation_speed = _animation._information._current._center_of_mass_world_speed;
-    }
+    body->setLinearVelocity(_animation._information._current._center_of_mass_world_speed);
+    body->setAngularVelocity(btVector3(deg2rad(_animation._information._current._angular_speed.x()),
+                                      deg2rad(_animation._information._current._angular_speed.y()),
+                                      deg2rad(_animation._information._current._angular_speed.z())));
+    _animation._information._previous._center_of_mass_world_position = _animation.extremityTranslationVector(0.0f);
+    _simulation._information._previous._center_of_mass_world_position = body->getCenterOfMassPosition();
+    _simulation._information._previous._center_of_mass_world_speed = body->getLinearVelocity();
+    _animation._information._previous._rotation = _animation.rotationVector(0.0f);
+    qDebug()<<toString(body->getAngularVelocity(),"ang velo: ");
+    _calculated_simulation_speed = _animation._information._current._center_of_mass_world_speed;
 }
 
 void InteractiveObject::setInitialPosition(btTransform transform){

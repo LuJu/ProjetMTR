@@ -89,6 +89,31 @@ void HumanBody::loadObjects(QString path){
     }
     ignore = false;
 
+    #ifdef DEECORE
+    if (GlobalConfig::is_enabled("constraints_activated")){
+    #endif
+    QList<InteractiveObject *>::iterator part1 = _parts.begin();
+        for (int i = 0; i < _parts.size(); ++i) {
+            QList<InteractiveObject *>::iterator part2 = findPartByName((*part1)->get_parent_body_part());
+            if (part1 != _parts.end() && ( part2 != _parts.end())){
+                Joint joint;
+                joint._parts.first = *part1;
+                if (part2 != _parts.end())
+                    joint._parts.second= *part2;
+                else joint._parts.second=NULL;
+
+                joint._type=Joint::cone;
+
+                _constraints.append(joint);
+            } else {
+                qDebug()<<"parts not found for constraint";
+            }
+            part1++;
+        }
+    #ifdef DEECORE
+    }
+    #endif
+
     for (int i = 0; i < _parts.size(); ++i) {
         _parts[i]->buildMesh();
     }

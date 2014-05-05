@@ -19,6 +19,7 @@
 #include "simulatedobject.h"
 #include "shape.h"
 #include "utils.h"
+#include "debuggingutils.h"
 
 /*! \class InteractiveObject
         This class contains the definition of an object in the scene, (both the simulation and the animation data \n
