@@ -86,12 +86,23 @@ void InteractiveObject::updateAnimation(float delta_t,const btTransform& transfo
     t_state_data& previous =_animation._information._previous;
     current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
     current._rotation = deg2rad(btQuat2euler(transform.getRotation()));
+//    if (current._rotation.y() > M_PI-0.01 && current._rotation.z() > M_PI-0.01){
+//        current._rotation.setY(0);
+//        current._rotation.setZ(0);
+//    }
     btVector3 animation_distance(current._center_of_mass_world_position - previous._center_of_mass_world_position);
-
+    btVector3 angular_dist = current._rotation - previous._rotation;
+    angular_dist = angleNormalize(angular_dist);
+//    qDebug()<<toString(current._rotation,"bef: ");
+//    qDebug()<<toString(previous._rotation,"aft: ");
+//    qDebug()<<toString(angular_dist,"dist: ");
+//    qDebug();
     current._center_of_mass_world_speed = animation_distance/(delta_t/1000); // the diff value is in ms so a conversion is needed to be in m/s
-    current._angular_speed = (current._rotation - previous._rotation) / (delta_t/1000) ;
-    qDebug()<<toString(current._rotation,"rot: ");
-    qDebug()<<toString(transform.getRotation(),"quat: ");
+    current._angular_speed = angular_dist / (delta_t/1000) ;
+
+//    qDebug()<<toString(transform.getRotation(),"quat: ");
+//    btQuaternion diff =derivated(transform.getRotation());
+//    qDebug()<<"deriv: "<<btQuat2euler(diff);
     current._rotation_vector_diff = current._rotation -previous._rotation;
     if (current._rotation_vector_diff.length() != 0)
         current._rotation_vector_diff.normalize();
@@ -211,6 +222,10 @@ void InteractiveObject::setSimulationPosition(btTransform transform, float time)
     insertDataToCurves(_curves_steps,time);// records the data for the curves
     t_state_data& current = _animation._information._current;
     current._rotation = deg2rad(btQuat2euler(transform.getRotation()));
+//    if (current._rotation.y() > M_PI-0.01 && current._rotation.z() > M_PI-0.01){
+//        current._rotation.setY(0);
+//        current._rotation.setZ(0);
+//    }
 //    qDebug()<<toString(current._rotation,"rotation : ");
     current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
 

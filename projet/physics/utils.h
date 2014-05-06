@@ -5,6 +5,8 @@
 #include "btBulletCollisionCommon.h"
 #include "utils/maths.h"
 #include <QDebug>
+#include <qmath.h>
+#include "debuggingutils.h"
 
 //! Utility functions
 /*!
@@ -74,5 +76,7 @@ double potentialEnergy(double mass, double gravitation, double height);
 
 btScalar angularKineticEnergy();
 btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape , btScalar mass);
+//btQuaternion derivated(const btQuaternion& quat);
+btVector3 angleNormalize(const btVector3 rot);
 
 #endif // BTUTILS_H

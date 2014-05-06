@@ -6,7 +6,9 @@ btScalar rot_x(btScalar x , btScalar y , btScalar z , btScalar w)
     btScalar m_y = y;
     btScalar m_z = z;
     btScalar m_w = w;
-    btScalar rotx = atan2(2*((m_w * m_x) + (m_y * m_z)), 1 - (2 * ((m_x* m_x) + (m_y * m_y))));
+    btScalar rotx = qAtan2(2*((m_w * m_x) + (m_y * m_z)), 1 - (2 * ((m_x* m_x) + (m_y * m_y))));
+//    qDebug()<<"1: "<<2*((m_w * m_x) + (m_y * m_z));
+//    qDebug()<<"2: "<<1 - (2 * ((m_x* m_x) + (m_y * m_y)));
     return rad2deg(rotx);
 }
 
@@ -28,9 +30,15 @@ btScalar rot_z(btScalar x , btScalar y , btScalar z , btScalar w)
     btScalar m_y = y;
     btScalar m_z = z;
     btScalar m_w = w;
-    btScalar rotz = atan2(2 * ((m_w * m_z) + (m_x * m_y)), 1 - (2 * ((m_y * m_y) + (m_z * m_z))));
+    btScalar rotz = qAtan2(2 * ((m_w * m_z) + (m_x * m_y)), 1 - (2 * ((m_y * m_y) + (m_z * m_z))));
     return rad2deg(rotz);
 }
+
+// m_x = qy?
+// m_y = qz?
+// m_z = qx?
+// m_w = qw?
+
 
 btVector3 btQuat2euler(btQuaternion q){
     q.normalize();
@@ -41,21 +49,21 @@ btVector3 btQuat2euler(btQuaternion q){
     y = q.x();
     z = q.y();
     w = q.w();
-    btScalar test = x*y + z*w;
-    qDebug()<<"test "<<test;
-    if (test > .49 ) {
-        heading = 2*atan2(y,w);
-        attitude = M_PI_2;
-        bank = 0;
-    } else if (test < -.49 ) {
-        heading = -2*atan2(y,w);
-        attitude = - M_PI_2;
-        bank = 0;
-    } else {
+    btScalar test = x*z + y*w;
+//    qDebug()<<"test "<<test;
+//    if (test > .499 ) {
+//        heading = 2*atan2(z,w);
+//        attitude = M_PI_2;
+//        bank = 0;
+//    } else if (test < -.499 ) {
+//        heading = -2*atan2(z,w);
+//        attitude = - M_PI_2;
+//        bank = 0;
+//    } else {
         heading = rot_x(x,y,z,w);
         attitude = rot_y(x,y,z,w);
         bank = rot_z(x,y,z,w);
-    }
+//    }
     vect = btVector3(attitude,bank,heading);
     return btVector3(vect);
 }
@@ -99,3 +107,27 @@ btVector3 rad2deg(const btVector3& vector){
     return btVector3((vector.x()/M_PI)*180,(vector.y()/M_PI)*180,(vector.z()/M_PI)*180);
 }
 
+//btQuaternion derivated(const btQuaternion& quat){
+//    btQuaternion qp;
+//    qp = 0.5 * quat.w() * quat;
+//    return qp;
+//}
+btVector3 angleNormalize(const btVector3 rot){
+    btVector3 r;
+//    qDebug()<<M_PI;
+//    qDebug()<<rot.z();
+    if (rot.x() > M_PI)
+        r.setX(rot.x()-M_PI*2.0);
+    if (rot.y() > M_PI)
+        r.setY(rot.y()-M_PI*2.0);
+    if (rot.z() > M_PI)
+        r.setZ(rot.z()-M_PI*2.0);
+    if (rot.x() < -M_PI)
+        r.setX(rot.x()+M_PI*2.0);
+    if (rot.y() < -M_PI)
+        r.setY(rot.y()+M_PI*2.0);
+    if (rot.z() < -M_PI)
+        r.setZ(rot.z()+M_PI*2.0);
+//    qDebug()<<toString(r,"norm:: ");
+    return r;
+}
