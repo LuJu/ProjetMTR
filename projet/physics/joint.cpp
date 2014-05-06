@@ -53,7 +53,6 @@ void Joint::buildConstraint(){
     rotA =_parts.first->_animation.rotationVector(0);
     rotationA.setEuler(0,0,M_PI_2);
     rotationB.setEuler(deg2rad(rotA.y()), deg2rad(rotA.x()), deg2rad(rotA.z()+90));
-    qDebug()<<toString(rotA,"Rotation A: ");
     pivotA = - btVector3(0,shapeA.y()/2,0);
     pivotB = _parts.first->_animation.extremityTranslationVector(0) - btVector3(0,shapeB.y()/2,0);
     localeA.setIdentity();localeA.setRotation(rotationA);localeA.setOrigin(pivotA);
@@ -66,7 +65,7 @@ void Joint::buildConstraint(){
         if (_parts.second != NULL) constraint= new btConeTwistConstraint(*bodyA,*bodyB,localeA,localeB);
         else constraint= new btConeTwistConstraint(*bodyA,localeA);
 
-        ((btConeTwistConstraint *)constraint)->setLimit(M_PI_4,M_PI_4,0);
+        ((btConeTwistConstraint *)constraint)->setLimit(M_PI,M_PI,0);
 
         break;
     case hinge:

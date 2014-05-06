@@ -11,11 +11,14 @@
         This file contains several functions used for calculation purposes : physical calculations of energies, ect
         It also contains usefull plain data structures for simulations
     */
-float rot_x(float x , float y , float z , float w);
-float rot_y(float x , float y , float z , float w);
-float rot_z(float x , float y , float z , float w);
+btScalar rot_x(btScalar x , btScalar y , btScalar z , btScalar w);
+btScalar rot_y(btScalar x , btScalar y , btScalar z , btScalar w);
+btScalar rot_z(btScalar x , btScalar y , btScalar z , btScalar w);
 
 btVector3 btQuat2euler(btQuaternion q);
+
+btVector3 deg2rad(const btVector3& vector);
+btVector3 rad2deg(const btVector3& vector);
 
 typedef struct simple_point{
     float x,y,z;
@@ -47,9 +50,9 @@ typedef struct part_info{
 
 typedef struct state_data{
         btVector3 _center_of_mass_world_position;
-        btVector3 _rotation;
+        btVector3 _rotation; // rad
         btVector3 _center_of_mass_world_speed;
-        btVector3 _angular_speed;
+        btVector3 _angular_speed; // rad.s-1
         btVector3 _rotation_vector_diff;
         state_data():_center_of_mass_world_position(btScalar(0),btScalar(0),btScalar(0)),
             _rotation(btScalar(0),btScalar(0),btScalar(0)),

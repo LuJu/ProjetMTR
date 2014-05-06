@@ -48,10 +48,8 @@ void Scene::displayAnimation(){
         obj = _display.at(i);
         if (obj->get_animated()){
             transform.setIdentity();
-            btVector3 rotation_degrees = obj->get_animation()._information._current._rotation;
-            quat.setEuler(deg2rad(rotation_degrees.y()),
-                          deg2rad(rotation_degrees.x()),
-                          deg2rad(rotation_degrees.z()));
+            btVector3 rotation_radians = obj->get_animation()._information._current._rotation;
+            quat.setEuler(rotation_radians.y(),rotation_radians.x(),rotation_radians.z());
             btVector3 translation(obj->get_animation()._information._current._center_of_mass_world_position);
             transform.setRotation(quat);
             transform.setOrigin(translation);

@@ -73,10 +73,9 @@ public:
     Shape& get_shape_struct(){return _shape;}
 
     void buildMesh();
-    void setSimulationPosition(float time);
     AnimatedObject _animation;
     SimulatedObject _simulation;
-    void setSimulationPosition2(btTransform transform, float time);
+    void setSimulationPosition(btTransform transform, float time);
     void setInitialPosition(btTransform transform);
 
 private:

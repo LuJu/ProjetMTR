@@ -50,7 +50,7 @@ public:
         btVector3 ypr = _information._current._rotation;
         btQuaternion quat;
 
-        quat.setEuler(deg2rad(ypr.y()),deg2rad(ypr.x()),deg2rad(ypr.z()));
+        quat.setEuler(ypr.y(),ypr.x(),ypr.z());
         btScalar R = _shape->get_shape().y()/2;
         QVector3D base_position(0,-R,0);
         quat.normalize();

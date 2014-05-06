@@ -495,7 +495,7 @@
            </font>
           </property>
           <property name="text">
-           <string>rad/s</string>
+           <string>deg/s</string>
           </property>
          </widget>
         </item>
@@ -994,7 +994,7 @@
            </font>
           </property>
           <property name="text">
-           <string>rad/s</string>
+           <string>deg/s</string>
           </property>
          </widget>
         </item>

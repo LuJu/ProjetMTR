@@ -1,45 +1,62 @@
 #include "utils.h"
 //heading
-float rot_x(float x , float y , float z , float w)
+btScalar rot_x(btScalar x , btScalar y , btScalar z , btScalar w)
 {
-    float m_x = x;
-    float m_y = y;
-    float m_z = z;
-    float m_w = w;
-    float rotx = atan2(2*((m_w * m_x) + (m_y * m_z)), 1 - (2 * ((m_x* m_x) + (m_y * m_y))));
+    btScalar m_x = x;
+    btScalar m_y = y;
+    btScalar m_z = z;
+    btScalar m_w = w;
+    btScalar rotx = atan2(2*((m_w * m_x) + (m_y * m_z)), 1 - (2 * ((m_x* m_x) + (m_y * m_y))));
     return rad2deg(rotx);
 }
 
 //attitude
-float rot_y(float x , float y , float z , float w)
+btScalar rot_y(btScalar x , btScalar y , btScalar z , btScalar w)
 {
-    float m_x = x;
-    float m_y = y;
-    float m_z = z;
-    float m_w = w;
-    float roty = asin(2 * ((m_w * m_y) - (m_z * m_x)));
+    btScalar m_x = x;
+    btScalar m_y = y;
+    btScalar m_z = z;
+    btScalar m_w = w;
+    btScalar roty = asin(2 * ((m_w * m_y) - (m_z * m_x)));
     return rad2deg(roty);
 }
 
 //bank
-float rot_z(float x , float y , float z , float w)
+btScalar rot_z(btScalar x , btScalar y , btScalar z , btScalar w)
 {
-    float m_x = x;
-    float m_y = y;
-    float m_z = z;
-    float m_w = w;
-    float rotz = atan2(2 * ((m_w * m_z) + (m_x * m_y)), 1 - (2 * ((m_y * m_y) + (m_z * m_z))));
+    btScalar m_x = x;
+    btScalar m_y = y;
+    btScalar m_z = z;
+    btScalar m_w = w;
+    btScalar rotz = atan2(2 * ((m_w * m_z) + (m_x * m_y)), 1 - (2 * ((m_y * m_y) + (m_z * m_z))));
     return rad2deg(rotz);
 }
 
 btVector3 btQuat2euler(btQuaternion q){
     q.normalize();
-    float x, y , z , w;
+    btVector3 vect;
+    btScalar x, y , z , w;
+    btScalar heading,attitude,bank;
     x = q.z();
     y = q.x();
     z = q.y();
     w = q.w();
-    btVector3 vect(rot_y(x,y,z,w),rot_z(x,y,z,w),rot_x(x,y,z,w));
+    btScalar test = x*y + z*w;
+    qDebug()<<"test "<<test;
+    if (test > .49 ) {
+        heading = 2*atan2(y,w);
+        attitude = M_PI_2;
+        bank = 0;
+    } else if (test < -.49 ) {
+        heading = -2*atan2(y,w);
+        attitude = - M_PI_2;
+        bank = 0;
+    } else {
+        heading = rot_x(x,y,z,w);
+        attitude = rot_y(x,y,z,w);
+        bank = rot_z(x,y,z,w);
+    }
+    vect = btVector3(attitude,bank,heading);
     return btVector3(vect);
 }
 
@@ -74,3 +91,11 @@ btScalar kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
 btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape, btScalar mass ){
     return pow(angular_velocity.length(),2) * kineticMoment(rotation_vector_diff,shape,mass) / 2;
 }
+
+btVector3 deg2rad(const btVector3& vector){
+    return btVector3((vector.x()/180)*M_PI,(vector.y()/180)*M_PI,(vector.z()/180)*M_PI);
+}
+btVector3 rad2deg(const btVector3& vector){
+    return btVector3((vector.x()/M_PI)*180,(vector.y()/M_PI)*180,(vector.z()/M_PI)*180);
+}
+

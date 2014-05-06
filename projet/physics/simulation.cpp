@@ -130,7 +130,7 @@ void Simulation::resetStep(float time){
 }
 
 void Simulation::stepOver(){
-//    _human.recordStatus();
+    _human.recordStatus();
     resetStep(_elapsed_simulation);
 }
 

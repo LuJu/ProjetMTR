@@ -250,7 +250,7 @@ void HumanBody::setSimulationPositionTree(const PartNode* node, const btTransfor
     btTransform object_transform = node->get_data()->_animation.getWorldTransform(transform,elapsed);
     if (elapsed == 0.0f)
         node->get_data()->setInitialPosition(object_transform);
-    else node->get_data()->setSimulationPosition2(object_transform,elapsed);
+    else node->get_data()->setSimulationPosition(object_transform,elapsed);
     for (int i = 0; i < node->get_number_of_children(); ++i) {
         setSimulationPositionTree(node->childAt(i),object_transform ,elapsed);
 
