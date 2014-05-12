@@ -33,6 +33,7 @@ void HumanBody::loadObjects(QString path){
                         object->get_shape_struct().set_shape_type(Shape::capsule);
                         object->set_body_part(temp.at(1));
                         mass = BodyInfo::mass(temp.at(1),_mass);
+                        qDebug()<<temp.size();
                         if (temp.size() >= 5 ){
                             if (temp.at(4) == "zeromass") mass = 0.0f;
                             QString parent = temp.at(3);
@@ -107,6 +108,14 @@ void HumanBody::loadObjects(QString path){
                 _constraints.append(joint);
             } else {
                 qDebug()<<"parts not found for constraint";
+//                if ((*part1)->get_parent_body_part() == "root"){
+//                    Joint joint;
+//                    joint._parts.first = *part1;
+//                    joint._parts.second=NULL;
+//                    joint._type=Joint::cone;
+
+//                    _constraints.append(joint);
+//                }
             }
             part1++;
         }

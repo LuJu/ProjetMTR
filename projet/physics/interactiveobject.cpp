@@ -92,7 +92,7 @@ void InteractiveObject::updateAnimation(float delta_t,const btTransform& transfo
 //    }
     btVector3 animation_distance(current._center_of_mass_world_position - previous._center_of_mass_world_position);
     btVector3 angular_dist = current._rotation - previous._rotation;
-    angular_dist = angleNormalize(angular_dist);
+//    angular_dist = angleNormalize(angular_dist);
 //    qDebug()<<toString(current._rotation,"bef: ");
 //    qDebug()<<toString(previous._rotation,"aft: ");
 //    qDebug()<<toString(angular_dist,"dist: ");
@@ -104,6 +104,11 @@ void InteractiveObject::updateAnimation(float delta_t,const btTransform& transfo
 //    btQuaternion diff =derivated(transform.getRotation());
 //    qDebug()<<"deriv: "<<btQuat2euler(diff);
     current._rotation_vector_diff = current._rotation -previous._rotation;
+    float axis_angle[4];
+    float axis_angle_p[4];
+    euler2AxisAngle(current._rotation,axis_angle);
+    euler2AxisAngle(previous._rotation,axis_angle_p);
+//    qDebug()<<toString(current._rotation_vector_diff,"Diff: ");
     if (current._rotation_vector_diff.length() != 0)
         current._rotation_vector_diff.normalize();
 }
@@ -163,13 +168,13 @@ void InteractiveObject::updateEnergyStructure(float gravity){
     aspeed_rad_simulation = _simulation._information._current._angular_speed;
 
     if (_animation._information._current._rotation_vector_diff.length() == 0){
-        qDebug()<<"no a speed animation";
+//        qDebug()<<"no a speed animation";
         _energy.animation.ake = 0;
     } else {
         _energy.animation.ake = angularKineticEnergy(aspeed_rad_animation,_animation._information._current._rotation_vector_diff,_shape.get_shape(),_mass);
     }
     if (_animation._information._current._rotation_vector_diff.length() == 0){
-        qDebug()<<"no a speed simulation";
+//        qDebug()<<"no a speed simulation";
         _energy.simulation.ake = 0;
     } else {
         _energy.simulation.ake = angularKineticEnergy(aspeed_rad_simulation,_simulation._information._current._rotation_vector_diff,_shape.get_shape(),_mass);

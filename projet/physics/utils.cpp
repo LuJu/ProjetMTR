@@ -68,6 +68,30 @@ btVector3 btQuat2euler(btQuaternion q){
     return btVector3(vect);
 }
 
+void euler2AxisAngle(btVector3 rotation,float * ret){
+    float yaw= rotation.x();
+    float pitch= rotation.y();
+    float roll= rotation.z();
+    float c1,c2,c3;
+    float s1,s2,s3;
+    float angle ;
+    c1 = qCos(yaw/2);
+    c2 = qCos(pitch/2);
+    c3 = qCos(roll/2);
+    s1 = qSin(yaw/2);
+    s2 = qSin(pitch/2);
+    s3 = qSin(roll/2);
+    angle = 2 * qAcos(c1*c2*c3 - s1*s2*s3);
+    float x,y,z;
+    x=s1*s2*c3 + c1*c2*s3;
+    y=s1*c2*c3 + c1*s2*s3;
+    z=c1*s2*c3 - s1*c2*s3;
+    ret[0] = x;
+    ret[1] = y;
+    ret[2] = z;
+    ret[3] = angle;
+}
+
 double translationKineticEnergy(double speed, double mass){
     return (speed*speed*mass)/2;
 }
@@ -97,6 +121,7 @@ btScalar kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
 }
 
 btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape, btScalar mass ){
+//    qDebug()<<toString(rotation_vector_diff);
     return pow(angular_velocity.length(),2) * kineticMoment(rotation_vector_diff,shape,mass) / 2;
 }
 

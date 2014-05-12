@@ -63,7 +63,8 @@ void Joint::buildConstraint(){
     case cone:
 
         if (_parts.second != NULL) constraint= new btConeTwistConstraint(*bodyA,*bodyB,localeA,localeB);
-        else constraint= new btConeTwistConstraint(*bodyA,localeA);
+        else
+            constraint= new btConeTwistConstraint(*bodyA,localeA);
 
         ((btConeTwistConstraint *)constraint)->setLimit(M_PI,M_PI,0);
 
