@@ -78,6 +78,8 @@ public:
     void setSimulationPosition(btTransform transform, float time);
     void setInitialPosition(btTransform transform);
 
+    QString _joint_type;
+
 private:
 
     enum curve_data{
@@ -133,6 +135,7 @@ private:
     }
     void updateSimulation(float delta_t);
     void updateAnimation(float delta_t, const btTransform &transform);
+
 
 
 };

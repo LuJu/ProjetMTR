@@ -14,7 +14,8 @@ HumanBody::~HumanBody(){
 void HumanBody::loadObjects(QString path){
     QString filename=path;
     CSVParser list;
-    list.parseFile(":/CSV/input/"+filename,";");
+//    list.parseFile(":/CSV/input/"+filename,";");
+    list.parseFile("../assets/CSV/input/"+filename,";");
     QStringList temp;
     int i=0;
     InteractiveObject * object = NULL;
@@ -22,8 +23,12 @@ void HumanBody::loadObjects(QString path){
     float mass;
     qDebug()<<"parsing file "<<path;
     while (list[i].at(0)!="parts_end"){
+        if (i > 1040){
+            qDebug()<<"lol";
+        }
         for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
             temp= list[i];
+            qDebug()<<temp.at(0) ;
             if (temp.size() > 0 ){
                 if (temp.at(0) == "object") {
                     if (temp.at(2) == "ignore") ignore = true;
@@ -42,6 +47,9 @@ void HumanBody::loadObjects(QString path){
                                 object->set_center_of_mass_proportion(temp.at(5).toFloat());
                                 if (temp.size() >= 7){
                                     mass=temp.at(6).toFloat();
+                                    if (temp.size() >= 8){
+                                        object->_joint_type = temp.at(7);
+                                    }
                                 }
                             }
                         } else {
@@ -61,7 +69,10 @@ void HumanBody::loadObjects(QString path){
                         for (int k=0; k<2;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-                                object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                if (k == 1)
+                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                if (k == 2)
+                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                             }
                         }
                     } else if (temp.at(0)=="translation") {
@@ -90,9 +101,6 @@ void HumanBody::loadObjects(QString path){
     }
     ignore = false;
 
-    #ifdef DEECORE
-    if (GlobalConfig::is_enabled("constraints_activated")){
-    #endif
     QList<InteractiveObject *>::iterator part1 = _parts.begin();
         for (int i = 0; i < _parts.size(); ++i) {
             QList<InteractiveObject *>::iterator part2 = findPartByName((*part1)->get_parent_body_part());
@@ -103,25 +111,29 @@ void HumanBody::loadObjects(QString path){
                     joint._parts.second= *part2;
                 else joint._parts.second=NULL;
 
-                joint._type=Joint::cone;
-
+                if ((*part1)->_joint_type == "cone"){
+                    joint._type=Joint::cone;
+                } else if ((*part1)->_joint_type == "hinge"){
+                    joint._type=Joint::hinge;
+                } else {
+                    joint._type=Joint::point;
+                }
                 _constraints.append(joint);
             } else {
+#ifdef DEECORE
+            if (GlobalConfig::is_enabled("constraints_activated")){
                 qDebug()<<"parts not found for constraint";
-//                if ((*part1)->get_parent_body_part() == "root"){
-//                    Joint joint;
-//                    joint._parts.first = *part1;
-//                    joint._parts.second=NULL;
-//                    joint._type=Joint::cone;
-
-//                    _constraints.append(joint);
-//                }
+                if ((*part1)->get_parent_body_part() == "root"){
+                    Joint joint;
+                    joint._parts.first = *part1;
+                    joint._parts.second=NULL;
+                    _constraints.append(joint);
+                }
+            }
+#endif
             }
             part1++;
         }
-    #ifdef DEECORE
-    }
-    #endif
 
     for (int i = 0; i < _parts.size(); ++i) {
         _parts[i]->buildMesh();

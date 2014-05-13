@@ -60,14 +60,23 @@ void Joint::buildConstraint(){
 
     deleteConstraint();
     switch (_type){
+    case point :
+        if (_parts.second != NULL){
+            constraint= new btPoint2PointConstraint(*bodyA,*bodyB,pivotA,pivotB);
+        }
+        else {
+            constraint= new btPoint2PointConstraint(*bodyA,pivotA);
+        }
+        break;
     case cone:
 
-        if (_parts.second != NULL) constraint= new btConeTwistConstraint(*bodyA,*bodyB,localeA,localeB);
-        else
-            constraint= new btConeTwistConstraint(*bodyA,localeA);
-
-        ((btConeTwistConstraint *)constraint)->setLimit(M_PI,M_PI,0);
-
+        if (_parts.second != NULL){
+            constraint= new btConeTwistConstraint(*bodyA,*bodyB,localeA,localeB);
+            ((btConeTwistConstraint *)constraint)->setLimit(M_PI,M_PI,0);
+        }
+        else {
+            qWarning()<<"cannot create cone constraint on one object";
+        }
         break;
     case hinge:
         if (_parts.second != NULL){

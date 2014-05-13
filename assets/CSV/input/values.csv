@@ -12,7 +12,7 @@ x;0;0;
 y;0;0;
 z;0;0;10000;720;
 end;;
-object;spine;ignore;pelvis;mass;
+object;spine;ignore;pelvis;mass;cone;
 scaling;;
 radius;0;0.1
 length;0;.5

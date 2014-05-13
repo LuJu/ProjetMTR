@@ -69,6 +69,16 @@ void firstConfiguration(){
 
 }
 
+QString usage(){
+    QString use;
+    use  = "USAGE : ";
+    use.append("program ");
+    use.append("[input file] ");
+    use.append("[body total mass] ");
+    use.append("[simulation total duration] ");
+    use.append("[steps duration] ");
+    return use;
+}
 
 void parseArguments(int argc, char *argv[]){
     int value=0;
@@ -115,7 +125,8 @@ int main(int argc, char *argv[])
     Stats * stats;
 
     int ret=0;
-    qDebug()<<"LAUNCHING PROGRAM";
+    qDebug()<<"LAUNCHING PROGRAM FACIAL ANIMATION THROUGH EFFORT";
+    qDebug()<<usage();
     GlobalConfig::loadConfiguration("ETS","FacialAnimation");
     firstConfiguration();
     parseArguments(argc,argv);
