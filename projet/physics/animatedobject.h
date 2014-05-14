@@ -20,6 +20,7 @@ public:
     AnimatedObject();
 
     btVector3 scalingVector(float time) const {
+        qDebug()<<_scaling_curves[0].size();
         return btVector3(_scaling_curves[0].get_value(time),
                          _scaling_curves[1].get_value(time),
                          _scaling_curves[2].get_value(time));

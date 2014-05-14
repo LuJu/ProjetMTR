@@ -69,10 +69,21 @@ void HumanBody::loadObjects(QString path){
                         for (int k=0; k<2;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-                                if (k == 1)
-                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-                                if (k == 2)
-                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                if (k == 0){
+                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();
+                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,0.01f);}
+//                                object->get_animation().get_scaling_curves()[k].insert(0.0f,values[j].toFloat());}
+                                if (k == 1){
+//                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,values[j].toFloat());i
+                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,1.f);
+                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();}
+//                                if (k == 0){
+//                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();
+//                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());}
+//                                if (k == 1){
+//                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+//                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();}
+                                qDebug();
                             }
                         }
                     } else if (temp.at(0)=="translation") {
@@ -86,7 +97,17 @@ void HumanBody::loadObjects(QString path){
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+//                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                if (k == 0){
+                                    object->get_animation().get_rotation_curves()[0].insert(values[j].toFloat(),values[j+1].toFloat());
+                                }
+                                if (k == 1){
+                                    object->get_animation().get_rotation_curves()[1].insert(values[j].toFloat(),values[j+1].toFloat());
+                                }
+                                if (k == 2){
+                                    object->get_animation().get_rotation_curves()[2].insert(values[j].toFloat(),values[j+1].toFloat());
+                                }
+//                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                             }
                         }
                     }
@@ -121,15 +142,15 @@ void HumanBody::loadObjects(QString path){
                 _constraints.append(joint);
             } else {
 #ifdef DEECORE
-            if (GlobalConfig::is_enabled("constraints_activated")){
-                qDebug()<<"parts not found for constraint";
-                if ((*part1)->get_parent_body_part() == "root"){
-                    Joint joint;
-                    joint._parts.first = *part1;
-                    joint._parts.second=NULL;
-                    _constraints.append(joint);
-                }
-            }
+//            if (GlobalConfig::is_enabled("constraints_activated")){
+//                qDebug()<<"parts not found for constraint";
+//                if ((*part1)->get_parent_body_part() == "root"){
+//                    Joint joint;
+//                    joint._parts.first = *part1;
+//                    joint._parts.second=NULL;
+//                    _constraints.append(joint);
+//                }
+//            }
 #endif
             }
             part1++;

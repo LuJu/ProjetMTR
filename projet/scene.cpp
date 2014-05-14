@@ -163,7 +163,7 @@ void Scene::display3DObjects(){
     glViewport(0,0,width(),height());
     if (GlobalConfig::is_enabled("display_simulation")) displaySimulation();
     if (GlobalConfig::is_enabled("display_animation")) displayAnimation();
-    displayPoints();
+//    displayPoints();
     releaseProgram();
 }
 
