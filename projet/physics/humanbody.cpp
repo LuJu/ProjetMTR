@@ -12,6 +12,15 @@ HumanBody::~HumanBody(){
 }
 
 void HumanBody::loadObjects(QString path){
+
+    float order[3],sign[3];
+    order[0] = GlobalConfig::get_int("first");
+    order[1] = GlobalConfig::get_int("second");
+    order[2] = GlobalConfig::get_int("third");
+    sign[0] = GlobalConfig::get_int("sfirst");
+    sign[1] = GlobalConfig::get_int("ssecond");
+    sign[2] = GlobalConfig::get_int("sthird");
+
     QString filename=path;
     CSVParser list;
 //    list.parseFile(":/CSV/input/"+filename,";");
@@ -24,11 +33,11 @@ void HumanBody::loadObjects(QString path){
     qDebug()<<"parsing file "<<path;
     while (list[i].at(0)!="parts_end"){
         if (i > 1040){
-            qDebug()<<"lol";
+//            qDebug()<<"lol";
         }
         for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
             temp= list[i];
-            qDebug()<<temp.at(0) ;
+//            qDebug()<<temp.at(0) ;
             if (temp.size() > 0 ){
                 if (temp.at(0) == "object") {
                     if (temp.at(2) == "ignore") ignore = true;
@@ -38,7 +47,7 @@ void HumanBody::loadObjects(QString path){
                         object->get_shape_struct().set_shape_type(Shape::capsule);
                         object->set_body_part(temp.at(1));
                         mass = BodyInfo::mass(temp.at(1),_mass);
-                        qDebug()<<temp.size();
+//                        qDebug()<<temp.size();
                         if (temp.size() >= 5 ){
                             if (temp.at(4) == "zeromass") mass = 0.0f;
                             QString parent = temp.at(3);
@@ -57,6 +66,7 @@ void HumanBody::loadObjects(QString path){
                         }
                         if (mass==0.0f){
                             qWarning()<<"Object mass null for part: "<<temp.at(1);
+                            mass=1;
                         }
                         object->set_mass(BodyInfo::mass(temp.at(1),mass));
                         if (temp.size() >= 7){
@@ -70,12 +80,12 @@ void HumanBody::loadObjects(QString path){
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
                                 if (k == 0){
-                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();
+//                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();
                                     object->get_animation().get_scaling_curves()[k].insert(0.0f,0.01f);}
 //                                object->get_animation().get_scaling_curves()[k].insert(0.0f,values[j].toFloat());}
                                 if (k == 1){
-//                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,values[j].toFloat());i
-                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,1.f);
+                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,values[j].toFloat()*2);
+//                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,1.f);
                                     qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();}
 //                                if (k == 0){
 //                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();
@@ -83,14 +93,25 @@ void HumanBody::loadObjects(QString path){
 //                                if (k == 1){
 //                                    object->get_animation().get_scaling_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
 //                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();}
-                                qDebug();
+//                                qDebug();
                             }
                         }
                     } else if (temp.at(0)=="translation") {
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                qDebug()<<"ORDER : "<<order[0]<<" "<<order[1]<<" "<<order[2];
+                                qDebug()<<"sign: "<<sign[0]<<" "<<sign[1]<<" "<<sign[2];
+//                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                if (k == 0){
+                                    object->get_animation().get_translation_curves()[order[0]].insert(sign[0] * values[j].toFloat(),values[j+1].toFloat());
+                                }
+                                if (k == 1){
+                                    object->get_animation().get_translation_curves()[order[1]].insert(sign[1] * values[j].toFloat(),values[j+1].toFloat());
+                                }
+                                if (k == 2){
+                                    object->get_animation().get_translation_curves()[order[2]].insert(sign[2] * values[j].toFloat(),values[j+1].toFloat());
+                                }
                             }
                         }
                     } else if (temp.at(0)=="rotation") {
@@ -99,13 +120,13 @@ void HumanBody::loadObjects(QString path){
                             for (int j=1; j<values.size()-1;j+=2){
 //                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                                 if (k == 0){
-                                    object->get_animation().get_rotation_curves()[0].insert(values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_rotation_curves()[order[0]].insert(sign[0] * values[j].toFloat(),values[j+1].toFloat());
                                 }
                                 if (k == 1){
-                                    object->get_animation().get_rotation_curves()[1].insert(values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_rotation_curves()[order[1]].insert(sign[1] * values[j].toFloat(),values[j+1].toFloat());
                                 }
                                 if (k == 2){
-                                    object->get_animation().get_rotation_curves()[2].insert(values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_rotation_curves()[order[2]].insert(sign[2] * values[j].toFloat(),values[j+1].toFloat());
                                 }
 //                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                             }
@@ -122,39 +143,39 @@ void HumanBody::loadObjects(QString path){
     }
     ignore = false;
 
-    QList<InteractiveObject *>::iterator part1 = _parts.begin();
-        for (int i = 0; i < _parts.size(); ++i) {
-            QList<InteractiveObject *>::iterator part2 = findPartByName((*part1)->get_parent_body_part());
-            if (part1 != _parts.end() && ( part2 != _parts.end())){
-                Joint joint;
-                joint._parts.first = *part1;
-                if (part2 != _parts.end())
-                    joint._parts.second= *part2;
-                else joint._parts.second=NULL;
+//    QList<InteractiveObject *>::iterator part1 = _parts.begin();
+//        for (int i = 0; i < _parts.size(); ++i) {
+//            QList<InteractiveObject *>::iterator part2 = findPartByName((*part1)->get_parent_body_part());
+//            if (part1 != _parts.end() && ( part2 != _parts.end())){
+//                Joint joint;
+//                joint._parts.first = *part1;
+//                if (part2 != _parts.end())
+//                    joint._parts.second= *part2;
+//                else joint._parts.second=NULL;
 
-                if ((*part1)->_joint_type == "cone"){
-                    joint._type=Joint::cone;
-                } else if ((*part1)->_joint_type == "hinge"){
-                    joint._type=Joint::hinge;
-                } else {
-                    joint._type=Joint::point;
-                }
-                _constraints.append(joint);
-            } else {
-#ifdef DEECORE
-//            if (GlobalConfig::is_enabled("constraints_activated")){
-//                qDebug()<<"parts not found for constraint";
-//                if ((*part1)->get_parent_body_part() == "root"){
-//                    Joint joint;
-//                    joint._parts.first = *part1;
-//                    joint._parts.second=NULL;
-//                    _constraints.append(joint);
+//                if ((*part1)->_joint_type == "cone"){
+//                    joint._type=Joint::cone;
+//                } else if ((*part1)->_joint_type == "hinge"){
+//                    joint._type=Joint::hinge;
+//                } else {
+//                    joint._type=Joint::point;
 //                }
+//                _constraints.append(joint);
+//            } else {
+//#ifdef DEECORE
+////            if (GlobalConfig::is_enabled("constraints_activated")){
+////                qDebug()<<"parts not found for constraint";
+////                if ((*part1)->get_parent_body_part() == "root"){
+////                    Joint joint;
+////                    joint._parts.first = *part1;
+////                    joint._parts.second=NULL;
+////                    _constraints.append(joint);
+////                }
+////            }
+//#endif
 //            }
-#endif
-            }
-            part1++;
-        }
+//            part1++;
+//        }
 
     for (int i = 0; i < _parts.size(); ++i) {
         _parts[i]->buildMesh();

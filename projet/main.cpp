@@ -67,6 +67,12 @@ void firstConfiguration(){
     GlobalConfig::defaultValue("display_diff",QVariant("true"));
     GlobalConfig::defaultValue("debugging",QVariant("true"));
 
+    GlobalConfig::defaultValue("first",QVariant(0));
+    GlobalConfig::defaultValue("second",QVariant(1));
+    GlobalConfig::defaultValue("third",QVariant(2));
+    GlobalConfig::defaultValue("sfirst",QVariant(1));
+    GlobalConfig::defaultValue("ssecond",QVariant(1));
+    GlobalConfig::defaultValue("sthird",QVariant(1));
 }
 
 QString usage(){
@@ -111,6 +117,24 @@ void parseArguments(int argc, char *argv[]){
             GlobalConfig::set_int("steps_duration",value);
             break ;
         case 6:
+            GlobalConfig::set_int("first",value);
+            break ;
+        case 7:
+            GlobalConfig::set_int("second",value);
+            break ;
+        case 8:
+            GlobalConfig::set_int("third",value);
+            break ;
+        case 9:
+            GlobalConfig::set_int("sfirst",value);
+            break ;
+        case 10:
+            GlobalConfig::set_int("ssecond",value);
+            break ;
+        case 11:
+            GlobalConfig::set_int("sthird",value);
+            break ;
+        case 12:
             break ;
         }
     }

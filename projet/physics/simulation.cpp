@@ -175,9 +175,9 @@ void Simulation::simulationOver()
     else
         qDebug()<<"path not set "<<path;
 
-     _human.saveDataList();
-     _human.saveFullDataList(_params);
-     _human.saveCompleteDataList();
+//     _human.saveDataList();
+//     _human.saveFullDataList(_params);
+//     _human.saveCompleteDataList();
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";
      if (_params.get_automatic_close())
