@@ -14,8 +14,10 @@ const btTransform AnimatedObject::getWorldTransform(const btTransform parent_tra
     object_transform.setIdentity();
     object_transform.setOrigin(extremityTranslationVector(time));
 
-    rotation = rotationVector(time);
-    quat.setEuler(deg2rad(rotation.y()),deg2rad(rotation.x()),deg2rad(rotation.z()));
+//    rotation = xyz2yxz(deg2rad(rotationVector(time)));
+    rotation = xyz2yxz(deg2rad(rotationVector(time)));
+//    rotation = deg2rad(rotationVector(time));
+    quat.setEuler(rotation.y(),rotation.x(),rotation.z());
     quat.normalize();
     object_transform.setRotation(quat);
     buffer = btQuat2euler(quat);

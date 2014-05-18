@@ -64,6 +64,57 @@ void Scene::displayAnimation(){
     }
 }
 
+//void Scene::displaySkeleton(){
+//    QMatrix4x4 V = _ui->get_camera().get_view_matrix();
+//    QMatrix4x4 P = _ui->get_camera().get_projection_matrix();
+//    QMatrix4x4 M;
+//    QMatrix4x4 pvm;
+//    btScalar matrix[16];
+//    QList<Point3df> com_list;
+//    btTransform transform;
+//    btQuaternion quat;
+//    InteractiveObject * obj;
+//    for (int i = 0; i < _display.size(); ++i) {
+//        obj = _display.at(i);
+//        if (obj->get_animated()){
+//            transform.setIdentity();
+//            btVector3 rotation_radians = obj->get_animation()._information._current._rotation;
+//            quat.setEuler(rotation_radians.y(),rotation_radians.x(),rotation_radians.z());
+//            btVector3 translation(obj->get_animation()._information._current._center_of_mass_world_position);
+//            transform.setRotation(quat);
+//            transform.setOrigin(translation);
+//            transform.getOpenGLMatrix(matrix);
+//            M=QMatrix4x4(matrix[0] ,matrix[4] ,matrix[8] ,matrix[12],
+//                         matrix[1] ,matrix[5] ,matrix[9] ,matrix[13],
+//                         matrix[2] ,matrix[6] ,matrix[10],matrix[14],
+//                         matrix[3], matrix[7], matrix[11],matrix[15]
+//                    );
+//            displayObject(obj,P,V,M,pvm);
+
+//            btVector3 local_scale =obj->get_shape_struct().get_shape();
+//            switch (obj->get_shape_struct().get_shape_type()) {
+//            case Shape::cube:
+//            case Shape::cylinder:
+//                M.scale(local_scale.getX(),local_scale.getY(),local_scale.getZ());
+//                insertMatrices(P,V,M);
+//                switch (obj->get_shape_struct().get_shape_type()) {
+//                case Shape::cube:
+//                    _cube_mesh->render();
+//                    break;
+//                }
+//                break;
+//                case Shape::capsule:
+//                com_list.append(obj->_animation._information._current._center_of_mass_world_position);
+//                com_list.append(_animation._information._current._center_of_mass_world_position);
+//                break;
+//            default:
+//                break;
+//            }
+//        }
+//    }
+//}
+
+
 
 void Scene::displaySimulation(){
     QMatrix4x4 V = _ui->get_camera().get_view_matrix();

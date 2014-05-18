@@ -21,8 +21,24 @@ DebuggingInterface * _debugging_ui;
 
 //! Function to do quick tests
 void quickTest(){
-}
+    btVector3 a,b;
+//    for (int i = 0; i < 180; ++i) {
+//        for (int j = 0; j < 180; ++j) {
+//            for (int k = 0; k < 180; ++k) {
+//                a= btVector3(i,j,k);
+//                qDebug()<<toString(a,"before : ");
+//                btVector3 a2= deg2rad(a);
+//                btQuaternion quat(a2.y(),a2.x(),a2.z());
+//                b = btQuat2euler(quat);
+////                if()
+//                qDebug()<<toString(rad2deg(b),"after : ");
+//                qDebug()<<"==============";
 
+//            }
+//        }
+//    }
+//    qDebug();
+}
 
 //Redirects the debug messages
 void customMessageHandler(QtMsgType type, const char *msg)

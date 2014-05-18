@@ -9,7 +9,7 @@ btScalar rot_x(btScalar x , btScalar y , btScalar z , btScalar w)
     btScalar rotx = qAtan2(2*((m_w * m_x) + (m_y * m_z)), 1 - (2 * ((m_x* m_x) + (m_y * m_y))));
 //    qDebug()<<"1: "<<2*((m_w * m_x) + (m_y * m_z));
 //    qDebug()<<"2: "<<1 - (2 * ((m_x* m_x) + (m_y * m_y)));
-    return rad2deg(rotx);
+    return rotx;
 }
 
 //attitude
@@ -20,7 +20,7 @@ btScalar rot_y(btScalar x , btScalar y , btScalar z , btScalar w)
     btScalar m_z = z;
     btScalar m_w = w;
     btScalar roty = asin(2 * ((m_w * m_y) - (m_z * m_x)));
-    return rad2deg(roty);
+    return roty;
 }
 
 //bank
@@ -31,7 +31,7 @@ btScalar rot_z(btScalar x , btScalar y , btScalar z , btScalar w)
     btScalar m_z = z;
     btScalar m_w = w;
     btScalar rotz = qAtan2(2 * ((m_w * m_z) + (m_x * m_y)), 1 - (2 * ((m_y * m_y) + (m_z * m_z))));
-    return rad2deg(rotz);
+    return rotz;
 }
 
 // m_x = qy?
@@ -155,4 +155,61 @@ btVector3 angleNormalize(const btVector3 rot){
         r.setZ(rot.z()+M_PI*2.0);
 //    qDebug()<<toString(r,"norm:: ");
     return r;
+}
+
+
+btVector3 xyz2yxz(btVector3 xyz){
+    btTransform x,y,z;
+//    btQuaternion bx(btVector3(1,0,0),M_PI_4/2),by(btVector3(0,1,0),M_PI_4/3),bz(btVector3(0,0,1),3*M_PI);
+        btQuaternion bx(btVector3(1,0,0),xyz.x()),
+                     by(btVector3(0,1,0),xyz.y()),
+                     bz(btVector3(0,0,1),xyz.z());
+//        btQuaternion bx(btVector3(1,0,0),deg2rad(xyz.x())),
+//                by(btVector3(0,1,0),deg2rad(xyz.y())),
+//                bz(btVector3(0,0,1),deg2rad(xyz.z()));
+//    btQuaternion bx(btVector3(1,0,0),M_PI_2/14),by(btVector3(0,1,0),0),bz(btVector3(0,0,1),3.21);
+//    btQuaternion ypr(M_PI_2,M_PI,M_PI_4);
+
+    x.setIdentity();y.setIdentity();z.setIdentity();
+    x.getBasis().setRotation(bx);
+    y.getBasis().setRotation(by);
+    z.getBasis().setRotation(bz);
+    btTransform r;
+    r=x*y*z;
+    btTransform r2;
+//    btTransform rypr;
+    r2=y*x*z;
+//    rypr.setIdentity();rypr.setRotation(ypr);
+    btMatrix3x3 a,b;
+    a = r.getBasis();
+    b.setIdentity();
+    b[0][0]= a[0][0];
+    b[0][1]= a[1][0];
+    b[0][2]= a[2][0];
+
+    b[1][0]= a[0][1];
+    b[1][1]= a[1][1];
+    b[1][2]= a[2][1];
+
+    b[2][0]= a[0][2];
+    b[2][1]= a[1][2];
+    b[2][2]= a[2][2];
+    btQuaternion quat;
+    quat = by * bx * bz;
+    btTransform rfinal;
+    rfinal.setBasis(b);
+//    btVector3 xyz = btQuat2euler(rfinal.getRotation());
+    btVector3 xyz2 = btQuat2euler(r2.getRotation());
+
+//    btScalar c2 = sqrt(pow(a[0][0],2)*pow(a[0][1],2));
+//    btScalar t1 = qAtan2(a[1][2],a[2][2]);
+//    btScalar t2 = qAtan2(-a[0][2],c2);
+//    btScalar s1 = qSin(t1);
+//    btScalar c1 = qCos(t1);
+//    btScalar t3 = qAtan2(s1*a[2][0]-c1*a[1][0],c1*a[2][1]-s1*a[2][1]);
+//    btVector3 yxz = btVector3(t1,t2,t3);
+    qDebug()<<"r :";
+    btVector3 result = btQuat2euler(quat);
+    return result;
+
 }

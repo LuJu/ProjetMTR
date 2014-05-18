@@ -79,4 +79,5 @@ btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vec
 //btQuaternion derivated(const btQuaternion& quat);
 btVector3 angleNormalize(const btVector3 rot);
 void euler2AxisAngle(btVector3 rotation,float * ret);
+btVector3 xyz2yxz(btVector3 xyz);
 #endif // BTUTILS_H

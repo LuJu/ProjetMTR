@@ -85,7 +85,7 @@ void InteractiveObject::updateAnimation(float delta_t,const btTransform& transfo
     t_state_data& current = _animation._information._current;
     t_state_data& previous =_animation._information._previous;
     current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
-    current._rotation = deg2rad(btQuat2euler(transform.getRotation()));
+    current._rotation = btQuat2euler(transform.getRotation());
 //    if (current._rotation.y() > M_PI-0.01 && current._rotation.z() > M_PI-0.01){
 //        current._rotation.setY(0);
 //        current._rotation.setZ(0);
@@ -226,7 +226,7 @@ void InteractiveObject::setSimulationPosition(btTransform transform, float time)
 
     insertDataToCurves(_curves_steps,time);// records the data for the curves
     t_state_data& current = _animation._information._current;
-    current._rotation = deg2rad(btQuat2euler(transform.getRotation()));
+    current._rotation = btQuat2euler(transform.getRotation());
 //    if (current._rotation.y() > M_PI-0.01 && current._rotation.z() > M_PI-0.01){
 //        current._rotation.setY(0);
 //        current._rotation.setZ(0);
@@ -263,7 +263,7 @@ void InteractiveObject::setSimulationPosition(btTransform transform, float time)
 void InteractiveObject::setInitialPosition(btTransform transform){
 
         t_state_data& current = _animation._information._current;
-        current._rotation = deg2rad(btQuat2euler(transform.getRotation()));
+        current._rotation = btQuat2euler(transform.getRotation());
         current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
 
         setSimulationTransformFromAnimation();
@@ -277,7 +277,7 @@ void InteractiveObject::setInitialPosition(btTransform transform){
 
         _simulation._information._previous._center_of_mass_world_speed = body->getLinearVelocity();
 
-        _animation._information._previous._rotation = deg2rad(_animation.rotationVector(0.0f));
+        _animation._information._previous._rotation = _animation.rotationVector(0.0f);
 
         _calculated_simulation_speed = _animation._information._current._center_of_mass_world_speed;
 }

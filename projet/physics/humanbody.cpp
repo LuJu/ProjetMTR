@@ -68,10 +68,8 @@ void HumanBody::loadObjects(QString path){
                             qWarning()<<"Object mass null for part: "<<temp.at(1);
                             mass=1;
                         }
-                        object->set_mass(BodyInfo::mass(temp.at(1),mass));
-                        if (temp.size() >= 7){
-                            object->set_mass(temp.at(6).toFloat());
-                        }
+//                        object->set_mass(BodyInfo::mass(temp.at(1),mass));
+                        object->set_mass(mass);
                     }
                 }
                 else if (!ignore){
@@ -81,10 +79,10 @@ void HumanBody::loadObjects(QString path){
                             for (int j=1; j<values.size()-1;j+=2){
                                 if (k == 0){
 //                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();
-                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,0.01f);}
+                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,0.03f);}
 //                                object->get_animation().get_scaling_curves()[k].insert(0.0f,values[j].toFloat());}
                                 if (k == 1){
-                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,values[j].toFloat()*2);
+                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,values[j].toFloat());
 //                                    object->get_animation().get_scaling_curves()[k].insert(0.0f,1.f);
                                     qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();}
 //                                if (k == 0){
@@ -104,13 +102,13 @@ void HumanBody::loadObjects(QString path){
                                 qDebug()<<"sign: "<<sign[0]<<" "<<sign[1]<<" "<<sign[2];
 //                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                                 if (k == 0){
-                                    object->get_animation().get_translation_curves()[order[0]].insert(sign[0] * values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_translation_curves()[order[0]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
                                 }
                                 if (k == 1){
-                                    object->get_animation().get_translation_curves()[order[1]].insert(sign[1] * values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_translation_curves()[order[1]].insert(values[j].toFloat(),sign[1] * values[j+1].toFloat());
                                 }
                                 if (k == 2){
-                                    object->get_animation().get_translation_curves()[order[2]].insert(sign[2] * values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_translation_curves()[order[2]].insert(values[j].toFloat(),sign[2] * values[j+1].toFloat());
                                 }
                             }
                         }
@@ -120,13 +118,13 @@ void HumanBody::loadObjects(QString path){
                             for (int j=1; j<values.size()-1;j+=2){
 //                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                                 if (k == 0){
-                                    object->get_animation().get_rotation_curves()[order[0]].insert(sign[0] * values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_rotation_curves()[order[0]].insert(values[j].toFloat(),sign[0] *values[j+1].toFloat());
                                 }
                                 if (k == 1){
-                                    object->get_animation().get_rotation_curves()[order[1]].insert(sign[1] * values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_rotation_curves()[order[1]].insert(values[j].toFloat(),sign[1] *values[j+1].toFloat());
                                 }
                                 if (k == 2){
-                                    object->get_animation().get_rotation_curves()[order[2]].insert(sign[2] * values[j].toFloat(),values[j+1].toFloat());
+                                    object->get_animation().get_rotation_curves()[order[2]].insert(values[j].toFloat(),sign[2] *values[j+1].toFloat());
                                 }
 //                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                             }
