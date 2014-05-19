@@ -14,6 +14,9 @@ Joint::Joint(const Joint& other):
 {
     _parts.first = other._parts.first;
     _parts.second = other._parts.second;
+    _part_name=other._part_name;
+    _animation=other._animation;
+    _simulation=other._simulation;
 }
 
 Joint& Joint::operator=( const Joint& other ) {
@@ -21,6 +24,9 @@ Joint& Joint::operator=( const Joint& other ) {
     _type=other._type;
     _parts.first = other._parts.first;
     _parts.second = other._parts.second;
+    _part_name=other._part_name;
+    _animation=other._animation;
+    _simulation=other._simulation;
     return *this;
 }
 
@@ -32,7 +38,19 @@ void Joint::deleteConstraint(){
     if (_constraint != NULL)_constraint = NULL;
 }
 
-void Joint::buildConstraint(){
+bool Joint::has_parts() const {
+    if (_parts.first==NULL && _parts.second==NULL) return false;
+    return true;
+}
+
+bool Joint::buildConstraint(){
+    if (has_parts()){
+        allocateConstraint();
+        return true;
+    } else return false;
+}
+
+void Joint::allocateConstraint(){
     btVector3 pivotA, pivotB;
     btTransform localeA, localeB;
     btVector3 shapeA, shapeB  ;

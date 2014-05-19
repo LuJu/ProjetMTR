@@ -136,10 +136,11 @@ void Simulation::stepOver(){
 
 void Simulation::cleanWorld(){
     btRigidBody * body;
-    QList<Joint> * _joints = &_human._constraints;
+    QList<Joint*> * _joints = &_human._constraints;
     if (_world_filled){
         for (int i = 0; i < _joints->size(); ++i) {
-            _world->removeConstraint(_joints->at(i).get_constraint());
+            if (_joints->at(i)->has_parts())
+                _world->removeConstraint(_joints->at(i)->get_constraint());
         }
         for (int i = 0; i < _display.size(); ++i) {
             body = _display[i]->get_body();
@@ -151,15 +152,15 @@ void Simulation::cleanWorld(){
 
 void Simulation::fillWorld(){
     btRigidBody * body = NULL;
-    QList<Joint> * _joints = &_human._constraints;
+    QList<Joint*> * _joints = &_human._constraints;
     if (!_world_filled){
         for (int i = 0; i < _display.size(); ++i) {
             body = _display[i]->get_body();
             _world->addRigidBody(body);
         }
         for (int i = 0; i < _joints->size(); ++i) {
-            (*_joints)[i].buildConstraint();
-            _world->addConstraint(_joints->at(i).get_constraint(),true);
+            if ((*_joints)[i]->buildConstraint())
+                 _world->addConstraint(_joints->at(i)->get_constraint(),true);
         }
         _world_filled = true;
     } else qWarning()<<"Attempting to fill a full world" ;

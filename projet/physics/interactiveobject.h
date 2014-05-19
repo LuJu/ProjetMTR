@@ -103,7 +103,9 @@ private:
     void deleteMotion();
     void buildMotion();
 
+public:
     Shape _shape;
+private:
     MeshPointer _mesh;
 
     btTransform _original_transform;

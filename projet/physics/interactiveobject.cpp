@@ -84,7 +84,7 @@ void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity
 void InteractiveObject::updateAnimation(float delta_t,const btTransform& transform){
     t_state_data& current = _animation._information._current;
     t_state_data& previous =_animation._information._previous;
-    current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
+    current._center_of_mass_world_position = transform.getOrigin() + rotatedVector(current._rotation,btVector3(0,-_shape.get_shape().y()/2,0));
     current._rotation = btQuat2euler(transform.getRotation());
 //    if (current._rotation.y() > M_PI-0.01 && current._rotation.z() > M_PI-0.01){
 //        current._rotation.setY(0);
@@ -232,7 +232,8 @@ void InteractiveObject::setSimulationPosition(btTransform transform, float time)
 //        current._rotation.setZ(0);
 //    }
 //    qDebug()<<toString(current._rotation,"rotation : ");
-    current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
+    current._center_of_mass_world_position = transform.getOrigin() + rotatedVector(current._rotation,btVector3(0,-_shape.get_shape().y()/2,0));
+//    current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
 
     setSimulationTransformFromAnimation();
     buildMotion();
@@ -264,7 +265,7 @@ void InteractiveObject::setInitialPosition(btTransform transform){
 
         t_state_data& current = _animation._information._current;
         current._rotation = btQuat2euler(transform.getRotation());
-        current._center_of_mass_world_position = transform.getOrigin() - _animation.centerToBaseVector();
+        current._center_of_mass_world_position = transform.getOrigin() + rotatedVector(current._rotation,btVector3(0,-_shape.get_shape().y()/2,0));
 
         setSimulationTransformFromAnimation();
         buildMotion();

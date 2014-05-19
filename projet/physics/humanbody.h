@@ -21,6 +21,7 @@
 
 //! Contains the information about all parts of the body
 typedef WNode<InteractiveObject> PartNode;
+typedef WNode<Joint> JointNode;
 class HumanBody
 {
 public:
@@ -28,9 +29,10 @@ public:
     ~HumanBody();
 
     QList<InteractiveObject * > _parts;
-    QList<Joint> _constraints;
+    QList<Joint *> _constraints;
 
     void loadObjects(QString path);
+    void loadObjectsOLD(QString path);
     void recordStatus();
     QList<part_info> _data_list;
     QList<part_info> _full_data_list;
@@ -42,7 +44,6 @@ public:
     void setSimulationPosition(float time);
     void setSimulationPositionTree(const PartNode* node, const btTransform& transform, float elapsed);
     void updateBodyInformations(float elapsed,float diff,float gravity);
-    btScalar computeWork(btScalar ke_simulation , btScalar ke_animation , btScalar ake_simulation , btScalar ake_animation , btScalar pe_simulation , btScalar pe_animation);
 
     int get_mass() const {return _mass;}
     void set_mass(int mass){_mass = mass;}
@@ -54,6 +55,9 @@ public:
         }
         return work;
     }
+
+    QList<Joint*>::iterator findJointByPartName(const QString& name);
+    QList<Joint*>::iterator findJointByParentPartName(const QString& name);
 
     QList<InteractiveObject * >::iterator findPartByName(const QString& name){
         QList<InteractiveObject * >::iterator i;
@@ -78,9 +82,11 @@ public:
     void exportSimulationToAnimation();
 
     WTree<InteractiveObject> _parts_tree;
+    WTree<Joint> _joints_tree;
 
     //! Builds the part tree (scene graph)
     void buildTree();
+    void buildJointTree();
     void updateInformationTree(const PartNode* node, const btTransform &transform, float elapsed, float diff, float gravity);
 protected:
     int _mass;

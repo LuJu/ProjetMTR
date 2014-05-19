@@ -9,9 +9,185 @@ HumanBody::~HumanBody(){
     for (int i = 0; i < _parts.size(); ++i) {
         delete _parts[i];
     }
+    for (int i = 0; i < _constraints.size(); ++i) {
+        delete _constraints[i];
+    }
 }
 
 void HumanBody::loadObjects(QString path){
+
+    float order[3],sign[3];
+    order[0] = GlobalConfig::get_int("first");
+    order[1] = GlobalConfig::get_int("second");
+    order[2] = GlobalConfig::get_int("third");
+    sign[0] = GlobalConfig::get_int("sfirst");
+    sign[1] = GlobalConfig::get_int("ssecond");
+    sign[2] = GlobalConfig::get_int("sthird");
+
+    QString filename=path;
+    CSVParser list;
+//    list.parseFile(":/CSV/input/"+filename,";");
+    list.parseFile("../assets/CSV/input/"+filename,";");
+    QStringList temp;
+    int i=0;
+//    InteractiveObject * object = NULL;
+    Joint * object;
+    bool ignore = false;
+    float mass;
+    qDebug()<<"parsing file "<<path;
+    while (list[i].at(0)!="parts_end"){
+        for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
+            temp= list[i];
+            if (temp.size() > 0 ){
+                if (temp.at(0) == "object") {
+                    if (temp.at(2) == "ignore") ignore = true;
+                    else ignore = false;
+                    if (!ignore){
+                        object = new Joint();
+                        object->_parts.second= NULL;
+                        object->_parts.first= NULL;
+//                        qDebug()<<temp.size();
+                        if (temp.size() >= 5 ){
+                            if (temp.at(4) == "zeromass") mass = 0.0f;
+                            QString parent = temp.at(3);
+                            QString name = temp.at(1);
+                            object->_part_name = name;
+                            object->_parent_part_name = parent;
+                            QList<Joint*>::iterator joint_parent = findJointByPartName(parent);
+                            QList<InteractiveObject *>::iterator part_child = findPartByName(name);
+                            QList<InteractiveObject *>::iterator part_parent = findPartByName(parent);
+                            if (part_child == _parts.end() && joint_parent != _constraints.end()){
+                                if (!ignore){
+                                    InteractiveObject * new_object = new InteractiveObject();
+                                    object->_parts.first= new_object;
+                                    if (part_parent == _parts.end() ) {
+                                        object->_parts.second= NULL;
+                                        new_object->set_parent_body_part("root");
+                                    } else {
+                                        object->_parts.second= *part_parent;
+                                        new_object->set_parent_body_part(parent);
+                                    }
+                                    new_object->get_shape_struct().set_shape_type(Shape::capsule);
+                                    new_object->set_body_part(temp.at(1));
+                                    new_object->set_animated(true);
+                                    mass = BodyInfo::mass(temp.at(1),_mass);
+                                    if (mass==0.0f){
+                                        qWarning()<<"Object mass null for part: "<<temp.at(1);
+                                        mass=1;
+                                    }
+                                    new_object->set_mass(mass);
+                                    new_object->_animation = (*joint_parent)->_animation;
+                                    new_object->_simulation= (*joint_parent)->_simulation;
+                                    new_object->_animation.set_shape( &(new_object->_shape));
+                                    new_object->_simulation.set_shape(&(new_object->_shape));
+                                    _parts.append(new_object);
+
+                                    if (temp.size() >= 6){
+        //                                object->set_center_of_mass_proportion(temp.at(5).toFloat());
+                                        if (temp.size() >= 7){
+        //                                    mass=temp.at(6).toFloat();
+                                            if (temp.size() >= 8){
+                                                    if (temp.at(7) == "cone"){
+                                                        object->_type=Joint::cone;
+                                                    } else if (temp.at(7) == "hinge"){
+                                                        object->_type=Joint::hinge;
+                                                    } else {
+                                                        object->_type=Joint::point;
+                                                    }
+                                            }
+                                        }
+                                    }
+                                }
+                            ///////////////////
+                        } else {
+                            qWarning()<<"Incorrect CSV file structure";
+                        }
+//                        object->set_mass(BodyInfo::mass(temp.at(1),mass));
+                    }
+                }
+                } else if (!ignore) {
+                    if (temp.at(0)=="scaling") {
+                        for (int k=0; k<2;k++) {
+                            QStringList values = list[i+1+k] ;
+                            for (int j=1; j<values.size()-1;j+=2){
+                                if (k == 0){
+                                    object->_animation.get_scaling_curves()[k].insert(0.0f,0.03f);}
+                                if (k == 1){
+                                    object->_animation.get_scaling_curves()[k].insert(0.0f,values[j].toFloat());
+                                    qDebug()<<values[j].toFloat()<<" "<<values[j+1].toFloat();}
+                            }
+                        }
+                    } else if (temp.at(0)=="translation") {
+                        for (int k=0; k<3;k++) {
+                            QStringList values = list[i+1+k] ;
+                            for (int j=1; j<values.size()-1;j+=2){
+                                    object->_animation.get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
+                            }
+                        }
+                    } else if (temp.at(0)=="rotation") {
+                        for (int k=0; k<3;k++) {
+                            QStringList values = list[i+1+k] ;
+                            for (int j=1; j<values.size()-1;j+=2){
+                                    object->_animation.get_rotation_curves()[order[k]].insert(values[j].toFloat(),sign[k] *values[j+1].toFloat());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!ignore){
+            QString name;
+            _constraints.append(object);
+            qDebug()<<"llol "<<object->_part_name;
+        }
+        i++;
+    }
+
+    ignore = false;
+
+//    QList<InteractiveObject *>::iterator part1 = _parts.begin();
+//        for (int i = 0; i < _parts.size(); ++i) {
+//            QList<InteractiveObject *>::iterator part2 = findPartByName((*part1)->get_parent_body_part());
+//            if (part1 != _parts.end() && ( part2 != _parts.end())){
+//                Joint joint;
+//                joint._parts.first = *part1;
+//                if (part2 != _parts.end())
+//                    joint._parts.second= *part2;
+//                else joint._parts.second=NULL;
+
+//                if ((*part1)->_joint_type == "cone"){
+//                    joint._type=Joint::cone;
+//                } else if ((*part1)->_joint_type == "hinge"){
+//                    joint._type=Joint::hinge;
+//                } else {
+//                    joint._type=Joint::point;
+//                }
+//                _constraints.append(joint);
+//            } else {
+//#ifdef DEECORE
+////            if (GlobalConfig::is_enabled("constraints_activated")){
+////                qDebug()<<"parts not found for constraint";
+////                if ((*part1)->get_parent_body_part() == "root"){
+////                    Joint joint;
+////                    joint._parts.first = *part1;
+////                    joint._parts.second=NULL;
+////                    _constraints.append(joint);
+////                }
+////            }
+//#endif
+//            }
+//            part1++;
+//        }
+
+    for (int i = 0; i < _parts.size(); ++i) {
+        _parts[i]->buildMesh();
+    }
+    buildTree();
+}
+
+
+
+void HumanBody::loadObjectsOLD(QString path){
 
     float order[3],sign[3];
     order[0] = GlobalConfig::get_int("first");
@@ -181,6 +357,8 @@ void HumanBody::loadObjects(QString path){
     buildTree();
 }
 
+
+
 void HumanBody::recordStatus(){
     part_info full_data;
     for (int i = 0; i < _parts.size(); ++i) {
@@ -344,6 +522,7 @@ void HumanBody::buildTree(){
     for (int i = 0; i < _parts.size(); ++i) {
         inserted[i] = false;
     }
+    qDebug()<<_parts.size();
     while ( complete == false){
         for (int j = 0; j < number_of_parts; ++j) {
             if(inserted[j] == false){
@@ -365,4 +544,60 @@ void HumanBody::buildTree(){
             if (inserted[i] == false) complete = false;
         }
     }
+}
+
+void HumanBody::buildJointTree(){
+    Joint * temp;
+    JointNode * parent;
+    QList<Joint*>::iterator it;
+    int number_of_joints = _constraints.size();
+    it = findJointByParentPartName("root");
+    bool inserted[number_of_joints];
+    bool complete = false;
+    for (int i = 0; i < _constraints.size(); ++i) {
+        inserted[i] = false;
+    }
+    while ( complete == false){
+        for (int j = 0; j < number_of_joints; ++j) {
+            if(inserted[j] == false){
+                temp = _constraints[j];
+                if (!temp->has_parent()){
+                    _joints_tree.addNode(temp->_part_name,temp);
+                    inserted[j] = true;
+                } else {
+                    parent = _joints_tree.get_node_by_name(temp->_parent_part_name);
+                    if (parent!=NULL){
+                        _joints_tree.addNode(temp->_part_name,temp,parent->get_id());
+                        inserted[j] = true;
+                    }
+                }
+            }
+        }
+        complete = true;
+        for (int i = 0; i < number_of_joints; ++i) {
+            if (inserted[i] == false) complete = false;
+        }
+    }
+}
+
+
+QList<Joint*>::iterator HumanBody::findJointByPartName(const QString& name){
+    QList<Joint*>::iterator i;
+    Joint * value;
+    for (i = _constraints.begin(); i != _constraints.end(); ++i) {
+        value = *i;
+        if (value->_part_name == name) return i;
+    }
+    return _constraints.end();
+}
+
+QList<Joint*>::iterator HumanBody::findJointByParentPartName(const QString& name){
+    QList<Joint*>::iterator i;
+    Joint * value;
+    for (i = _constraints.begin(); i != _constraints.end(); ++i) {
+        value = *i;
+        if (value->has_parent())
+            if (value->_parent_part_name == name) return i;
+    }
+    return _constraints.end();
 }

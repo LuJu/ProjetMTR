@@ -213,3 +213,21 @@ btVector3 xyz2yxz(btVector3 xyz){
     return result;
 
 }
+
+
+//! Return the vector representing the current distance between the center of the shape and the base of the shape, in world coordinates
+/*!
+    \return : The vector center->base
+*/
+btVector3 rotatedVector(btVector3 ypr, btVector3 vector){
+    btQuaternion quat;
+
+    quat.setEuler(ypr.y(),ypr.x(),ypr.z());
+    quat.normalize();
+    QQuaternion qquat(quat.w(),quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z());
+    qquat= qquat.fromAxisAndAngle(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z(),rad2deg(quat.getAngle()));
+
+    QVector3D qvect(vector.x(),vector.y(),vector.z());
+    qvect = qquat.rotatedVector(qvect);
+    return btVector3(qvect.x(),qvect.y(),qvect.z());
+}

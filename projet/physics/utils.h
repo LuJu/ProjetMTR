@@ -5,6 +5,7 @@
 #include "btBulletCollisionCommon.h"
 #include "utils/maths.h"
 #include <QDebug>
+#include <QQuaternion>
 #include <qmath.h>
 #include "debuggingutils.h"
 
@@ -80,4 +81,5 @@ btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vec
 btVector3 angleNormalize(const btVector3 rot);
 void euler2AxisAngle(btVector3 rotation,float * ret);
 btVector3 xyz2yxz(btVector3 xyz);
+btVector3 rotatedVector(btVector3 ypr, btVector3 vector);
 #endif // BTUTILS_H

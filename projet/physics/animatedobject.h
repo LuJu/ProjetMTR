@@ -20,7 +20,6 @@ public:
     AnimatedObject();
 
     btVector3 scalingVector(float time) const {
-        qDebug()<<_scaling_curves[0].size();
         return btVector3(_scaling_curves[0].get_value(time),
                          _scaling_curves[1].get_value(time),
                          _scaling_curves[2].get_value(time));
@@ -41,26 +40,6 @@ public:
 
     const btTransform getWorldTransform(const btTransform parent_transform, float time) const;
 
-
-    //! Return the vector representing the current distance between the center of the shape and the base of the shape, in world coordinates
-    /*!
-        \return : The vector center->base
-    */
-    btVector3 centerToBaseVector()const{
-
-        btVector3 ypr = _information._current._rotation;
-        btQuaternion quat;
-
-        quat.setEuler(ypr.y(),ypr.x(),ypr.z());
-        btScalar R = _shape->get_shape().y()/2;
-        QVector3D base_position(0,-R,0);
-        quat.normalize();
-        QQuaternion qquat(quat.w(),quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z());
-        qquat= qquat.fromAxisAndAngle(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z(),rad2deg(quat.getAngle()));
-
-        return btVector3(qquat.rotatedVector(base_position).x(),qquat.rotatedVector(base_position).y(),qquat.rotatedVector(base_position).z());
-    }
-
     void set_shape(Shape * shape){_shape = shape;}
 
     state_information _information;
@@ -69,7 +48,6 @@ private:
     Curve3d _scaling_curves;
     Curve3d _rotation_curves;
     Curve3d _extremity_translation_curves;
-    Curve3d _center_of_mass_translation_curves;
 
 };
 
