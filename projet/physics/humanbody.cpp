@@ -123,7 +123,7 @@ void HumanBody::loadObjects(QString path){
     }
 //    buildTree();
     buildJointTree();
-//    buildConstraints();
+    buildConstraints();
 }
 
 //void HumanBody::allocateObjects(){
@@ -485,7 +485,8 @@ void HumanBody::buildJointTree(){
                         _joints_tree.addNode(temp->_part_name,temp,parent->get_id());
                         InteractiveObject * new_object = new InteractiveObject();
                         temp->_main_part = new_object;
-                        new_object->set_mass(temp->_part_mass);
+                        new_object->set_mass(1);
+//                        new_object->set_mass(temp->_part_mass);
                         new_object->set_body_part(temp->_part_name);
                         new_object->get_shape_struct().set_shape_type(Shape::capsule);
                         new_object->set_animated(true);

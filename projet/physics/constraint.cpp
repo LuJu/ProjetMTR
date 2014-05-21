@@ -73,8 +73,9 @@ void Constraint::allocateConstraint(){
 //    rotA =_parts.first->_animation.rotationVector(0);
     rotationA.setEuler(0,0,M_PI_2);
     rotationB.setEuler(deg2rad(rotA.y()), deg2rad(rotA.x()), deg2rad(rotA.z()+90));
-    pivotA = - btVector3(0,shapeA.y()/2,0);
+    pivotA = btVector3(0,shapeA.y()/2,0);
 //    pivotB = _parts.first->_animation.extremityTranslationVector(0) - btVector3(0,shapeB.y()/2,0);
+        pivotB = - btVector3(0,shapeB.y()/2,0);
     localeA.setIdentity();localeA.setRotation(rotationA);localeA.setOrigin(pivotA);
     localeB.setIdentity();localeB.setRotation(rotationB);localeB.setOrigin(pivotB);
 

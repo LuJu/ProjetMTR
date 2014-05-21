@@ -123,7 +123,7 @@ void InteractiveObject::updateSimulation(float delta_t){
     t_state_data& previous =_simulation_information._previous;
     btRigidBody * body = get_body();
 
-    qDebug()<<toString(body->getCenterOfMassPosition());
+//    qDebug()<<toString(body->getCenterOfMassPosition());
 
     current._center_of_mass_world_position = body->getCenterOfMassPosition();
     current._angular_speed=                  body->getAngularVelocity();
@@ -308,8 +308,8 @@ void InteractiveObject::setInitialPosition(btTransform transform,btTransform par
 //        _animation_information._previous._rotation = _animation.rotationVector(0.0f);
 
         _calculated_simulation_speed = _animation_information._current._center_of_mass_world_speed;
-        qDebug()<<"initial position"<<toString(body->getCenterOfMassTransform().getOrigin());
-        qDebug()<<"initial rotation"<<toString(body->getCenterOfMassTransform().getRotation());
-        qDebug()<<"initial velocity"<<toString(body->getLinearVelocity());
-        qDebug()<<"initial angvelo"<<toString(body->getAngularVelocity());
+//        qDebug()<<"initial position"<<toString(body->getCenterOfMassTransform().getOrigin());
+//        qDebug()<<"initial rotation"<<toString(body->getCenterOfMassTransform().getRotation());
+//        qDebug()<<"initial velocity"<<toString(body->getLinearVelocity());
+//        qDebug()<<"initial angvelo"<<toString(body->getAngularVelocity());
 }
