@@ -53,12 +53,11 @@ typedef struct part_info{
 
 typedef struct state_data{
         btVector3 _center_of_mass_world_position;
-        btVector3 _rotation; // rad
         btVector3 _center_of_mass_world_speed;
         btVector3 _angular_speed; // rad.s-1
+        btQuaternion _center_of_mass_rotation;
         btVector3 _rotation_vector_diff;
         state_data():_center_of_mass_world_position(btScalar(0),btScalar(0),btScalar(0)),
-            _rotation(btScalar(0),btScalar(0),btScalar(0)),
             _center_of_mass_world_speed(btScalar(0),btScalar(0),btScalar(0)),
             _angular_speed(btScalar(0),btScalar(0),btScalar(0)),
             _rotation_vector_diff(btScalar(0),btScalar(0),btScalar(0)){}
@@ -82,4 +81,5 @@ btVector3 angleNormalize(const btVector3 rot);
 void euler2AxisAngle(btVector3 rotation,float * ret);
 btVector3 xyz2yxz(btVector3 xyz);
 btVector3 rotatedVector(btVector3 ypr, btVector3 vector);
+btVector3 rotatedVector(btQuaternion quat, btVector3 vector);
 #endif // BTUTILS_H

@@ -42,16 +42,14 @@ void Scene::displayAnimation(){
     btScalar matrix[16];
 
     btTransform transform;
-    btQuaternion quat;
     InteractiveObject * obj;
     for (int i = 0; i < _display.size(); ++i) {
         obj = _display.at(i);
         if (obj->get_animated()){
             transform.setIdentity();
-            btVector3 rotation_radians = obj->get_animation()._information._current._rotation;
-            quat.setEuler(rotation_radians.y(),rotation_radians.x(),rotation_radians.z());
-            btVector3 translation(obj->get_animation()._information._current._center_of_mass_world_position);
-            transform.setRotation(quat);
+            btQuaternion rotation_quat = obj->_animation_information._current._center_of_mass_rotation;
+            btVector3 translation(obj->_animation_information._current._center_of_mass_world_position);
+            transform.setRotation(rotation_quat);
             transform.setOrigin(translation);
             transform.getOpenGLMatrix(matrix);
             M=QMatrix4x4(matrix[0] ,matrix[4] ,matrix[8] ,matrix[12],
@@ -126,6 +124,7 @@ void Scene::displaySimulation(){
     for (int i = 0; i < _display.size(); ++i) {
         InteractiveObject * obj = _display.at(i);
         obj->get_motion_state()->m_graphicsWorldTrans.getOpenGLMatrix( matrix );
+        obj->get_body()->getCenterOfMassPosition();
         M=QMatrix4x4(matrix[0] ,matrix[4] ,matrix[8] ,matrix[12],
                      matrix[1] ,matrix[5] ,matrix[9] ,matrix[13],
                      matrix[2] ,matrix[6] ,matrix[10],matrix[14],

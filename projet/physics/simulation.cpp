@@ -72,6 +72,7 @@ void Simulation::start(){
                                "\n\tUPS           : "<<_params.get_ups();
         _thread->start();
         _started = true;
+        qDebug()<<toString(_display[0]->get_body()->getCenterOfMassPosition());
 }
 
 void Simulation::loop(){
@@ -114,7 +115,9 @@ void Simulation::update(){
     _diff =  clock_time-_elapsed_realtime;
     _elapsed_realtime=clock_time;
     _elapsed_simulation=_elapsed_simulation+progression_ms;
+    qDebug()<<toString(_display[0]->get_body()->getCenterOfMassPosition());
     _world->stepSimulation(progression_s ,1,btScalar(1.0/(ups)));
+    qDebug()<<toString(_display[0]->get_body()->getCenterOfMassPosition());
     _step_counter+=progression_ms; // conversion from seconds to ms
     _end_counter+=progression_ms;
     _ups_counter+=progression_ms;
@@ -123,8 +126,9 @@ void Simulation::update(){
 
 void Simulation::resetStep(float time){
     cleanWorld();
-    _human.setSimulationPosition(time);
+    _human.setSimulationJointPosition(time);
     fillWorld();
+    qDebug()<<toString(_display[0]->get_body()->getCenterOfMassPosition());
     _updates_since_last_step = 0;
     _step_counter = 0;
 }
@@ -137,10 +141,13 @@ void Simulation::stepOver(){
 void Simulation::cleanWorld(){
     btRigidBody * body;
     QList<Joint*> * _joints = &_human._constraints;
+    QList<Constraint> * _constraints_list= &_human._constraints_list;
+    Constraint * temp_constraint;
     if (_world_filled){
-        for (int i = 0; i < _joints->size(); ++i) {
-            if (_joints->at(i)->has_parts())
-                _world->removeConstraint(_joints->at(i)->get_constraint());
+        for (int i = 0; i < _constraints_list->size(); ++i) {
+            temp_constraint = &((*_constraints_list)[i]);
+            if (temp_constraint->has_parts())
+                _world->removeConstraint(temp_constraint->get_constraint());
         }
         for (int i = 0; i < _display.size(); ++i) {
             body = _display[i]->get_body();
@@ -152,15 +159,21 @@ void Simulation::cleanWorld(){
 
 void Simulation::fillWorld(){
     btRigidBody * body = NULL;
-    QList<Joint*> * _joints = &_human._constraints;
+//    QList<Joint*> * _joints = &_human._constraints;
+    QList<Constraint> * _constraints_list= &_human._constraints_list;
+    Constraint * temp_constraint;
     if (!_world_filled){
         for (int i = 0; i < _display.size(); ++i) {
             body = _display[i]->get_body();
+            qDebug()<<"body position "<<toString(body->getCenterOfMassPosition());
             _world->addRigidBody(body);
         }
-        for (int i = 0; i < _joints->size(); ++i) {
-            if ((*_joints)[i]->buildConstraint())
-                 _world->addConstraint(_joints->at(i)->get_constraint(),true);
+        for (int i = 0; i < _constraints_list->size(); ++i) {
+            temp_constraint = &((*_constraints_list)[i]);
+            temp_constraint->buildConstraint();
+            if (temp_constraint->has_parts()){
+                _world->addConstraint(temp_constraint->get_constraint(),true);
+            }
         }
         _world_filled = true;
     } else qWarning()<<"Attempting to fill a full world" ;

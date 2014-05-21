@@ -126,12 +126,12 @@ void Stats::displayStatsTest(){
     BezierPath path[10];
     Curve curves[6];
     Curve * bcurves[3];
-    curves[0] = _display.at(0)->get_animation().get_translation_curves()[0].get_bezier();
-    curves[1] = _display.at(0)->get_animation().get_translation_curves()[1].get_bezier();
-    curves[2] = _display.at(0)->get_animation().get_translation_curves()[2].get_bezier();
-    curves[3] = _display.at(0)->get_animation().get_translation_curves()[0];
-    curves[4] = _display.at(0)->get_animation().get_translation_curves()[1];
-    curves[5] = _display.at(0)->get_animation().get_translation_curves()[2];
+//    curves[0] = _display.at(0)->get_animation().get_translation_curves()[0].get_bezier();
+//    curves[1] = _display.at(0)->get_animation().get_translation_curves()[1].get_bezier();
+//    curves[2] = _display.at(0)->get_animation().get_translation_curves()[2].get_bezier();
+//    curves[3] = _display.at(0)->get_animation().get_translation_curves()[0];
+//    curves[4] = _display.at(0)->get_animation().get_translation_curves()[1];
+//    curves[5] = _display.at(0)->get_animation().get_translation_curves()[2];
 //    _test_curves.append(c);
     for (int j = 0; j < 6; ++j) {
         value = (curves[j].end()-1).key();

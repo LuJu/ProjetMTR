@@ -38,7 +38,7 @@ public:
         This is where the kinetic energy and speed and potential energy are calculated
 
     */
-    void updatePartInfo(float elapsed, float diff, float gravity, const btTransform &transform);
+    void updatePartInfo(float elapsed, float diff, float gravity, const btTransform &transform, const btTransform &parent_transform);
     t_part_info getEnergyInformation() const {return _energy;}
     btScalar get_mass() const {return _mass;}
     void set_mass(btScalar mass){_mass = mass;}
@@ -50,7 +50,7 @@ public:
 
     btRigidBody * get_body(){ return _simulation.get_body(_mass,_original_transform,_center_of_mass_proportion); }
 
-    AnimatedObject& get_animation() {return _animation;}
+//    AnimatedObject& get_animation() {return _animation;}
 
     bool get_animated() const {return _animated;}
     void set_animated(bool animated){_animated = animated;}
@@ -73,10 +73,13 @@ public:
     Shape& get_shape_struct(){return _shape;}
 
     void buildMesh();
-    AnimatedObject _animation;
+//    AnimatedObject _animation;
     SimulatedObject _simulation;
+    state_information _animation_information;
+    state_information _simulation_information;
+
     void setSimulationPosition(btTransform transform, float time);
-    void setInitialPosition(btTransform transform);
+    void setInitialPosition(btTransform transform, btTransform parent_transform);
 
     QString _joint_type;
 
@@ -136,9 +139,10 @@ private:
         return _mass / _shape.get_volume();
     }
     void updateSimulation(float delta_t);
-    void updateAnimation(float delta_t, const btTransform &transform);
+    void updateAnimation(float delta_t, const btTransform &transform, const btTransform &parent_transform);
 
 
+    btScalar angleDifference(btVector3 v1, btVector3 v2);
 
 };
 

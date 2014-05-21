@@ -208,7 +208,7 @@ btVector3 xyz2yxz(btVector3 xyz){
 //    btScalar c1 = qCos(t1);
 //    btScalar t3 = qAtan2(s1*a[2][0]-c1*a[1][0],c1*a[2][1]-s1*a[2][1]);
 //    btVector3 yxz = btVector3(t1,t2,t3);
-    qDebug()<<"r :";
+//    qDebug()<<"r :";
     btVector3 result = btQuat2euler(quat);
     return result;
 
@@ -223,6 +223,20 @@ btVector3 rotatedVector(btVector3 ypr, btVector3 vector){
     btQuaternion quat;
 
     quat.setEuler(ypr.y(),ypr.x(),ypr.z());
+    quat.normalize();
+    QQuaternion qquat(quat.w(),quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z());
+    qquat= qquat.fromAxisAndAngle(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z(),rad2deg(quat.getAngle()));
+
+    QVector3D qvect(vector.x(),vector.y(),vector.z());
+    qvect = qquat.rotatedVector(qvect);
+    return btVector3(qvect.x(),qvect.y(),qvect.z());
+}
+
+//! Return the vector representing the current distance between the center of the shape and the base of the shape, in world coordinates
+/*!
+    \return : The vector center->base
+*/
+btVector3 rotatedVector(btQuaternion quat, btVector3 vector){
     quat.normalize();
     QQuaternion qquat(quat.w(),quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z());
     qquat= qquat.fromAxisAndAngle(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z(),rad2deg(quat.getAngle()));
