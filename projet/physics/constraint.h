@@ -11,7 +11,7 @@ class Constraint
 {
 public:
     Constraint();
-    Constraint(InteractiveObject * first, InteractiveObject * second);
+    Constraint(InteractiveObject * first, InteractiveObject * second, bool first_base = false, bool second_base = false);
     Constraint& operator=( const Constraint& other ) ;
     enum constraints_types{
         hinge,
@@ -34,6 +34,7 @@ public:
     QPair<InteractiveObject* ,InteractiveObject* > _parts;
     constraints_types _type;
     bool has_parts() const;
+    bool _first_base,_second_base;
 private:
     btTypedConstraint * _constraint;
     void deleteConstraint();

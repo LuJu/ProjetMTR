@@ -98,6 +98,7 @@ QString usage(){
     use.append("[input file] ");
     use.append("[body total mass] ");
     use.append("[simulation total duration] ");
+    use.append("[coefficient] ");
     use.append("[steps duration] ");
     return use;
 }

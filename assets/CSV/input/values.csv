@@ -25,7 +25,7 @@ x;0;0
 y;0;0
 z;0;0
 end;;
-object;head;ignore;pelvis;mass;
+object;head;display;spine;mass;
 scaling;;
 radius;0;0.1
 length;0;1
@@ -38,7 +38,7 @@ x;0;0
 y;0;0
 z;0;0;
 end;;
-object;left_leg;ignore;pelvis;zeromass
+object;left_leg;display;pelvis;zeromass
 scaling;;
 radius;0;0.07
 length;0;0.45

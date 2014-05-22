@@ -8,9 +8,11 @@ Constraint::Constraint():
     _parts.second= NULL;
 }
 
-Constraint::Constraint(InteractiveObject * first, InteractiveObject * second):
+Constraint::Constraint(InteractiveObject * first, InteractiveObject * second, bool first_base, bool second_base):
     _constraint(NULL),
-    _type(point)
+    _type(point),
+    _first_base(first_base),
+    _second_base(second_base)
 {
     _parts.first = first;
     _parts.second= second;
@@ -18,7 +20,9 @@ Constraint::Constraint(InteractiveObject * first, InteractiveObject * second):
 
 Constraint::Constraint(const Constraint& other):
     _constraint(NULL),
-    _type(other._type)
+    _type(other._type),
+    _first_base(other._first_base),
+    _second_base(other._second_base)
 {
     _parts.first = other._parts.first;
     _parts.second = other._parts.second;
@@ -73,9 +77,17 @@ void Constraint::allocateConstraint(){
 //    rotA =_parts.first->_animation.rotationVector(0);
     rotationA.setEuler(0,0,M_PI_2);
     rotationB.setEuler(deg2rad(rotA.y()), deg2rad(rotA.x()), deg2rad(rotA.z()+90));
-    pivotA = btVector3(0,shapeA.y()/2,0);
+
+    if (_first_base)
+        pivotA =  btVector3(0,shapeA.y()/2,0);
+    else
+        pivotA = - btVector3(0,shapeA.y()/2,0);
 //    pivotB = _parts.first->_animation.extremityTranslationVector(0) - btVector3(0,shapeB.y()/2,0);
+    if (_second_base)
+        pivotB = btVector3(0,shapeB.y()/2,0);
+    else
         pivotB = - btVector3(0,shapeB.y()/2,0);
+
     localeA.setIdentity();localeA.setRotation(rotationA);localeA.setOrigin(pivotA);
     localeB.setIdentity();localeB.setRotation(rotationB);localeB.setOrigin(pivotB);
 

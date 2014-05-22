@@ -31,7 +31,7 @@ void Simulation::init(const SimulationParameters& params) {
     _initiated = true;
     _human.set_mass(params.get_body_mass());
     _human.loadObjects(params.get_input_location());
-    _display = _human._parts;
+    _display = _human._limbs;
     InteractiveObject *ground = allocateGround();
     _scenery.append(ground);
     resetStep();
@@ -41,11 +41,11 @@ void Simulation::init(const SimulationParameters& params) {
 
 InteractiveObject * Simulation::allocateGround() const {
     InteractiveObject * ground = new InteractiveObject();
-    ground->get_shape_struct().set_shape(btVector3(5,0.01,5));
+    ground->get_shape_struct().set_shape(btVector3(5,0.02,5));
     ground->set_mass(0); // no gravity
     btTransform transform;
     transform.setIdentity();
-    transform.setOrigin(btVector3(0,-1,0));
+    transform.setOrigin(btVector3(0,-3,0));
     ground->set_original_transform(transform);
     return ground;
 }
@@ -119,12 +119,12 @@ void Simulation::update(){
     _step_counter+=progression_ms; // conversion from seconds to ms
     _end_counter+=progression_ms;
     _ups_counter+=progression_ms;
-    _human.updateBodyInformations(_elapsed_simulation,progression_ms,_params.get_gravity().y());
+    _human.updateInformationJointTree(_elapsed_simulation,progression_ms,_params.get_gravity().y());
 }
 
 void Simulation::resetStep(float time){
     cleanWorld();
-    _human.setSimulationJointPosition(time);
+    _human.setSimulationPositionJointTree(time);
     fillWorld();
     _updates_since_last_step = 0;
     _step_counter = 0;
@@ -137,8 +137,8 @@ void Simulation::stepOver(){
 
 void Simulation::cleanWorld(){
     btRigidBody * body;
-    QList<Joint*> * _joints = &_human._constraints;
-    QList<Constraint> * _constraints_list= &_human._constraints_list;
+    QList<Joint*> * _joints = &_human._joints;
+    QList<Constraint> * _constraints_list= &_human._constraints;
     Constraint * temp_constraint;
     if (_world_filled){
         for (int i = 0; i < _constraints_list->size(); ++i) {
@@ -156,7 +156,7 @@ void Simulation::cleanWorld(){
 
 void Simulation::fillWorld(){
     btRigidBody * body = NULL;
-    QList<Constraint> * _constraints_list= &_human._constraints_list;
+    QList<Constraint> * _constraints_list= &_human._constraints;
     Constraint * temp_constraint;
     if (!_world_filled){
         for (int i = 0; i < _display.size(); ++i) {
@@ -184,9 +184,9 @@ void Simulation::simulationOver()
     else
         qDebug()<<"path not set "<<path;
 
-//     _human.saveDataList();
-//     _human.saveFullDataList(_params);
-//     _human.saveCompleteDataList();
+     _human.saveDataList();
+     _human.saveFullDataList(_params);
+     _human.saveCompleteDataList();
      _simulation_over = true;
      qDebug()<<"\n\nSimulation over";
      if (_params.get_automatic_close())

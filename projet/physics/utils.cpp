@@ -195,11 +195,18 @@ btVector3 xyz2yxz(btVector3 xyz){
     b[2][1]= a[1][2];
     b[2][2]= a[2][2];
     btQuaternion quat;
+//    btVector3 ypr((M_PI/3,M_PI/2,M_PI/2));
+//    btQuaternion from_classic(ypr.y(),ypr.x(),ypr.z());
+//    btTransform test;
+//    test.setIdentity();
+//    test.setRotation(btQuaternion(btVector3(1,0,0)));
     quat = by * bx * bz;
+    btQuaternion test;
+    test.setEuler(xyz.y(),xyz.x(),xyz.z());
     btTransform rfinal;
     rfinal.setBasis(b);
 //    btVector3 xyz = btQuat2euler(rfinal.getRotation());
-    btVector3 xyz2 = btQuat2euler(r2.getRotation());
+//    btVector3 xyz2 = btQuat2euler(r2.getRotation());
 
 //    btScalar c2 = sqrt(pow(a[0][0],2)*pow(a[0][1],2));
 //    btScalar t1 = qAtan2(a[1][2],a[2][2]);
@@ -210,7 +217,8 @@ btVector3 xyz2yxz(btVector3 xyz){
 //    btVector3 yxz = btVector3(t1,t2,t3);
 //    qDebug()<<"r :";
     btVector3 result = btQuat2euler(quat);
-    return result;
+//    return result;
+    return btVector3(result.y(),result.x(),result.z());
 
 }
 
@@ -244,4 +252,8 @@ btVector3 rotatedVector(btQuaternion quat, btVector3 vector){
     QVector3D qvect(vector.x(),vector.y(),vector.z());
     qvect = qquat.rotatedVector(qvect);
     return btVector3(qvect.x(),qvect.y(),qvect.z());
+}
+
+btQuaternion differentiate(btQuaternion quat){
+    
 }

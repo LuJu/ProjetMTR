@@ -27,9 +27,9 @@ public:
     HumanBody();
     ~HumanBody();
 
-    QList<InteractiveObject * > _parts;
-    QList<Joint *> _constraints;
-    QList<Constraint> _constraints_list;
+    QList<InteractiveObject * > _limbs;
+    QList<Joint *> _joints;
+    QList<Constraint> _constraints;
 
     void loadObjects(QString path);
     void loadObjectsOLD(QString path);
@@ -41,36 +41,32 @@ public:
     void savePartDataList(const QString& part_name) const;
     void saveFullDataList(const SimulationParameters& params);
     void saveCompleteDataList() const;
-    void setSimulationPosition(float time);
 
-    void updateInformationJointTree(const JointNode* node, const btTransform& transform, float elapsed, float diff,float gravity);
-    void setSimulationPositionJointTree(const JointNode* node, const btTransform& transform, float elapsed);
-
-    void setSimulationJointPosition(float time);
-    void updateBodyInformations(float elapsed,float diff,float gravity);
+    void updateInformationJointTree(float elapsed, float diff, float gravity, JointNode* node=NULL, btTransform transform=btTransform::getIdentity());
+    void setSimulationPositionJointTree(float elapsed, JointNode* node = NULL, btTransform transform =btTransform::getIdentity());
 
     int get_mass() const {return _mass;}
     void set_mass(int mass){_mass = mass;}
 
     float get_total_work() const{
         float work = 0;
-        for (int i = 0; i < _parts.size(); ++i) {
-            work+=_parts[i]->getEnergyInformation().ake_diff;
+        for (int i = 0; i < _limbs.size(); ++i) {
+            work+=_limbs[i]->getEnergyInformation().ake_diff;
         }
         return work;
     }
 
     QList<Joint*>::iterator findJointByPartName(const QString& name);
-    QList<Joint*>::iterator findJointByParentPartName(const QString& name);
+
 
     QList<InteractiveObject * >::iterator findPartByName(const QString& name){
         QList<InteractiveObject * >::iterator i;
         InteractiveObject * value;
-        for (i = _parts.begin(); i != _parts.end(); ++i) {
+        for (i = _limbs.begin(); i != _limbs.end(); ++i) {
             value = *i;
             if (value->get_body_part() == name) return i;
         }
-        return _parts.end();
+        return _limbs.end();
     }
     void exportSimulationToAnimation();
 

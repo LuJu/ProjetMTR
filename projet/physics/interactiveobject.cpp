@@ -64,8 +64,6 @@ void InteractiveObject::buildMotion(){
 
 void InteractiveObject::buildMesh(){
     _mesh = MeshPointer(new Mesh);
-//    _shape.set_shape(btVector3(_animation.scalingVector(0)));
-//    qDebug()<<toString(_shape.get_shape(),"shape : ");
     MeshUtils::addCapsuleShapeY(_mesh.data(),_shape.get_shape().y(),_shape.get_shape().x());
 }
 
@@ -111,7 +109,14 @@ void InteractiveObject::updateAnimation(float delta_t,const btTransform& transfo
     current._center_of_mass_world_speed = animation_distance/(delta_t/1000); // the diff value is in ms so a conversion is needed to be in m/s
 
 //    qDebug()<<toString(transform.getRotation(),"quat: ");
-//    btQuaternion diff =derivated(transform.getRotation());
+    btQuaternion slerp = current._center_of_mass_rotation.slerp(previous._center_of_mass_rotation,delta_t/1000);
+    previous._center_of_mass_rotation = btQuaternion(0.3,0.4,0.1,0.7);
+    btQuaternion conjugate(-previous._center_of_mass_rotation.x(),-previous._center_of_mass_rotation.y(),-previous._center_of_mass_rotation.z(),previous._center_of_mass_rotation.w());
+    btQuaternion product( previous._center_of_mass_rotation * conjugate);
+    btQuaternion derivated = slerp;
+    btQuaternion distance(current._center_of_mass_rotation.inverse()*previous._center_of_mass_rotation);
+    derivated *= 2;
+    btQuaternion angular_velocity = derivated * conjugate;
 //    qDebug()<<"deriv: "<<btQuat2euler(diff);
 //    current._rotation_vector_diff = current._rotation -previous._rotation;
     if (current._rotation_vector_diff.length() != 0)

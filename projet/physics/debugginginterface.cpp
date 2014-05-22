@@ -12,8 +12,8 @@ void DebuggingInterface::update(){
     int index = part_list->currentIndex();
     if (index != _stats->_selected_index)
         _stats->_selected_index = index ;
-    if (index < _simulation->get_human()->_parts.size() && index >= 0){
-        InteractiveObject * part = _simulation->get_human()->_parts[index];
+    if (index < _simulation->get_human()->_limbs.size() && index >= 0){
+        InteractiveObject * part = _simulation->get_human()->_limbs[index];
 
         t_part_info info = part->getEnergyInformation();
 
