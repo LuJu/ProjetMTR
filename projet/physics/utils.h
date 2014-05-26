@@ -1,3 +1,29 @@
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 #ifndef BTUTILS_H
 #define BTUTILS_H
 
@@ -80,6 +106,6 @@ btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vec
 btVector3 angleNormalize(const btVector3 rot);
 void euler2AxisAngle(btVector3 rotation,float * ret);
 btVector3 xyz2yxz(btVector3 xyz);
-btVector3 rotatedVector(btVector3 ypr, btVector3 vector);
+//btVector3 rotatedVector(btVector3 ypr, btVector3 vector);
 btVector3 rotatedVector(btQuaternion quat, btVector3 vector);
 #endif // BTUTILS_H

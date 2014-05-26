@@ -1,3 +1,29 @@
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 #include "stats.h"
 
 Stats::~Stats(){
@@ -71,18 +97,14 @@ void Stats::displayStats(){
         float log = 1 / (qLn(zoom) / qLn(10));
         zoom = zoom ;
 
-//        qDebug()<<"zoom: "<<log;
         if (log < 0) log = 0;
         log = log * 1000;
-//        qDebug()<<"log : "<<log;
         int height = log;
         right = _ui->get_camera().get_position().x() * 6;
         top = _ui->get_camera().get_position().y() / 2;
         int topint = top + height/2;
         window.setY(topint);
         window.setHeight(-height);
-    //    qDebug()<<"top: "<<top + height/2;
-//        qDebug()<<"height : "<<- height;
         window.setX(right);
         window.setWidth(width()*6);
 
@@ -92,26 +114,16 @@ void Stats::displayStats(){
     P.ortho(window);
 
     pvm = P*V*M;
-    insertMatrices(P,V,M);
-//    _program->setUniformValue("P",P);
-//    _program->setUniformValue("pvm",pvm);
-
+    updateMatrices(P,V,M);
     MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 
     for (int i = 0; i < _display.size(); ++i) {
         if (_selected_index == i){
             const QList<Curve>& curves= _display.at(i)->get_curves();
-            for (int j = 0; j < curves.size(); ++j) {
-                MeshUtils::render(curves[j],1,curves[j].get_color(),1);
-    //            Mesh::render(curves[j],GlobalConfig::get_int("steps_duration")/10,curves[j].get_color(),i+2);
-            }
             const QList<Curve>& curves_steps= _display.at(i)->get_curves_steps();
-            for (int j = 0; j < curves_steps.size(); ++j) {
-                if (!curves_steps[j].isEmpty()){
-                    MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),3,true);
-                }
-
-    //            MeshUtils::render(curves_steps[j],GlobalConfig::get_int("steps_duration")/10,curves_steps[j].get_color(),i+6,true);
+            for (int j = 0; j < curves.size(); ++j) {
+                if (!curves[j].isEmpty())       MeshUtils::render(curves[j],1,curves[j].get_color(),1);
+                if (!curves_steps[j].isEmpty()) MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),3,true);
             }
         }
     }
@@ -154,7 +166,7 @@ void Stats::displayStatsTest(){
     window.setWidth(12000);
 
     P.ortho(window);
-    insertMatrices(P,V,M);
+    updateMatrices(P,V,M);
 //    pvm = P*V*M;
 //    _program->setUniformValue("P",P);
 //    _program->setUniformValue("pvm",pvm);

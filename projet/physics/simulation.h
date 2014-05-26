@@ -1,3 +1,29 @@
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 #ifndef SIMULATION_H
 #define SIMULATION_H()
 
@@ -19,7 +45,7 @@
 #include "bodyinfo.h"
 #include "humanbody.h"
 #include "simulationparameters.h"
-#include "interactiveobject.h"
+#include "part.h"
 #include "joint.h"
 
 
@@ -35,8 +61,8 @@ public:
     //! Initiates the simulation: loads object data, etc
     void init(const SimulationParameters &params);
 
-    const QList<InteractiveObject * >& get_display_list() {return  _display;}
-    const QList<InteractiveObject * >& get_scenery() {return  _scenery;}
+    const QList<Part * >& get_display_list() {return  _display;}
+    const QList<Part * >& get_scenery() {return  _scenery;}
     float get_elapsed_realtime() const {return _elapsed_realtime;} //! Returns the realtime elapsed since the start of the simulation
     float get_elapsed_milliseconds() const {return _elapsed_simulation;} //! Returns the simulation time elapsed since the start of the simulation
 
@@ -49,6 +75,9 @@ public:
     bool is_started() const   {return _started;}
     bool is_initiated() const {return _initiated;}
     bool is_over() const      {return _simulation_over;}
+    bool is_paused() const { return _paused;}
+    void set_paused(bool paused){_paused = paused;}
+    bool _paused;
 
 private slots:
     //! Thread that will run continually until the end of the simulation
@@ -59,7 +88,7 @@ private:
     //! Function called when the simulation is over
     void simulationOver();
 
-    InteractiveObject * allocateGround() const;
+    Part * allocateGround() const;
 
     //! Function called when a step is over
     void stepOver();
@@ -82,9 +111,9 @@ private:
     QThread * _thread;
     HumanBody _human;
     //animated objects
-    QList<InteractiveObject * > _display;
+    QList<Part * > _display;
     //unanimated objects
-    QList<InteractiveObject * > _scenery;
+    QList<Part * > _scenery;
 
     btScalar _elapsed_realtime;
     btScalar _elapsed_simulation;

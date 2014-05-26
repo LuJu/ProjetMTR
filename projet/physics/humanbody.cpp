@@ -1,3 +1,29 @@
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 #include "humanbody.h"
 
 HumanBody::HumanBody():
@@ -32,10 +58,10 @@ void HumanBody::loadObjects(QString path){
     int i=0;
 //    InteractiveObject * object = NULL;
     Joint * object;
-    InteractiveObject * new_object = NULL;
+    Part * new_object = NULL;
     QList<Joint*>::iterator joint_parent;
-    QList<InteractiveObject *>::iterator part_child;
-    QList<InteractiveObject *>::iterator part_parent;
+    QList<Part *>::iterator part_child;
+    QList<Part *>::iterator part_parent;
     bool ignore = false;
     float mass;
     qDebug()<<"parsing file "<<path;
@@ -71,7 +97,7 @@ void HumanBody::loadObjects(QString path){
                 } else if (!ignore) {
                     if (temp.at(0)=="scaling") {
 //                        QStringList values = list[i+1+k] ;
-                        object->_animation.get_scaling_curves()[0].insert(0.0f,0.1f);
+                        object->get_animation().get_scaling_curves()[0].insert(0.0f,0.1f);
 //                                if (k == 1){
 //                                    object->_animation.get_scaling_curves()[0].insert(0.0f,values[j].toFloat());}
 
@@ -80,18 +106,18 @@ void HumanBody::loadObjects(QString path){
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
 //                                object->_animation.get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
-                                object->_animation.get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
+                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
                             }
                         }
                         btVector3 extends;
-                        extends = btVector3(object->_animation.extremityTranslationVector(0));
+                        extends = btVector3(object->get_animation().extremityTranslationVector(0));
                         qDebug()<<extends.length();
 //                        if (part_parent != _parts.end()) (*part_parent)->get_shape_struct().set_shape(btVector3(.01,extends.length(),.01));
                     } else if (temp.at(0)=="rotation") {
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-                                object->_animation.get_rotation_curves()[order[k]].insert(values[j].toFloat(),sign[k] *values[j+1].toFloat());
+                                object->get_animation().get_rotation_curves()[order[k]].insert(values[j].toFloat(),sign[k] *values[j+1].toFloat());
                             }
                         }
                     }
@@ -130,7 +156,7 @@ void HumanBody::loadObjects(QString path){
 void HumanBody::recordStatus(){
     part_info full_data;
     for (int i = 0; i < _limbs.size(); ++i) {
-        InteractiveObject * object = _limbs[i];
+        Part * object = _limbs[i];
         part_info energy = object->getEnergyInformation();
         _data_list.append(energy);
 
@@ -193,7 +219,7 @@ void HumanBody::saveCompleteDataList() const{
             "vitesse animation" <<"EC animation"  <<"ECA animation" <<"EP animation" <<
             "vitesse simulation"<<"EC simulation" <<"ECA simulation"<<"EP simulation"<<
             "EC difference"     <<"ECA difference"<<"EP difference" <<"erreur";
-     parser.nextLine();
+    parser.nextLine();
     for (int i = 0; i <  _complete_data_list.size(); ++i) {
         save=_complete_data_list.at(i);
         parser<<save.part_name<<
@@ -242,10 +268,10 @@ void HumanBody::updateInformationJointTree(float elapsed, float diff,float gravi
             qWarning()<<"No root in part tree";
         }
     } else {
-        btTransform object_transform = node->get_data()->_animation.getWorldTransform(transform,elapsed);
+        btTransform object_transform = node->get_data()->get_animation().getWorldTransform(transform,elapsed);
         Joint * data= node->get_data();
-        if (data->_main_part != NULL )
-            data->_main_part->updatePartInfo(elapsed,diff,gravity,object_transform,transform );
+        if (data->get_main_part() != NULL )
+            data->get_main_part()->updatePartInfo(elapsed,diff,gravity,object_transform,transform );
         for (int i = 0; i < node->get_number_of_children(); ++i) {
             updateInformationJointTree(elapsed,diff,gravity,node->childAt(i),object_transform);
         }
@@ -260,13 +286,13 @@ void HumanBody::setSimulationPositionJointTree(float elapsed,JointNode* node, bt
         if (node) setSimulationPositionJointTree(elapsed,node,transform);
         else qWarning()<<"No root in part tree";
     } else {
-        btTransform object_transform = node->get_data()->_animation.getWorldTransform(transform,elapsed);
+        btTransform object_transform = node->get_data()->get_animation().getWorldTransform(transform,elapsed);
         Joint * data= node->get_data();
         if (elapsed == 0.0f){
-            if(data->_main_part != NULL)
-                data->_main_part->setInitialPosition(object_transform,transform);
+            if(data->get_main_part() != NULL)
+                data->get_main_part()->setInitialPosition(object_transform,transform);
         }
-        else if(data->_main_part != NULL) data->_main_part->setSimulationPosition(object_transform,elapsed);
+        else if(data->get_main_part() != NULL) data->get_main_part()->setSimulationPosition(object_transform,elapsed);
         for (int i = 0; i < node->get_number_of_children(); ++i) {
             setSimulationPositionJointTree(elapsed,node->childAt(i),object_transform);
         }
@@ -292,19 +318,17 @@ void HumanBody::buildJointTree(){
                     parent = _joints_tree.get_node_by_name(temp->_parent_part_name);
                     if (parent!=NULL){
                         _joints_tree.addNode(temp->_part_name,temp,parent->get_id());
-                        InteractiveObject * new_object = new InteractiveObject();
-                        temp->_main_part = new_object;
+                        Part * new_object = new Part();
+                        temp->set_main_part(new_object);
                         new_object->set_mass(1);
 //                        new_object->set_mass(temp->_part_mass);
                         new_object->set_body_part(temp->_part_name);
                         new_object->get_shape_struct().set_shape_type(Shape::capsule);
                         new_object->set_animated(true);
-                        btVector3 extends = btVector3(temp->_animation.extremityTranslationVector(0));
+                        btVector3 extends = btVector3(temp->get_animation().extremityTranslationVector(0));
                         qDebug()<<extends.length();
                         new_object->get_shape_struct().set_shape(btVector3(.05,extends.length(),.05));
-                        new_object->_simulation.set_shape(&(new_object->_shape));
                         new_object->buildMesh();
-//                        parent->get_data()->_parts.append(new_object);
                         _limbs.append(new_object);
                         inserted[j] = true;
                     }
@@ -337,12 +361,12 @@ void HumanBody::buildConstraints(JointNode * current_node){
             }
         }
         for (int i = 0; i < list.size(); ++i) {
-            if (list.at(i).first->get_data()->_main_part){
+            if (list.at(i).first->get_data()->get_main_part()){
 //                Constraint c(list.at(i).first->get_data()->_main_part,list.at(i).second->get_data()->_main_part);
                 if (list.at(i).first == current_node)
-                    _constraints.append(Constraint(list.at(i).first->get_data()->_main_part,list.at(i).second->get_data()->_main_part,true));
+                    _constraints.append(Constraint(list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part(),true));
                 else
-                    _constraints.append(Constraint(list.at(i).first->get_data()->_main_part,list.at(i).second->get_data()->_main_part));
+                    _constraints.append(Constraint(list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part()));
                 qDebug()<<list.at(i).first->get_data()->_part_name<<" "<<list.at(i).second->get_data()->_part_name;
 
             }
@@ -367,13 +391,12 @@ QList<Joint*>::iterator HumanBody::findJointByPartName(const QString& name){
     return _joints.end();
 }
 
-//QList<Joint*>::iterator HumanBody::findJointByParentPartName(const QString& name){
-//    QList<Joint*>::iterator i;
-//    Joint * value;
-//    for (i = _joints.begin(); i != _joints.end(); ++i) {
-//        value = *i;
-//        if (value->has_parent())
-//            if (value->_parent_part_name == name) return i;
-//    }
-//    return _joints.end();
-//}
+QList<Part * >::iterator HumanBody::findPartByName(const QString& name){
+    QList<Part * >::iterator i;
+    Part * value;
+    for (i = _limbs.begin(); i != _limbs.end(); ++i) {
+        value = *i;
+        if (value->get_body_part() == name) return i;
+    }
+    return _limbs.end();
+}

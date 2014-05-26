@@ -1,3 +1,29 @@
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 #include "utils.h"
 //heading
 btScalar rot_x(btScalar x , btScalar y , btScalar z , btScalar w)
@@ -51,19 +77,19 @@ btVector3 btQuat2euler(btQuaternion q){
     w = q.w();
     btScalar test = x*z + y*w;
 //    qDebug()<<"test "<<test;
-//    if (test > .499 ) {
-//        heading = 2*atan2(z,w);
-//        attitude = M_PI_2;
-//        bank = 0;
-//    } else if (test < -.499 ) {
-//        heading = -2*atan2(z,w);
-//        attitude = - M_PI_2;
-//        bank = 0;
-//    } else {
+    if (test > .499 ) {
+        heading = 2*atan2(z,w);
+        attitude = M_PI_2;
+        bank = 0;
+    } else if (test < -.499 ) {
+        heading = -2*atan2(z,w);
+        attitude = - M_PI_2;
+        bank = 0;
+    } else {
         heading = rot_x(x,y,z,w);
         attitude = rot_y(x,y,z,w);
         bank = rot_z(x,y,z,w);
-//    }
+    }
     vect = btVector3(attitude,bank,heading);
     return btVector3(vect);
 }
@@ -121,7 +147,6 @@ btScalar kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
 }
 
 btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape, btScalar mass ){
-//    qDebug()<<toString(rotation_vector_diff);
     return pow(angular_velocity.length(),2) * kineticMoment(rotation_vector_diff,shape,mass) / 2;
 }
 
@@ -159,90 +184,38 @@ btVector3 angleNormalize(const btVector3 rot){
 
 
 btVector3 xyz2yxz(btVector3 xyz){
-    btTransform x,y,z;
-//    btQuaternion bx(btVector3(1,0,0),M_PI_4/2),by(btVector3(0,1,0),M_PI_4/3),bz(btVector3(0,0,1),3*M_PI);
-        btQuaternion bx(btVector3(1,0,0),xyz.x()),
-                     by(btVector3(0,1,0),xyz.y()),
-                     bz(btVector3(0,0,1),xyz.z());
-//        btQuaternion bx(btVector3(1,0,0),deg2rad(xyz.x())),
-//                by(btVector3(0,1,0),deg2rad(xyz.y())),
-//                bz(btVector3(0,0,1),deg2rad(xyz.z()));
-//    btQuaternion bx(btVector3(1,0,0),M_PI_2/14),by(btVector3(0,1,0),0),bz(btVector3(0,0,1),3.21);
-//    btQuaternion ypr(M_PI_2,M_PI,M_PI_4);
-
-    x.setIdentity();y.setIdentity();z.setIdentity();
-    x.getBasis().setRotation(bx);
-    y.getBasis().setRotation(by);
-    z.getBasis().setRotation(bz);
-    btTransform r;
-    r=x*y*z;
-    btTransform r2;
-//    btTransform rypr;
-    r2=y*x*z;
-//    rypr.setIdentity();rypr.setRotation(ypr);
-    btMatrix3x3 a,b;
-    a = r.getBasis();
-    b.setIdentity();
-    b[0][0]= a[0][0];
-    b[0][1]= a[1][0];
-    b[0][2]= a[2][0];
-
-    b[1][0]= a[0][1];
-    b[1][1]= a[1][1];
-    b[1][2]= a[2][1];
-
-    b[2][0]= a[0][2];
-    b[2][1]= a[1][2];
-    b[2][2]= a[2][2];
+//    xyz = btVector3(deg2rad(15),deg2rad(90),deg2rad(90));
+    btVector3 xyz2 = btVector3(deg2rad(375),deg2rad(-34),deg2rad(0));
+    btQuaternion bx(btVector3(1,0,0),xyz.x()),
+                 by(btVector3(0,1,0),xyz.y()),
+                 bz(btVector3(0,0,1),xyz.z());
+    btQuaternion qx(btVector3(1,0,0),xyz2.x()),
+                qy(btVector3(0,1,0),xyz2.y()),
+                qz(btVector3(0,0,1),xyz2.z());
     btQuaternion quat;
-//    btVector3 ypr((M_PI/3,M_PI/2,M_PI/2));
-//    btQuaternion from_classic(ypr.y(),ypr.x(),ypr.z());
-//    btTransform test;
-//    test.setIdentity();
-//    test.setRotation(btQuaternion(btVector3(1,0,0)));
     quat = by * bx * bz;
     btQuaternion test;
-    test.setEuler(xyz.y(),xyz.x(),xyz.z());
-    btTransform rfinal;
-    rfinal.setBasis(b);
-//    btVector3 xyz = btQuat2euler(rfinal.getRotation());
-//    btVector3 xyz2 = btQuat2euler(r2.getRotation());
-
-//    btScalar c2 = sqrt(pow(a[0][0],2)*pow(a[0][1],2));
-//    btScalar t1 = qAtan2(a[1][2],a[2][2]);
-//    btScalar t2 = qAtan2(-a[0][2],c2);
-//    btScalar s1 = qSin(t1);
-//    btScalar c1 = qCos(t1);
-//    btScalar t3 = qAtan2(s1*a[2][0]-c1*a[1][0],c1*a[2][1]-s1*a[2][1]);
-//    btVector3 yxz = btVector3(t1,t2,t3);
-//    qDebug()<<"r :";
+    test.setEuler(xyz.x(),xyz.y(),xyz.z());
+    btQuaternion i(0.4,8,12,1);
+    btQuaternion j(-0.4,-8,-12,-1);
+//    btQuaternion j(1,0,0,1);
     btVector3 result = btQuat2euler(quat);
-//    return result;
-    return btVector3(result.y(),result.x(),result.z());
-
+    btVector3 resulti = btQuat2euler(i);
+    btVector3 resultj = btQuat2euler(j);
+    btVector3 result_deg = rad2deg(result);
+    btQuaternion a(1,0,0,1);
+    btQuaternion b = by*bz;
+    btQuaternion c = bz*by;
+    b = a.normalized();
+    return btVector3(result.x(),result.y(),result.z());
 }
 
 
-//! Return the vector representing the current distance between the center of the shape and the base of the shape, in world coordinates
+//! Return the vector rotated by the quaternion
 /*!
-    \return : The vector center->base
-*/
-btVector3 rotatedVector(btVector3 ypr, btVector3 vector){
-    btQuaternion quat;
-
-    quat.setEuler(ypr.y(),ypr.x(),ypr.z());
-    quat.normalize();
-    QQuaternion qquat(quat.w(),quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z());
-    qquat= qquat.fromAxisAndAngle(quat.getAxis().x(),quat.getAxis().y(),quat.getAxis().z(),rad2deg(quat.getAngle()));
-
-    QVector3D qvect(vector.x(),vector.y(),vector.z());
-    qvect = qquat.rotatedVector(qvect);
-    return btVector3(qvect.x(),qvect.y(),qvect.z());
-}
-
-//! Return the vector representing the current distance between the center of the shape and the base of the shape, in world coordinates
-/*!
-    \return : The vector center->base
+    \param  quat : The quaternion representing the rotation given
+    \param  quat : The vector to be rotated
+    \return : The vector rotateduu
 */
 btVector3 rotatedVector(btQuaternion quat, btVector3 vector){
     quat.normalize();

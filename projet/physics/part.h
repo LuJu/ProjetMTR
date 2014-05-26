@@ -1,5 +1,31 @@
-#ifndef INTERACTIVEOBJECT_H
-#define INTERACTIVEOBJECT_H
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
+#ifndef PART_H
+#define PART_H
 
 #include <QDebug>
 
@@ -13,8 +39,6 @@
 
 #include "3d/meshutils.h"
 
-//#include "core/globalconfig.h"
-
 #include "animatedobject.h"
 #include "simulatedobject.h"
 #include "shape.h"
@@ -25,12 +49,12 @@
         This class contains the definition of an object in the scene, (both the simulation and the animation data \n
         The animation data is containted in the _animation object, and the simulation object is defined by several objects _motion_state, _body etc)
     */
-class InteractiveObject
+class Part
 {
 public:
-    InteractiveObject(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),Shape::shapetype type=Shape::cube);
-    InteractiveObject();
-    ~InteractiveObject();
+    Part(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),Shape::shapetype type=Shape::cube);
+    Part();
+    ~Part();
 
     //! calculates the information about the energy of the part of the body
     /*!
@@ -49,8 +73,6 @@ public:
     void set_original_transform(const btTransform& transform){_original_transform = transform;}
 
     btRigidBody * get_body(){ return _simulation.get_body(_mass,_original_transform,_center_of_mass_proportion); }
-
-//    AnimatedObject& get_animation() {return _animation;}
 
     bool get_animated() const {return _animated;}
     void set_animated(bool animated){_animated = animated;}
@@ -73,15 +95,11 @@ public:
     Shape& get_shape_struct(){return _shape;}
 
     void buildMesh();
-//    AnimatedObject _animation;
-    SimulatedObject _simulation;
     state_information _animation_information;
     state_information _simulation_information;
 
     void setSimulationPosition(btTransform transform, float time);
     void setInitialPosition(btTransform transform, btTransform parent_transform);
-
-    QString _joint_type;
 
 private:
 
@@ -101,15 +119,13 @@ private:
         NUMBER_OF_CURVES
     };
     //! disabled
-    InteractiveObject(const InteractiveObject& object);
+    Part(const Part& object);
     void __build(const btVector3& origin, const btVector3& shape,Shape::shapetype type);
     void deleteMotion();
     void buildMotion();
 
-public:
-    Shape _shape;
-private:
     MeshPointer _mesh;
+    Shape _shape;
 
     btTransform _original_transform;
 
@@ -141,9 +157,9 @@ private:
     void updateSimulation(float delta_t);
     void updateAnimation(float delta_t, const btTransform &transform, const btTransform &parent_transform);
 
-
     btScalar angleDifference(btVector3 v1, btVector3 v2);
+    SimulatedObject _simulation;
 
 };
 
-#endif // INTERACTIVEOBJECT_H
+#endif // PART_H

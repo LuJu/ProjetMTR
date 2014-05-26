@@ -1,3 +1,29 @@
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 #include <QApplication>
 #include <QDebug>
 
@@ -21,23 +47,6 @@ DebuggingInterface * _debugging_ui;
 
 //! Function to do quick tests
 void quickTest(){
-    btVector3 a,b;
-//    for (int i = 0; i < 180; ++i) {
-//        for (int j = 0; j < 180; ++j) {
-//            for (int k = 0; k < 180; ++k) {
-//                a= btVector3(i,j,k);
-//                qDebug()<<toString(a,"before : ");
-//                btVector3 a2= deg2rad(a);
-//                btQuaternion quat(a2.y(),a2.x(),a2.z());
-//                b = btQuat2euler(quat);
-////                if()
-//                qDebug()<<toString(rad2deg(b),"after : ");
-//                qDebug()<<"==============";
-
-//            }
-//        }
-//    }
-//    qDebug();
 }
 
 //Redirects the debug messages
@@ -188,17 +197,17 @@ int main(int argc, char *argv[])
             stats->setWindowTitle("Stats");
             stats->move(gui.width(),0);
             stats->setGeometry(gui.width(),0,700,300);
-        }
-        if (GlobalConfig::is_enabled("debugging")){
-            _debugging_ui = NULL;
-            _debugging = new DebuggingWidget(&gui);
-            _debugging_ui = new DebuggingInterface();
+            if (GlobalConfig::is_enabled("debugging")){
+                _debugging_ui = NULL;
+                _debugging = new DebuggingWidget(&gui);
+                _debugging_ui = new DebuggingInterface();
 
-            _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
-            _debugging_ui->setupUi(_debugging);
-            _debugging->_interface = _debugging_ui;
-            _debugging_ui->_simulation=simulation;
+                _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
+                _debugging_ui->setupUi(_debugging);
+                _debugging->_interface = _debugging_ui;
+                _debugging_ui->_simulation=simulation;
 
+            }
         }
 #ifdef QT_4_
         qInstallMsgHandler(customMessageHandler);
@@ -228,13 +237,13 @@ int main(int argc, char *argv[])
         gui.show();
         if (GlobalConfig::is_enabled("display_stats")) {
             stats->show();
-        }
-        if (GlobalConfig::is_enabled("debugging")){
-            _debugging->show();
-            _debugging_ui->init();
-            _debugging->init();
-            _debugging->move(gui.width(),600);
-            _debugging_ui->_stats = stats;
+            if (GlobalConfig::is_enabled("debugging")){
+                _debugging->show();
+                _debugging_ui->init();
+                _debugging->init();
+                _debugging->move(gui.width(),600);
+                _debugging_ui->_stats = stats;
+            }
         }
     }
 
@@ -242,10 +251,10 @@ int main(int argc, char *argv[])
     delete simulation;
     if (GlobalConfig::is_enabled("display_stats")) {
         delete stats;
-    }
-    if (GlobalConfig::is_enabled("debugging")){
-        delete _debugging;
-        delete _debugging_ui;
+        if (GlobalConfig::is_enabled("debugging")){
+            delete _debugging;
+            delete _debugging_ui;
+        }
     }
     return ret;
 }

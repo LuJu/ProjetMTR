@@ -1,6 +1,32 @@
-#include "interactiveobject.h"
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
 
-InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& shape,Shape::shapetype type):
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
+#include "part.h"
+
+Part::Part(const btVector3& origin, const btVector3& shape,Shape::shapetype type):
     _mass(1),
     _center_of_mass_proportion(.5f),
     _animated(false){
@@ -8,23 +34,23 @@ InteractiveObject::InteractiveObject(const btVector3& origin, const btVector3& s
     __build(origin,shape,type);
 }
 
-InteractiveObject::InteractiveObject():
+Part::Part():
     _mass(1),
     _center_of_mass_proportion(.5f),
     _animated(false){
     __build(btVector3(0,0,0),btVector3(1,1,1),Shape::cube);
 }
 
-void InteractiveObject::appendCurve(QList<Curve>& list, int index,QString label, QColor color){
+void Part::appendCurve(QList<Curve>& list, int index,QString label, QColor color){
     Curve& c= list[index];
     c.set_color(color);
     c.set_label(label);
 }
 
-InteractiveObject::~InteractiveObject(){
+Part::~Part(){
 }
 
-void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,Shape::shapetype type){
+void Part::__build(const btVector3& origin, const btVector3& shape,Shape::shapetype type){
     _shape = Shape(shape,type);
     _simulation.set_shape (&_shape);
 
@@ -35,7 +61,7 @@ void InteractiveObject::__build(const btVector3& origin, const btVector3& shape,
     appendCurves(_curves_steps);
 }
 
-void InteractiveObject::appendCurves(QList<Curve>& list){
+void Part::appendCurves(QList<Curve>& list){
     for (int i = 0; i < NUMBER_OF_CURVES; ++i) {
         list.append(Curve());
     }
@@ -55,19 +81,20 @@ void InteractiveObject::appendCurves(QList<Curve>& list){
 
 
 
-void InteractiveObject::deleteMotion(){
+void Part::deleteMotion(){
 }
 
-void InteractiveObject::buildMotion(){
+void Part::buildMotion(){
     _simulation.buildMotion(_mass,_original_transform,_center_of_mass_proportion);
 }
 
-void InteractiveObject::buildMesh(){
+void Part::buildMesh(){
     _mesh = MeshPointer(new Mesh);
     MeshUtils::addCapsuleShapeY(_mesh.data(),_shape.get_shape().y(),_shape.get_shape().x());
+    _mesh.data()->toBuffer();
 }
 
-void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity,const btTransform& transform, const btTransform& parent_transform){
+void Part::updatePartInfo(float elapsed,float delta_t,float gravity,const btTransform& transform, const btTransform& parent_transform){
 
     _animation_information._previous = _animation_information._current;
     _simulation_information._previous = _simulation_information._current;
@@ -79,14 +106,14 @@ void InteractiveObject::updatePartInfo(float elapsed,float delta_t,float gravity
     insertDataToCurves(_curves,elapsed);
 }
 
-btScalar InteractiveObject::angleDifference(btVector3 v1, btVector3 v2){
+btScalar Part::angleDifference(btVector3 v1, btVector3 v2){
     btScalar dot_product = v1.dot(v2);
     btScalar cost = dot_product / (v2.length() * v1.length());
     btScalar rotation_angle = qAcos(cost);
     return rotation_angle;
 }
 
-void InteractiveObject::updateAnimation(float delta_t,const btTransform& transform, const btTransform& parent_transform){
+void Part::updateAnimation(float delta_t,const btTransform& transform, const btTransform& parent_transform){
     t_state_data& current = _animation_information._current;
     t_state_data& previous =_animation_information._previous;
 
@@ -123,7 +150,7 @@ void InteractiveObject::updateAnimation(float delta_t,const btTransform& transfo
         current._rotation_vector_diff.normalize();
 }
 
-void InteractiveObject::updateSimulation(float delta_t){
+void Part::updateSimulation(float delta_t){
     t_state_data& current = _simulation_information._current;
     t_state_data& previous =_simulation_information._previous;
     btRigidBody * body = get_body();
@@ -144,7 +171,7 @@ void InteractiveObject::updateSimulation(float delta_t){
         current._rotation_vector_diff.normalize();
 }
 
-void InteractiveObject::updateEnergyStructure(float gravity){
+void Part::updateEnergyStructure(float gravity){
 
     _energy.part_name = _body_part_name;
 
@@ -200,7 +227,7 @@ void InteractiveObject::updateEnergyStructure(float gravity){
 
 }
 
-void InteractiveObject::insertDataToCurves(QList<Curve>& curves, float elapsed){
+void Part::insertDataToCurves(QList<Curve>& curves, float elapsed){
 //        if (GlobalConfig::is_enabled("display_animation_stats")) {
 //            curves[ANIMATION_KE].insert(elapsed,_energy.animation.ke);
 //            curves[ANIMATION_AKE].insert(elapsed,_energy.animation.ake);
@@ -221,7 +248,7 @@ void InteractiveObject::insertDataToCurves(QList<Curve>& curves, float elapsed){
 //        }
 }
 
-void InteractiveObject::setSimulationTransformFromAnimation(){
+void Part::setSimulationTransformFromAnimation(){
     btVector3 translation;
     btTransform transform;
 
@@ -233,7 +260,7 @@ void InteractiveObject::setSimulationTransformFromAnimation(){
     _original_transform = transform;
 }
 
-void InteractiveObject::setSimulationPosition(btTransform transform, float time){
+void Part::setSimulationPosition(btTransform transform, float time){
 
     insertDataToCurves(_curves_steps,time);// records the data for the curves
     t_state_data& current = _animation_information._current;
@@ -273,7 +300,7 @@ void InteractiveObject::setSimulationPosition(btTransform transform, float time)
     _calculated_simulation_speed = _animation_information._current._center_of_mass_world_speed;
 }
 
-void InteractiveObject::setInitialPosition(btTransform transform,btTransform parent_transform){
+void Part::setInitialPosition(btTransform transform,btTransform parent_transform){
 
         t_state_data& current = _animation_information._current;
 
@@ -313,8 +340,4 @@ void InteractiveObject::setInitialPosition(btTransform transform,btTransform par
 //        _animation_information._previous._rotation = _animation.rotationVector(0.0f);
 
         _calculated_simulation_speed = _animation_information._current._center_of_mass_world_speed;
-//        qDebug()<<"initial position"<<toString(body->getCenterOfMassTransform().getOrigin());
-//        qDebug()<<"initial rotation"<<toString(body->getCenterOfMassTransform().getRotation());
-//        qDebug()<<"initial velocity"<<toString(body->getLinearVelocity());
-//        qDebug()<<"initial angvelo"<<toString(body->getAngularVelocity());
 }

@@ -1,3 +1,29 @@
+/*
+Copyright (c) 2013, Lucas Juliéron
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 #include "simulation.h"
 
 Simulation::Simulation():
@@ -8,7 +34,8 @@ Simulation::Simulation():
     _end_counter(0),
     _updates_since_last_step(0),
     _started(false),
-    _elapsed_simulation(0)
+    _elapsed_simulation(0),
+    _paused(false)
 {
 }
 
@@ -32,15 +59,15 @@ void Simulation::init(const SimulationParameters& params) {
     _human.set_mass(params.get_body_mass());
     _human.loadObjects(params.get_input_location());
     _display = _human._limbs;
-    InteractiveObject *ground = allocateGround();
+    Part *ground = allocateGround();
     _scenery.append(ground);
     resetStep();
     btRigidBody * body = ground->get_body();
     _world->addRigidBody(body);
 }
 
-InteractiveObject * Simulation::allocateGround() const {
-    InteractiveObject * ground = new InteractiveObject();
+Part * Simulation::allocateGround() const {
+    Part * ground = new Part();
     ground->get_shape_struct().set_shape(btVector3(5,0.02,5));
     ground->set_mass(0); // no gravity
     btTransform transform;
@@ -86,20 +113,21 @@ void Simulation::loop(){
     btScalar clock_time = _clock.getTimeMilliseconds() / coeff ;
     _last_update_time = clock_time;
     while (_world && !_simulation_over){
-        clock_time = _clock.getTimeMilliseconds() / coeff ;
-        time_since_last_update = clock_time - _last_update_time;
-        if (time_since_last_update/1000 >= 1./(ups * coeff)){
-            time_since_last_update = 0;
-            _lock.lockForWrite(); {
-                update();
-                if (_step_counter > steps_duration)
-                    stepOver();
-                if (_end_counter > duration)
-                    simulationOver();
-                _updates_since_last_step++;
-            } _lock.unlock();
-            _last_update_time =clock_time;
-
+        if(!_paused){
+            clock_time = _clock.getTimeMilliseconds() / coeff ;
+            time_since_last_update = clock_time - _last_update_time;
+            if (time_since_last_update/1000 >= 1./(ups * coeff)){
+                time_since_last_update = 0;
+                _lock.lockForWrite(); {
+                    update();
+                    if (_step_counter > steps_duration)
+                        stepOver();
+                    if (_end_counter > duration)
+                        simulationOver();
+                    _updates_since_last_step++;
+                } _lock.unlock();
+                _last_update_time =clock_time;
+            }
         }
     }
 }
@@ -165,7 +193,8 @@ void Simulation::fillWorld(){
         }
         for (int i = 0; i < _constraints_list->size(); ++i) {
             temp_constraint = &((*_constraints_list)[i]);
-            temp_constraint->buildConstraint();
+//            if (!temp_constraint->is_constraint_allocated())
+                temp_constraint->buildConstraint();
             if (temp_constraint->has_parts()){
                 _world->addConstraint(temp_constraint->get_constraint(),true);
             }
