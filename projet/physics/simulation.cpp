@@ -99,7 +99,6 @@ void Simulation::start(){
                                "\n\tUPS           : "<<_params.get_ups();
         _thread->start();
         _started = true;
-        qDebug()<<toString(_display[0]->get_body()->getCenterOfMassPosition());
 }
 
 void Simulation::loop(){
@@ -165,7 +164,6 @@ void Simulation::stepOver(){
 
 void Simulation::cleanWorld(){
     btRigidBody * body;
-    QList<Joint*> * _joints = &_human._joints;
     QList<Constraint> * _constraints_list= &_human._constraints;
     Constraint * temp_constraint;
     if (_world_filled){

@@ -105,8 +105,11 @@ void HumanBody::loadObjects(QString path){
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
+//                                qDebug()<<"values :"<<values[j];
+//                                qDebug()<<"values :"<<values[j+1];
 //                                object->_animation.get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
-                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
+                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
+//                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
                             }
                         }
                         btVector3 extends;

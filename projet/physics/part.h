@@ -115,6 +115,7 @@ private:
         DIFF_PE,
         ANIMATION_X,
         ANIMATION_Y,
+        ANIMATION_Z,
         SIMULATION_Y,
         NUMBER_OF_CURVES
     };

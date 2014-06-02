@@ -44,7 +44,7 @@ btScalar rot_x(btScalar x , btScalar y , btScalar z , btScalar w);
 btScalar rot_y(btScalar x , btScalar y , btScalar z , btScalar w);
 btScalar rot_z(btScalar x , btScalar y , btScalar z , btScalar w);
 
-btVector3 btQuat2euler(btQuaternion q);
+btVector3 btQuat2Euler(btQuaternion q);
 
 btVector3 deg2rad(const btVector3& vector);
 btVector3 rad2deg(const btVector3& vector);

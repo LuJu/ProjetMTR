@@ -30,7 +30,6 @@ Part::Part(const btVector3& origin, const btVector3& shape,Shape::shapetype type
     _mass(1),
     _center_of_mass_proportion(.5f),
     _animated(false){
-    qDebug()<<"Not default constructor called";
     __build(origin,shape,type);
 }
 
@@ -76,6 +75,7 @@ void Part::appendCurves(QList<Curve>& list){
     appendCurve(list,DIFF_PE,"Animation KE",QColor(255,255,0));
     appendCurve(list,ANIMATION_X,"Animation KE",QColor(255,0,0));
     appendCurve(list,ANIMATION_Y,"Animation KE",QColor(255,0,255));
+    appendCurve(list,ANIMATION_Z,"Animation KE",QColor(255,0,255));
     appendCurve(list,SIMULATION_Y,"Animation KE",QColor(0,255,255));
 }
 
@@ -131,23 +131,68 @@ void Part::updateAnimation(float delta_t,const btTransform& transform, const btT
     btVector3 btc_bt = rotatedVector(object_rotation,shape_vector);
 
     current._center_of_mass_rotation = object_rotation;
+
+    btQuaternion rotation_difference = previous._center_of_mass_rotation.inverse() * current._center_of_mass_rotation;
     current._center_of_mass_world_position = transform.getOrigin() - btc_bt;
     btVector3 animation_distance(current._center_of_mass_world_position - previous._center_of_mass_world_position);
+    btVector3 rot_axis = rotation_difference.getAxis().normalize();
+    btScalar rotation_speed = (2 * qAcos(rotation_difference.w()))/(delta_t/1000);
+    btScalar vw = rotation_difference.w();
+    btScalar vi = rotation_speed / qSin((rotation_speed * (delta_t/1000) )/ 2) - rotation_difference.x();
+    btScalar vj = (2 * qAcos(rotation_difference.w()))/(delta_t/1000);
+    btScalar vz = (2 * qAcos(rotation_difference.w()))/(delta_t/1000);
+    btVector3 rotation = rot_axis*rotation_speed;
+    btQuaternion deriva = rotation_difference;
+    deriva.normalize();
+    deriva.setW(deriva.w()/(delta_t/1000));
+//    btQuaternion angular_vel= deriva * rotation_difference.inverse();
+    btQuaternion angular_vel= current._center_of_mass_rotation* previous._center_of_mass_rotation.inverse();
+//    angular_vel /= 2;
+    btVector3 v = btVector3(angular_vel.x(),angular_vel.y(),angular_vel.z());
+
+    btScalar s = angular_vel.w();
+    btVector3 ss = (2 * v) / v.length();
+    ss = ss * qAcos(s);
+//    qDebug()<<"rot speed "<<rad2deg(rotation_speed);
+//    qDebug()<<"rot axit "<<toString(rot_axis);
+//    qDebug()<<"rot s "<<rad2deg(s);
+//    qDebug()<<"rot spv "<<toString(rad2deg(ss / delta_t/1000 ));
+//    qDebug()<<"rot 2 "<<rad2deg(ss / delta_t/1000 ).length();
+//    qDebug();
     current._center_of_mass_world_speed = animation_distance/(delta_t/1000); // the diff value is in ms so a conversion is needed to be in m/s
 
 //    qDebug()<<toString(transform.getRotation(),"quat: ");
     btQuaternion slerp = current._center_of_mass_rotation.slerp(previous._center_of_mass_rotation,delta_t/1000);
-    previous._center_of_mass_rotation = btQuaternion(0.3,0.4,0.1,0.7);
+//    previous._center_of_mass_rotation = btQuaternion(0.3,0.4,0.1,0.7);
     btQuaternion conjugate(-previous._center_of_mass_rotation.x(),-previous._center_of_mass_rotation.y(),-previous._center_of_mass_rotation.z(),previous._center_of_mass_rotation.w());
     btQuaternion product( previous._center_of_mass_rotation * conjugate);
     btQuaternion derivated = slerp;
     btQuaternion distance(current._center_of_mass_rotation.inverse()*previous._center_of_mass_rotation);
     derivated *= 2;
     btQuaternion angular_velocity = derivated * conjugate;
-//    qDebug()<<"deriv: "<<btQuat2euler(diff);
 //    current._rotation_vector_diff = current._rotation -previous._rotation;
+    if(rotation_difference.w() < 0 ) rotation_difference = - rotation_difference;
+        current._rotation_vector_diff = rotation_difference.getAxis();
+        current._angular_speed = (rotation_difference.getAxis() * rotation_difference.getAngle())/(delta_t/1000);
     if (current._rotation_vector_diff.length() != 0)
         current._rotation_vector_diff.normalize();
+    qDebug()<<"axis: "<<toString(current._rotation_vector_diff);
+    qDebug()<<"speed: "<<toString(current._angular_speed);
+    qDebug()<<"angle: "<<rotation_difference.getAngle();
+
+    btVector3 ypr = btQuat2Euler(current._center_of_mass_rotation);
+    btVector3 ypr_prev= btQuat2Euler(previous._center_of_mass_rotation);
+    btVector3 diff = (ypr-ypr_prev)/(delta_t/1000);
+    btQuaternion diff_qq = (current._center_of_mass_rotation - previous._center_of_mass_rotation) / (delta_t/1000);
+//    static float c = 0;
+//    _curves[ANIMATION_Y].insert(c,diff_qq.x());
+//    _curves[ANIMATION_X].insert(c,diff_qq.y());
+//    _curves[ANIMATION_Z].insert(c,diff_qq.z());
+//    _curves[SIMULATION_Y].insert(c,rotation_difference.w());
+//    c++;
+
+//    btVector3 body_rates( , diff.z() - QSin()
+
 }
 
 void Part::updateSimulation(float delta_t){
@@ -159,14 +204,15 @@ void Part::updateSimulation(float delta_t){
 
     current._center_of_mass_world_position = body->getCenterOfMassPosition();
     current._angular_speed=                  body->getAngularVelocity();
+//    qDebug()<<"angul "<<toString(current._angular_speed);
     current._center_of_mass_world_speed =    body->getLinearVelocity();
     current._center_of_mass_rotation =       body->getCenterOfMassTransform().getRotation();
 
     btVector3 simulation_distance = current._center_of_mass_world_position-previous._center_of_mass_world_position;
     _calculated_simulation_speed = simulation_distance/(delta_t/1000);
 
-//    current._rotation = btQuat2euler(rot);
-//    current._rotation_vector_diff = current._rotation -previous._rotation;
+    btQuaternion rotation_difference = previous._center_of_mass_rotation.inverse() * current._center_of_mass_rotation;
+    current._rotation_vector_diff = rotation_difference.getAxis();
     if (current._rotation_vector_diff.length() != 0)
         current._rotation_vector_diff.normalize();
 }
@@ -239,9 +285,9 @@ void Part::insertDataToCurves(QList<Curve>& curves, float elapsed){
 //            curves[SIMULATION_PE].insert(elapsed,_energy.simulation.pe);
 //        }
 //        if (GlobalConfig::is_enabled("display_diff")) {
-            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
+//            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
             curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
-            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
+//            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
 //            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
 //            curves[ANIMATION_X].insert(elapsed,_energy.animation.x);
 //            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
@@ -278,7 +324,7 @@ void Part::setSimulationPosition(btTransform transform, float time){
     buildMotion();
     btRigidBody * body = get_body();
     body->setLinearVelocity(_animation_information._current._center_of_mass_world_speed);
-//    body->setAngularVelocity(_animation_information._current._angular_speed);
+    body->setAngularVelocity(_animation_information._current._angular_speed);
 //    body->setAngularVelocity(_animation_information._current._angular_speed);
 //    qDebug()<<toString(rad2deg(_animation_information._current._angular_speed),"angular speed : ");
 
@@ -292,8 +338,8 @@ void Part::setSimulationPosition(btTransform transform, float time){
 //    _simulation_information._current._rotation = _animation_information._current._rotation;
 //    _simulation_information._previous._rotation = _animation_information._previous._rotation;
 
-//    _simulation_information._current._angular_speed = body->getAngularVelocity();
-//    _simulation_information._previous._angular_speed =  _animation_information._previous._angular_speed;
+    _simulation_information._current._angular_speed = body->getAngularVelocity();
+    _simulation_information._previous._angular_speed =  _animation_information._previous._angular_speed;
 
 //    _animation_information._previous._rotation = _animation.rotationVector(0.0f);
 

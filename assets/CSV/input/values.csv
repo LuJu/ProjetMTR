@@ -10,7 +10,7 @@ z;00;0;
 rotation;;
 x;0;0;
 y;0;0;
-z;0;44;10000;720;
+z;0;0;10000;1440;
 end;;
 object;spine;display;pelvis;mass;cone;
 scaling;;
@@ -19,13 +19,13 @@ length;0;.5
 translation;;
 x;0;0;
 y;0;1.0;
-z;0;
+z;0;0;
 rotation;;
 x;0;0
 y;0;0
 z;0;0
 end;;
-object;head;display;spine;mass;
+object;head;ignore;spine;mass;
 scaling;;
 radius;0;0.1
 length;0;1
@@ -38,7 +38,7 @@ x;0;0
 y;0;0
 z;0;0;
 end;;
-object;left_leg;display;pelvis;zeromass
+object;left_leg;ignore;pelvis;zeromass
 scaling;;
 radius;0;0.07
 length;0;0.45

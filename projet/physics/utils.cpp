@@ -60,13 +60,7 @@ btScalar rot_z(btScalar x , btScalar y , btScalar z , btScalar w)
     return rotz;
 }
 
-// m_x = qy?
-// m_y = qz?
-// m_z = qx?
-// m_w = qw?
-
-
-btVector3 btQuat2euler(btQuaternion q){
+btVector3 btQuat2Euler(btQuaternion q){
     q.normalize();
     btVector3 vect;
     btScalar x, y , z , w;
@@ -133,7 +127,7 @@ btScalar kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
     btScalar h = shape.y();
     btScalar h2 = pow(h,2);
     btMatrix3x3 moment_matrix (m*(R2/4.0f + h2/12.0f) , 0               , 0                      ,
-                               0                      , (m * R2)/2.0f  , 0                      ,
+                               0                      , (m * R2)/2.0f   , 0                      ,
                                0                      , 0               , m*(R2/4.0f + h2/12.0f) );
     btMatrix3x3 rotation;
     rotation.setIdentity();
@@ -199,9 +193,9 @@ btVector3 xyz2yxz(btVector3 xyz){
     btQuaternion i(0.4,8,12,1);
     btQuaternion j(-0.4,-8,-12,-1);
 //    btQuaternion j(1,0,0,1);
-    btVector3 result = btQuat2euler(quat);
-    btVector3 resulti = btQuat2euler(i);
-    btVector3 resultj = btQuat2euler(j);
+    btVector3 result = btQuat2Euler(quat);
+    btVector3 resulti = btQuat2Euler(i);
+    btVector3 resultj = btQuat2Euler(j);
     btVector3 result_deg = rad2deg(result);
     btQuaternion a(1,0,0,1);
     btQuaternion b = by*bz;
@@ -229,4 +223,10 @@ btVector3 rotatedVector(btQuaternion quat, btVector3 vector){
 
 btQuaternion differentiate(btQuaternion quat){
     
+}
+
+btQuaternion exp(btQuaternion quat){
+    btScalar angle = quat.w();
+    btQuaternion ret;
+//    ret.setW();
 }
