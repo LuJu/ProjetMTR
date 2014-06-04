@@ -83,9 +83,6 @@ void HumanBody::loadObjects(QString path){
                         joint_parent = findJointByPartName(parent);
                         part_child = findPartByName(name);
                         part_parent = findPartByName(parent);
-//                        new_object = new InteractiveObject();
-//                        new_object->set_body_part(temp.at(1));
-
                         if (temp.size() >= 8){
                                 object->_part_com_proportion = temp.at(5).toFloat();
                                 object->_part_mass=temp.at(6).toFloat();
@@ -108,8 +105,8 @@ void HumanBody::loadObjects(QString path){
 //                                qDebug()<<"values :"<<values[j];
 //                                qDebug()<<"values :"<<values[j+1];
 //                                object->_animation.get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
-                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
-//                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
+//                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
+                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
                             }
                         }
                         btVector3 extends;
@@ -319,6 +316,8 @@ void HumanBody::buildJointTree(){
                     inserted[j] = true;
                 } else {
                     parent = _joints_tree.get_node_by_name(temp->_parent_part_name);
+                    qDebug()<<"part :"<<temp->_part_name;
+                    qDebug()<<"parent :"<<temp->_parent_part_name;
                     if (parent!=NULL){
                         _joints_tree.addNode(temp->_part_name,temp,parent->get_id());
                         Part * new_object = new Part();

@@ -47,31 +47,25 @@ class Stats : public Viewer
 {
     Q_OBJECT
 public slots :
-//void simulationOver();
-
 public:
     ~Stats();
     Stats(QGLContext * context);
     Stats();
     Stats(QWidget * parent);
-//    Stats(QWidget * parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0 )
-//        : Viewer ( parent, shareWidget,f ){}
     virtual void draw();
     virtual void init();
     virtual void keyPressEvent(QKeyEvent *keyEvent);
     virtual void keyReleaseEvent(QKeyEvent *keyEvent);
     virtual void closeEvent(QCloseEvent * event);
     virtual void display3DObjects();
-
-//    virtual void closeEvent(QCloseEvent * event);
     void displayStats();
     void displayStatsTest();
     void installDebugger();
-//    Simulation& get_simulation() {return _simulation;}
     Simulation  * _simulation;
     int _selected_index;
 private:
     QList<Part * > _display;
+    QList<Curve> * curves;
 
 };
 

@@ -133,15 +133,18 @@ void Part::updateAnimation(float delta_t,const btTransform& transform, const btT
     current._center_of_mass_rotation = object_rotation;
 
     btQuaternion rotation_difference = previous._center_of_mass_rotation.inverse() * current._center_of_mass_rotation;
+    btQuaternion different;
+    btQuaternion test;
+    different= (current._center_of_mass_rotation - previous._center_of_mass_rotation) / (delta_t/1000);
+//    different= different* current._center_of_mass_rotation;
+    test = different * rotation_difference.inverse();
+    test = btQuaternion( different * rotation_difference.inverse());
+    if (absolute_value(test.w()) <= 0.00001)
+        qDebug()<<"ZEROOOOO";
     current._center_of_mass_world_position = transform.getOrigin() - btc_bt;
     btVector3 animation_distance(current._center_of_mass_world_position - previous._center_of_mass_world_position);
     btVector3 rot_axis = rotation_difference.getAxis().normalize();
     btScalar rotation_speed = (2 * qAcos(rotation_difference.w()))/(delta_t/1000);
-    btScalar vw = rotation_difference.w();
-    btScalar vi = rotation_speed / qSin((rotation_speed * (delta_t/1000) )/ 2) - rotation_difference.x();
-    btScalar vj = (2 * qAcos(rotation_difference.w()))/(delta_t/1000);
-    btScalar vz = (2 * qAcos(rotation_difference.w()))/(delta_t/1000);
-    btVector3 rotation = rot_axis*rotation_speed;
     btQuaternion deriva = rotation_difference;
     deriva.normalize();
     deriva.setW(deriva.w()/(delta_t/1000));
@@ -176,16 +179,19 @@ void Part::updateAnimation(float delta_t,const btTransform& transform, const btT
         current._angular_speed = (rotation_difference.getAxis() * rotation_difference.getAngle())/(delta_t/1000);
     if (current._rotation_vector_diff.length() != 0)
         current._rotation_vector_diff.normalize();
-    qDebug()<<"axis: "<<toString(current._rotation_vector_diff);
-    qDebug()<<"speed: "<<toString(current._angular_speed);
-    qDebug()<<"angle: "<<rotation_difference.getAngle();
+//    qDebug()<<"axis: "<<toString(current._rotation_vector_diff); 
+//    qDebug()<<"speed: "<<toString(rad2deg(current._angular_speed));
+//    qDebug()<<"speed: "<<rad2deg(current._angular_speed.length());
+//    qDebug()<<"speed: "<<toString(rad2deg(current._angular_speed));
+//    qDebug()<<"speed: "<<rad2deg(current._angular_speed.length());
+//    qDebug()<<"angle: "<<rotation_difference.getAngle();
 
     btVector3 ypr = btQuat2Euler(current._center_of_mass_rotation);
     btVector3 ypr_prev= btQuat2Euler(previous._center_of_mass_rotation);
     btVector3 diff = (ypr-ypr_prev)/(delta_t/1000);
     btQuaternion diff_qq = (current._center_of_mass_rotation - previous._center_of_mass_rotation) / (delta_t/1000);
 //    static float c = 0;
-//    _curves[ANIMATION_Y].insert(c,diff_qq.x());
+//    _curves[ANIMATION_Y].insert(c,diff_qq.x ());
 //    _curves[ANIMATION_X].insert(c,diff_qq.y());
 //    _curves[ANIMATION_Z].insert(c,diff_qq.z());
 //    _curves[SIMULATION_Y].insert(c,rotation_difference.w());
@@ -276,17 +282,17 @@ void Part::updateEnergyStructure(float gravity){
 void Part::insertDataToCurves(QList<Curve>& curves, float elapsed){
 //        if (GlobalConfig::is_enabled("display_animation_stats")) {
 //            curves[ANIMATION_KE].insert(elapsed,_energy.animation.ke);
-//            curves[ANIMATION_AKE].insert(elapsed,_energy.animation.ake);
+            curves[ANIMATION_AKE].insert(elapsed,_energy.animation.ake);
 //            curves[ANIMATION_PE].insert(elapsed,_energy.animation.pe);
 //        }
 //        if (GlobalConfig::is_enabled("display_simulation_stats")) {
 //            curves[SIMULATION_KE].insert(elapsed,_energy.simulation.ke);
-//            curves[SIMULATION_AKE].insert(elapsed,_energy.simulation.ake);
+            curves[SIMULATION_AKE].insert(elapsed,_energy.simulation.ake);
 //            curves[SIMULATION_PE].insert(elapsed,_energy.simulation.pe);
 //        }
 //        if (GlobalConfig::is_enabled("display_diff")) {
 //            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
-            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
+//            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
 //            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
 //            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
 //            curves[ANIMATION_X].insert(elapsed,_energy.animation.x);

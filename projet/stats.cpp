@@ -43,7 +43,6 @@ Stats::Stats():
 
 void Stats::draw(){
     Viewer::draw();
-//    _simulation->loop();
     bool started;
     _simulation->get_lock()->lockForRead();
     _display = _simulation->get_display_list();
@@ -54,6 +53,7 @@ void Stats::draw(){
         close();
     } else if (started) {
         display3DObjects();
+        curves= &_display.at(_selected_index)->get_curves();
     }
     frameEnd();
 }
@@ -127,60 +127,6 @@ void Stats::displayStats(){
             }
         }
     }
-}
-
-void Stats::displayStatsTest(){
-    QMatrix4x4 M,V,P,pvm;
-    QRect window;
-    float right,top,bottom,value;
-    value = bottom = top = right = 0;
-//    QList<Curve> _test_curves;
-    BezierPath path[10];
-    Curve curves[6];
-    Curve * bcurves[3];
-//    curves[0] = _display.at(0)->get_animation().get_translation_curves()[0].get_bezier();
-//    curves[1] = _display.at(0)->get_animation().get_translation_curves()[1].get_bezier();
-//    curves[2] = _display.at(0)->get_animation().get_translation_curves()[2].get_bezier();
-//    curves[3] = _display.at(0)->get_animation().get_translation_curves()[0];
-//    curves[4] = _display.at(0)->get_animation().get_translation_curves()[1];
-//    curves[5] = _display.at(0)->get_animation().get_translation_curves()[2];
-//    _test_curves.append(c);
-    for (int j = 0; j < 6; ++j) {
-        value = (curves[j].end()-1).key();
-        if (right < value)
-            right = value;
-        value = curves[j].get_max();
-        if (top < value)
-            top = value;
-        value = curves[j].get_min();
-        if (bottom > value)
-            bottom = value;
-    }
-
-//    qDebug()<<"window: "<<top<<" "<<bottom<<" "<<right;
-
-    window.setY(10);
-    window.setHeight(-20);
-//    window.setHeight(-(top+bottom)-20);
-    window.setX(-1000);
-    window.setWidth(12000);
-
-    P.ortho(window);
-    updateMatrices(P,V,M);
-//    pvm = P*V*M;
-//    _program->setUniformValue("P",P);
-//    _program->setUniformValue("pvm",pvm);
-
-//    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,10);
-
-    for (int i = 0; i < 6; ++i) {
-        curves[i].set_color(QColor(255,0,255));
-//        MeshUtils::render(curves[i],1,curves[i].get_color(),i+1);right
-    }
-    MeshUtils::render(curves[0],1 ,QColor(255,0,255),1);
-
-    MeshUtils::render(curves[3],1,QColor(0,0,255),1);
-
 }
 
 void Stats::display3DObjects(){
