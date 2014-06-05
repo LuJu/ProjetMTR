@@ -32,9 +32,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
-#include "utils/geometry.h"
-
-
 //! Class representing the parameters of a simulation : duration, steps duration, gravity etc
 class SimulationParameters
 {

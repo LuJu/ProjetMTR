@@ -24,8 +24,8 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef ANIMATEDOBJECT_H
-#define ANIMATEDOBJECT_H
+#ifndef ANIMATEDNODE_H
+#define ANIMATEDNODE_H
 
 #include "btBulletCollisionCommon.h"
 
@@ -33,24 +33,23 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "utils/curve.h"
 
 #include "utils.h"
-#include "shape.h"
 
 
 //! An animated 3D object
 /*!
         Represents an animated 3D object. The values of the movement at each time is contained in the three 3DCurves
     */
-class AnimatedObject
+class AnimatedNode
 {
 public:
-    AnimatedObject();
+    AnimatedNode();
 
     btVector3 scalingVector(float time) const {
         return btVector3(_scaling_curves[0].get_value(time),
                          _scaling_curves[1].get_value(time),
                          _scaling_curves[2].get_value(time));
     }
-    btVector3 extremityTranslationVector(float time) const {
+    btVector3 TranslationVector(float time) const {
         return btVector3(_extremity_translation_curves[0].get_value(time),
                          _extremity_translation_curves[1].get_value(time),
                          _extremity_translation_curves[2].get_value(time));
@@ -65,16 +64,13 @@ public:
     Curve3d& get_translation_curves() {return _extremity_translation_curves;}
 
     const btTransform getWorldTransform(const btTransform parent_transform, float time) const;
-
-    void set_shape(Shape * shape){_shape = shape;}
-
     state_information _information;
+
 private:
-    Shape * _shape;
     Curve3d _scaling_curves;
     Curve3d _rotation_curves;
     Curve3d _extremity_translation_curves;
 
 };
 
-#endif // ANIMATEDOBJECT_H
+#endif // ANIMATEDNODE_H

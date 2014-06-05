@@ -43,7 +43,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "part.h"
 #include "bodyinfo.h"
 #include "joint.h"
-#include "simulationparameters.h"
+#include "constraint.h"
 
 //! Contains the information about all parts of the body
 typedef WNode<Joint> JointNode;
@@ -61,7 +61,7 @@ public:
     void recordStatus();
     void saveDataList();
     void savePartDataList(const QString& part_name) const;
-    void saveFullDataList(const SimulationParameters& params);
+    void saveFullDataList(float duration, float steps_duration);
     void saveCompleteDataList() const;
 
     void updateInformationJointTree(float elapsed, float diff, float gravity, JointNode* node=NULL, btTransform transform=btTransform::getIdentity());

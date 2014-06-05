@@ -34,38 +34,51 @@ DebuggingInterface::DebuggingInterface()
 void DebuggingInterface::update(){
 
 
-    _simulation->get_lock()->lockForRead();
-    int index = part_list->currentIndex();
-//    if(GlobalConfig::is_enabled("display_stats"))
-    if (index != _stats->_selected_index)
-        _stats->_selected_index = index ;
-    if (index < _simulation->get_human()->_limbs.size() && index >= 0){
-        Part * part = _simulation->get_human()->_limbs[index];
+    bool found = false;
+    int mass_value;
+    btVector3 shape;
+    t_part_info info;
 
-        t_part_info info = part->getEnergyInformation();
+    _simulation->get_lock()->lockForRead(); {
+        int index = part_list->currentIndex();
+        if (index != _stats->_selected_index) _stats->_selected_index = index ;
+        if (index != _scene->_selected_index) _scene->_selected_index = index ;
 
-        animation_position_x->setText(QString::number(info.animation.position.x));
-        animation_position_y->setText(QString::number(info.animation.position.y));
-        animation_position_z->setText(QString::number(info.animation.position.z));
-        animation_speed->setText(QString::number(info.animation.speed));
-        animation_aspeed->setText(QString::number(info.animation.aspeed));
-        animation_Ke->setText(QString::number(info.animation.ke));
-        animation_aKe->setText(QString::number(info.animation.ake));
-        animation_Pe->setText(QString::number(info.animation.pe));
-        simulation_position_x->setText(QString::number(info.simulation.position.x));
-        simulation_position_y->setText(QString::number(info.simulation.position.y));
-        simulation_position_z->setText(QString::number(info.simulation.position.z));
-        simulation_speed->setText(QString::number(info.simulation.speed));
-        simulation_aspeed->setText(QString::number(info.simulation.aspeed));
-        simulation_Ke->setText(QString::number(info.simulation.ke));
-        simulation_aKe->setText(QString::number(info.simulation.ake));
-        simulation_Pe->setText(QString::number(info.simulation.pe));
-        mass->setText(QString::number(part->get_mass()));
-        length->setText(QString::number(part->get_shape_struct().get_shape().y()));
-        diff_aKe->setText(QString::number(info.ake_diff));
-        diff_Ke->setText(QString::number(info.ke_diff));
-        diff_Pe->setText(QString::number(info.pe_diff));
+        const QList<Part * >&  limbs =_simulation->get_display_list();
+        if (index < limbs.size() && index >= 0){
+            found = true;
+            const Part * part = limbs[index];
+            mass_value = part->get_mass();
+            shape = part->get_shape_struct().get_shape();
+            info = part->getEnergyInformation();
+        }
+    } _simulation->get_lock()->unlock();
+
+    if (found){
+        animation_position_x->setText(QString::number(info.animation.position.x,'f',4));
+        animation_position_y->setText(QString::number(info.animation.position.y,'f',4));
+        animation_position_z->setText(QString::number(info.animation.position.z,'f',4));
+        animation_speed->setText(QString::number(info.animation.speed,'f',4));
+        animation_aspeed->setText(QString::number(info.animation.aspeed,'f',4));
+        animation_Ke->setText(QString::number(info.animation.ke,'f',4));
+        animation_aKe->setText(QString::number(info.animation.ake,'f',4));
+        animation_Pe->setText(QString::number(info.animation.pe,'f',4));
+        simulation_position_x->setText(QString::number(info.simulation.position.x,'f',4));
+        simulation_position_y->setText(QString::number(info.simulation.position.y,'f',4));
+        simulation_position_z->setText(QString::number(info.simulation.position.z,'f',4));
+        simulation_speed->setText(QString::number(info.simulation.speed,'f',4));
+        simulation_aspeed->setText(QString::number(info.simulation.aspeed,'f',4));
+        simulation_Ke->setText(QString::number(info.simulation.ke,'f',4));
+        simulation_aKe->setText(QString::number(info.simulation.ake,'f',4));
+        simulation_Pe->setText(QString::number(info.simulation.pe,'f',4));
+        mass->setText(QString::number(mass_value,'f',2));
+        length->setText(QString::number(shape.y(),'f',2));
+        diff_aKe->setText(QString::number(info.ake_diff,'f',4));
+        diff_Ke->setText(QString::number(info.ke_diff,'f',4));
+        diff_Pe->setText(QString::number(info.pe_diff,'f',4));
     }
-    _simulation->get_lock()->unlock();
+
+    fps->setText(QString::number(_scene->get_fps(),'f',0));
+    fps_stats->setText(QString::number(_stats->get_fps(),'f',0));
 
 }

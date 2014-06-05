@@ -27,7 +27,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "simulation.h"
 
 Simulation::Simulation():
-    _world(NULL),
+    _environment(NULL),
     _simulation_over(false),
     _world_filled(false),
     _initiated(false),
@@ -41,11 +41,7 @@ Simulation::Simulation():
 
 Simulation::~Simulation(){
     if (_initiated){
-        delete _world;
-        delete _sequentialImpulseConstraintSolver;
-        delete _broadphase;
-        delete _dispatcher;
-        delete _collisionConfiguration;
+        delete _environment;
         for (int i = 0; i < _scenery.size(); ++i) {
             delete _scenery[i];
         }
@@ -54,16 +50,16 @@ Simulation::~Simulation(){
 
 void Simulation::init(const SimulationParameters& params) {
     _params = params;
-    allocateWorld();
+    _environment = new SimulationEnvironment(_params.get_gravity());
     _initiated = true;
     _human.set_mass(params.get_body_mass());
     _human.loadObjects(params.get_input_location());
-    _display = _human._limbs;
     Part *ground = allocateGround();
     _scenery.append(ground);
     resetStep();
+    ground->buildMotion();
     btRigidBody * body = ground->get_body();
-    _world->addRigidBody(body);
+    _environment->get_world()->addRigidBody(body);
 }
 
 Part * Simulation::allocateGround() const {
@@ -75,16 +71,6 @@ Part * Simulation::allocateGround() const {
     transform.setOrigin(btVector3(0,-3,0));
     ground->set_original_transform(transform);
     return ground;
-}
-
-void Simulation::allocateWorld(){
-    _collisionConfiguration = new btDefaultCollisionConfiguration();
-    _dispatcher = new btCollisionDispatcher(_collisionConfiguration);
-    _broadphase = new btDbvtBroadphase();
-    _sequentialImpulseConstraintSolver = new btSequentialImpulseConstraintSolver;
-
-    _world = new btDiscreteDynamicsWorld(_dispatcher,_broadphase,_sequentialImpulseConstraintSolver,_collisionConfiguration);
-    _world->setGravity(_params.get_gravity());
 }
 
 void Simulation::start(){
@@ -111,7 +97,7 @@ void Simulation::loop(){
 
     btScalar clock_time = _clock.getTimeMilliseconds() / coeff ;
     _last_update_time = clock_time;
-    while (_world && !_simulation_over){
+    while (_environment != NULL  && !_simulation_over){
         if(!_paused){
             clock_time = _clock.getTimeMilliseconds() / coeff ;
             time_since_last_update = clock_time - _last_update_time;
@@ -142,7 +128,7 @@ void Simulation::update(){
     _diff =  clock_time-_elapsed_realtime;
     _elapsed_realtime=clock_time;
     _elapsed_simulation=_elapsed_simulation+progression_ms;
-    _world->stepSimulation(progression_s ,1,btScalar(1.0/(ups)));
+    _environment->get_world()->stepSimulation(progression_s ,1,btScalar(1.0/(ups)));
     _step_counter+=progression_ms; // conversion from seconds to ms
     _end_counter+=progression_ms;
     _ups_counter+=progression_ms;
@@ -164,40 +150,42 @@ void Simulation::stepOver(){
 
 void Simulation::cleanWorld(){
     btRigidBody * body;
-    QList<Constraint> * _constraints_list= &_human._constraints;
+    QList<Constraint>& _constraints_list= _human._constraints;
+    QList<Part*>& _parts= _human._limbs;
     Constraint * temp_constraint;
     if (_world_filled){
-        for (int i = 0; i < _constraints_list->size(); ++i) {
-            temp_constraint = &((*_constraints_list)[i]);
+        for (int i = 0; i < _constraints_list.size(); ++i) {
+            temp_constraint = &(_constraints_list[i]);
             if (temp_constraint->has_parts())
-                _world->removeConstraint(temp_constraint->get_constraint());
+                _environment->get_world()->removeConstraint(temp_constraint->get_constraint());
         }
-        for (int i = 0; i < _display.size(); ++i) {
-            body = _display[i]->get_body();
-            _world->removeRigidBody(body);
+        for (int i = 0; i < _parts.size(); ++i) {
+            body = _parts[i]->get_body();
+            _environment->get_world()->removeRigidBody(body);
         }
-        _world_filled = false; //indicates that the world is now empty
-    } else qWarning()<<"Attempting to clean an empty world" ;
+        _world_filled = false; //indicates that the world is now empty/
+    } else qDebug()<<"Attempting to clean an empty world" ;
 }
 
 void Simulation::fillWorld(){
     btRigidBody * body = NULL;
-    QList<Constraint> * _constraints_list= &_human._constraints;
+    QList<Constraint>& constraints=_human._constraints;
+    QList<Part*>& parts= _human._limbs;
     Constraint * temp_constraint;
+
     if (!_world_filled){
-        for (int i = 0; i < _display.size(); ++i) {
-            body = _display[i]->get_body();
-            _world->addRigidBody(body);
+        for (int i = 0; i < parts.size(); ++i) {
+            body = parts[i]->get_body();
+            _environment->get_world()->addRigidBody(body);
         }
-        for (int i = 0; i < _constraints_list->size(); ++i) {
-            temp_constraint = &((*_constraints_list)[i]);
-//            if (!temp_constraint->is_constraint_allocated())
-                temp_constraint->buildConstraint();
+        for (int i = 0; i < constraints.size(); ++i) {
+            temp_constraint = &(constraints[i]);
+            temp_constraint->buildConstraint();
             if (temp_constraint->has_parts()){
-                _world->addConstraint(temp_constraint->get_constraint(),true);
+                _environment->get_world()->addConstraint(temp_constraint->get_constraint(),true);
             }
         }
-        _world_filled = true;
+        _world_filled = true; //indicates that the world is now full
     } else qWarning()<<"Attempting to fill a full world" ;
 }
 
@@ -206,16 +194,13 @@ void Simulation::simulationOver()
 {
     //Setting path to save files
     QString path = "output/";
-    if (QDir::setCurrent(path))
-        qDebug()<<"path set";
-    else
-        qDebug()<<"path not set "<<path;
-
+    if (QDir::setCurrent(path)) qDebug()<<"output path set :"<<path;
+    else qDebug()<<"failed to set output path :"<<path;
      _human.saveDataList();
-     _human.saveFullDataList(_params);
+     _human.saveFullDataList(_params.get_duration(),_params.get_steps_duration());
      _human.saveCompleteDataList();
      _simulation_over = true;
-     qDebug()<<"\n\nSimulation over";
+     qDebug()<<"Simulation over";
      if (_params.get_automatic_close())
         QApplication::exit();
 }

@@ -27,16 +27,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #ifndef JOINT_H
 #define JOINT_H
 
-#include <QObject>
-#include <QPair>
-
 #include "part.h"
-#include "animatedobject.h"
-#include "simulatedobject.h"
+#include "animatednode.h"
+
 #include "debuggingutils.h"
-#include "constraint.h"
-
-
 
 //! Class representing a joint between two objects
 class Joint
@@ -52,7 +46,7 @@ public:
         return true;
     }
 
-    AnimatedObject& get_animation() {return _animation;}
+    AnimatedNode& get_animation() {return _animation;}
     QString _part_name;
     QString _parent_part_name;
     float _part_mass;
@@ -62,7 +56,7 @@ public:
     void set_main_part(Part * main_part){ _main_part = main_part; }
 
 private:
-    AnimatedObject _animation;
+    AnimatedNode _animation;
     Part * _main_part;
 };
 

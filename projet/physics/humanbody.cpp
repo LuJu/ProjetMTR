@@ -41,24 +41,12 @@ HumanBody::~HumanBody(){
 }
 
 void HumanBody::loadObjects(QString path){
-
-    float order[3],sign[3];
-    order[0] = GlobalConfig::get_int("first");
-    order[1] = GlobalConfig::get_int("second");
-    order[2] = GlobalConfig::get_int("third");
-    sign[0] = GlobalConfig::get_int("sfirst");
-    sign[1] = GlobalConfig::get_int("ssecond");
-    sign[2] = GlobalConfig::get_int("sthird");
-
     QString filename=path;
     CSVParser list;
-//    list.parseFile(":/CSV/input/"+filename,";");
     list.parseFile("../assets/CSV/input/"+filename,";");
     QStringList temp;
     int i=0;
-//    InteractiveObject * object = NULL;
     Joint * object;
-    Part * new_object = NULL;
     QList<Joint*>::iterator joint_parent;
     QList<Part *>::iterator part_child;
     QList<Part *>::iterator part_parent;
@@ -74,7 +62,9 @@ void HumanBody::loadObjects(QString path){
                     else ignore = false;
                     if (!ignore){
                         object = new Joint();
-                        if (temp.size() >= 5 && temp.at(4) == "zeromass") mass = 0.0f;
+                        if (temp.size() >= 5 && temp.at(4) == "zeromass")
+                            mass = 0.0f;
+                        else mass = 1;
                         QString parent = temp.at(3);
                         QString name = temp.at(1);
                         object->_part_name = name;
@@ -85,11 +75,12 @@ void HumanBody::loadObjects(QString path){
                         part_parent = findPartByName(parent);
                         if (temp.size() >= 8){
                                 object->_part_com_proportion = temp.at(5).toFloat();
-                                object->_part_mass=temp.at(6).toFloat();
+                                mass=temp.at(6).toFloat();
 //                                if (temp.at(7) == "cone") object->_type=Constraint::cone;
 //                                else if (temp.at(7) == "hinge") object->_type=Constraint::hinge;
 //                                else object->_type=Constraint::point;
                         }
+                        object->_part_mass=mass;
                     }
                 } else if (!ignore) {
                     if (temp.at(0)=="scaling") {
@@ -102,22 +93,20 @@ void HumanBody::loadObjects(QString path){
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-//                                qDebug()<<"values :"<<values[j];
-//                                qDebug()<<"values :"<<values[j+1];
 //                                object->_animation.get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
-//                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
-                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
+//                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat()/30);
+//                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
                             }
                         }
                         btVector3 extends;
-                        extends = btVector3(object->get_animation().extremityTranslationVector(0));
-                        qDebug()<<extends.length();
+                        extends = btVector3(object->get_animation().TranslationVector(0));
 //                        if (part_parent != _parts.end()) (*part_parent)->get_shape_struct().set_shape(btVector3(.01,extends.length(),.01));
                     } else if (temp.at(0)=="rotation") {
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-                                object->get_animation().get_rotation_curves()[order[k]].insert(values[j].toFloat(),sign[k] *values[j+1].toFloat());
+                                object->get_animation().get_rotation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
                             }
                         }
                     }
@@ -125,20 +114,6 @@ void HumanBody::loadObjects(QString path){
             }
         }
         if (!ignore){
-            if (new_object ){
-//                new_object->get_shape_struct().set_shape_type(Shape::capsule);
-//                new_object->set_animated(true);
-//                new_object->_simulation.set_shape(&(new_object->_shape));
-                mass = BodyInfo::mass(temp.at(1),_mass);
-                if (mass==0.0f){
-                    qWarning()<<"Object mass null for part: "<<temp.at(1);
-                    mass=1;
-                }
-//                new_object->set_mass(mass);
-                object->_part_mass = mass;
-                _limbs.append(new_object);
-                new_object = NULL;
-            }
             _joints.append(object);
         }
         i++;
@@ -148,7 +123,6 @@ void HumanBody::loadObjects(QString path){
     for (int i = 0; i < _limbs.size(); ++i) {
         _limbs[i]->buildMesh();
     }
-//    buildTree();
     buildJointTree();
     buildConstraints();
 }
@@ -159,6 +133,8 @@ void HumanBody::recordStatus(){
         Part * object = _limbs[i];
         part_info energy = object->getEnergyInformation();
         _data_list.append(energy);
+
+        full_data.time+= energy.time;
 
         full_data.simulation.ake += energy.simulation.ake;
         full_data.simulation.ke += energy.simulation.ke;
@@ -178,9 +154,9 @@ void HumanBody::recordStatus(){
 
 
 void HumanBody::saveDataList(){
-        for (int j = 0; j < _limbs.size(); ++j) {
-            savePartDataList(_limbs[j]->get_body_part());
-        }
+    for (int j = 0; j < _limbs.size(); ++j) {
+        savePartDataList(_limbs[j]->get_body_part());
+    }
 }
 
 void HumanBody::savePartDataList(const QString& part_name) const{
@@ -188,7 +164,8 @@ void HumanBody::savePartDataList(const QString& part_name) const{
     part_info save;
     name = name +"_output_"+part_name;
     CSVParser parser;
-    parser<<"id"<<"x animation"<<"y animation"<<"z animation"<<"x simulation"<<" y simulation"<<"z simulation"<<
+    parser<<"id"<<"temps"<<
+            "x animation"<<"y animation"<<"z animation"<<"x simulation"<<" y simulation"<<"z simulation"<<
             "vitesse animation" <<"EC animation"  <<"ECA animation" <<"EP animation" <<
             "vitesse simulation"<<"EC simulation" <<"ECA simulation"<<"EP simulation"<<
             "EC difference"     <<"ECA difference"<<"EP difference" <<"erreur";
@@ -196,7 +173,7 @@ void HumanBody::savePartDataList(const QString& part_name) const{
     for (int i = 0; i < _data_list.size(); ++i) {
         if (_data_list[i].part_name == part_name){
             save=_data_list.at(i);
-            parser<<save.part_name<<
+            parser<<save.part_name<<save.time<<
                     save.animation.position.x     <<save.animation.position.y  <<save.animation.position.z   <<
                     save.simulation.position.x    <<save.simulation.position.y <<save.simulation.position.z  <<
                     save.animation.speed <<save.animation.ke <<save.animation.ake <<save.animation.pe<<
@@ -215,14 +192,15 @@ void HumanBody::saveCompleteDataList() const{
     name = name +"_output_complete";
     CSVParser parser;
 
-    parser<<"id"<<"x animation"<<"y animation"<<"z animation"<<"x simulation"<<" y simulation"<<"z simulation"<<
+    parser<<"id"<<"temps"<<
+            "x animation"<<"y animation"<<"z animation"<<"x simulation"<<" y simulation"<<"z simulation"<<
             "vitesse animation" <<"EC animation"  <<"ECA animation" <<"EP animation" <<
             "vitesse simulation"<<"EC simulation" <<"ECA simulation"<<"EP simulation"<<
             "EC difference"     <<"ECA difference"<<"EP difference" <<"erreur";
     parser.nextLine();
     for (int i = 0; i <  _complete_data_list.size(); ++i) {
         save=_complete_data_list.at(i);
-        parser<<save.part_name<<
+        parser<<save.part_name<<save.time<<
                 save.animation.position.x     <<save.animation.position.y  <<save.animation.position.z   <<
                 save.simulation.position.x    <<save.simulation.position.y <<save.simulation.position.z  <<
                 save.animation.speed <<save.animation.ke <<save.animation.ake <<save.animation.pe<<
@@ -233,20 +211,19 @@ void HumanBody::saveCompleteDataList() const{
     parser.saveInFile(name);
 }
 
-void HumanBody::saveFullDataList(const SimulationParameters& params){
+void HumanBody::saveFullDataList(float duration, float steps_duration){
     QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
     part_info save;
     name = name +"_output_full";
     CSVParser parser;
-    parser<<"id"<<
+    parser<<"id"<<"temps"<<
             "ECT animation (J)" <<"ECA animation (J)" <<"EC totale animation"<<"EP animation (J)" <<
             "ECT simulation (J)"<<"ECA simulation (J)"<<"EC totale simulation"<<"EP simulation (J)"<<
-            "ECT difference (J)"<<"ECA difference (J)"<<"EC totale difference"<<"EP difference (J)"<<"duree(ms):"<<params.get_duration()<<"pas(ms):"<<params.get_steps_duration();
+            "ECT difference (J)"<<"ECA difference (J)"<<"EC totale difference"<<"EP difference (J)"<<"duree(ms):"<<duration<<"pas(ms):"<<steps_duration;
     parser.nextLine();
     for (int i = 0; i < _full_data_list.size(); ++i) {
         save=_full_data_list.at(i);
-        parser<<i<<
-        save.animation.speed<<save.animation.pt_aspeed.x<<save.animation.pt_aspeed.y<<save.animation.pt_aspeed.z<<
+        parser<<i<<save.time<<
         save.animation.ke <<save.animation.ake <<save.animation.ake+save.animation.ke  <<save.animation.pe <<
         save.simulation.ke<<save.simulation.ake<<save.simulation.ake+save.simulation.ke<<save.simulation.pe<<
         save.ke_diff      <<save.ake_diff      <<save.ake_diff+save.ake_diff           <<save.pe_diff;
@@ -300,6 +277,7 @@ void HumanBody::setSimulationPositionJointTree(float elapsed,JointNode* node, bt
 }
 void HumanBody::buildJointTree(){
     Joint * temp;
+    Part * new_part;
     JointNode * parent;
     int number_of_joints = _joints.size();
     bool inserted[number_of_joints];
@@ -316,22 +294,18 @@ void HumanBody::buildJointTree(){
                     inserted[j] = true;
                 } else {
                     parent = _joints_tree.get_node_by_name(temp->_parent_part_name);
-                    qDebug()<<"part :"<<temp->_part_name;
-                    qDebug()<<"parent :"<<temp->_parent_part_name;
                     if (parent!=NULL){
                         _joints_tree.addNode(temp->_part_name,temp,parent->get_id());
-                        Part * new_object = new Part();
-                        temp->set_main_part(new_object);
-                        new_object->set_mass(1);
-//                        new_object->set_mass(temp->_part_mass);
-                        new_object->set_body_part(temp->_part_name);
-                        new_object->get_shape_struct().set_shape_type(Shape::capsule);
-                        new_object->set_animated(true);
-                        btVector3 extends = btVector3(temp->get_animation().extremityTranslationVector(0));
-                        qDebug()<<extends.length();
-                        new_object->get_shape_struct().set_shape(btVector3(.05,extends.length(),.05));
-                        new_object->buildMesh();
-                        _limbs.append(new_object);
+                        new_part = new Part();
+                        temp->set_main_part(new_part);
+                        new_part->set_mass(temp->_part_mass);
+                        new_part->set_body_part(temp->_part_name);
+                        new_part->get_shape_struct().set_shape_type(Shape::capsule);
+                        new_part->set_animated(true);
+                        btVector3 extends = btVector3(temp->get_animation().TranslationVector(0));
+                        new_part->get_shape_struct().set_shape(btVector3(.05,extends.length(),.05));
+                        new_part->buildMesh();
+                        _limbs.append(new_part);
                         inserted[j] = true;
                     }
                 }
@@ -369,8 +343,6 @@ void HumanBody::buildConstraints(JointNode * current_node){
                     _constraints.append(Constraint(list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part(),true));
                 else
                     _constraints.append(Constraint(list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part()));
-                qDebug()<<list.at(i).first->get_data()->_part_name<<" "<<list.at(i).second->get_data()->_part_name;
-
             }
         }
 

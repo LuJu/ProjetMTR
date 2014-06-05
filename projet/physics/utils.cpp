@@ -88,30 +88,6 @@ btVector3 btQuat2Euler(btQuaternion q){
     return btVector3(vect);
 }
 
-void euler2AxisAngle(btVector3 rotation,float * ret){
-    float yaw= rotation.x();
-    float pitch= rotation.y();
-    float roll= rotation.z();
-    float c1,c2,c3;
-    float s1,s2,s3;
-    float angle ;
-    c1 = qCos(yaw/2);
-    c2 = qCos(pitch/2);
-    c3 = qCos(roll/2);
-    s1 = qSin(yaw/2);
-    s2 = qSin(pitch/2);
-    s3 = qSin(roll/2);
-    angle = 2 * qAcos(c1*c2*c3 - s1*s2*s3);
-    float x,y,z;
-    x=s1*s2*c3 + c1*c2*s3;
-    y=s1*c2*c3 + c1*s2*s3;
-    z=c1*s2*c3 - s1*c2*s3;
-    ret[0] = x;
-    ret[1] = y;
-    ret[2] = z;
-    ret[3] = angle;
-}
-
 double translationKineticEnergy(double speed, double mass){
     return (speed*speed*mass)/2;
 }
@@ -120,12 +96,12 @@ double potentialEnergy(double mass, double gravitation, double height){
     return (mass*gravitation*height);
 }
 
-btScalar kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
-    btScalar m = mass;
-    btScalar R = shape.x();
-    btScalar R2 = pow(R,2);
-    btScalar h = shape.y();
-    btScalar h2 = pow(h,2);
+float kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
+    float m = mass;
+    float R = shape.x();
+    float R2 = pow(R,2);
+    float h = shape.y();
+    float h2 = pow(h,2);
     btMatrix3x3 moment_matrix (m*(R2/4.0f + h2/12.0f) , 0               , 0                      ,
                                0                      , (m * R2)/2.0f   , 0                      ,
                                0                      , 0               , m*(R2/4.0f + h2/12.0f) );
@@ -140,7 +116,7 @@ btScalar kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass){
     return (product.getColumn(0)).length();
 }
 
-btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape, btScalar mass ){
+float angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape, btScalar mass ){
     return pow(angular_velocity.length(),2) * kineticMoment(rotation_vector_diff,shape,mass) / 2;
 }
 
@@ -150,60 +126,6 @@ btVector3 deg2rad(const btVector3& vector){
 btVector3 rad2deg(const btVector3& vector){
     return btVector3((vector.x()/M_PI)*180,(vector.y()/M_PI)*180,(vector.z()/M_PI)*180);
 }
-
-//btQuaternion derivated(const btQuaternion& quat){
-//    btQuaternion qp;
-//    qp = 0.5 * quat.w() * quat;
-//    return qp;
-//}
-btVector3 angleNormalize(const btVector3 rot){
-    btVector3 r;
-//    qDebug()<<M_PI;
-//    qDebug()<<rot.z();
-    if (rot.x() > M_PI)
-        r.setX(rot.x()-M_PI*2.0);
-    if (rot.y() > M_PI)
-        r.setY(rot.y()-M_PI*2.0);
-    if (rot.z() > M_PI)
-        r.setZ(rot.z()-M_PI*2.0);
-    if (rot.x() < -M_PI)
-        r.setX(rot.x()+M_PI*2.0);
-    if (rot.y() < -M_PI)
-        r.setY(rot.y()+M_PI*2.0);
-    if (rot.z() < -M_PI)
-        r.setZ(rot.z()+M_PI*2.0);
-//    qDebug()<<toString(r,"norm:: ");
-    return r;
-}
-
-
-btVector3 xyz2yxz(btVector3 xyz){
-//    xyz = btVector3(deg2rad(15),deg2rad(90),deg2rad(90));
-    btVector3 xyz2 = btVector3(deg2rad(375),deg2rad(-34),deg2rad(0));
-    btQuaternion bx(btVector3(1,0,0),xyz.x()),
-                 by(btVector3(0,1,0),xyz.y()),
-                 bz(btVector3(0,0,1),xyz.z());
-    btQuaternion qx(btVector3(1,0,0),xyz2.x()),
-                qy(btVector3(0,1,0),xyz2.y()),
-                qz(btVector3(0,0,1),xyz2.z());
-    btQuaternion quat;
-    quat = by * bx * bz;
-    btQuaternion test;
-    test.setEuler(xyz.x(),xyz.y(),xyz.z());
-    btQuaternion i(0.4,8,12,1);
-    btQuaternion j(-0.4,-8,-12,-1);
-//    btQuaternion j(1,0,0,1);
-    btVector3 result = btQuat2Euler(quat);
-    btVector3 resulti = btQuat2Euler(i);
-    btVector3 resultj = btQuat2Euler(j);
-    btVector3 result_deg = rad2deg(result);
-    btQuaternion a(1,0,0,1);
-    btQuaternion b = by*bz;
-    btQuaternion c = bz*by;
-    b = a.normalized();
-    return btVector3(result.x(),result.y(),result.z());
-}
-
 
 //! Return the vector rotated by the quaternion
 /*!
@@ -229,4 +151,11 @@ btQuaternion exp(btQuaternion quat){
     btScalar angle = quat.w();
     btQuaternion ret;
 //    ret.setW();
+}
+
+btScalar angleDifference(btVector3 v1, btVector3 v2){
+    btScalar dot_product = v1.dot(v2);
+    btScalar cost = dot_product / (v2.length() * v1.length());
+    btScalar rotation_angle = qAcos(cost);
+    return rotation_angle;
 }

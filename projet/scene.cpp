@@ -69,6 +69,11 @@ void Scene::displayObjects(){
     btTransform transform;
     Part * obj;
     for (int i = 0; i < _display.size(); ++i) {
+
+        if (i == _selected_index)
+            _program->setUniformValue("intensity",1.0f);
+        else _program->setUniformValue("intensity",0.5f);
+
         obj = _display.at(i);
         if (obj->get_animated()){
             if (display_animation){
@@ -100,6 +105,7 @@ void Scene::displayObjects(){
         }
     }
 
+    _program->setUniformValue("intensity",1.0f);
     for (int i = 0; i < _scenery.size(); ++i) {
         Part * obj = _scenery.at(i);
         obj->get_motion_state()->m_graphicsWorldTrans.getOpenGLMatrix( matrix );
@@ -180,6 +186,7 @@ void Scene::init(){
     _ui->set_zoom(100);
     _ui->activateProgressiveZoom(3);
     _cube_mesh = QSharedPointer<Mesh>(new Mesh);
+    _selected_index = 0;
     MeshUtils::addFlatSurface(_cube_mesh.data());
 }
 

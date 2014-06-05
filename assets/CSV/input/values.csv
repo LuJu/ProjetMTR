@@ -25,7 +25,7 @@ x;0;0
 y;0;0
 z;0;0
 end;;
-object;head;ignore;spine;mass;
+object;head;display;spine;mass;
 scaling;;
 radius;0;0.1
 length;0;1

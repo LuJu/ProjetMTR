@@ -28,7 +28,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Constraint::Constraint():
     _constraint(NULL),
-    _type(point)
+    _type(point),
+    _first_base(false),
+    _second_base(false)
 {
     _parts.first = NULL;
     _parts.second= NULL;
@@ -67,12 +69,23 @@ Constraint::~Constraint(){
 }
 
 void Constraint::deleteConstraint(){
-    if (_constraint != NULL)_constraint = NULL;
+    if (_constraint != NULL){
+        delete _constraint;
+        _constraint = NULL;
+    }
 }
 
 bool Constraint::has_parts() const {
     if (_parts.first==NULL && _parts.second==NULL) return false;
     return true;
+}
+
+
+btTypedConstraint* Constraint::get_constraint() const{
+    if (!_constraint){
+        qWarning()<<"requesting uninitialized constraint pointer";
+    }
+    return _constraint;
 }
 
 bool Constraint::buildConstraint(){

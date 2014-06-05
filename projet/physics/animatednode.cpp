@@ -24,14 +24,14 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-#include "animatedobject.h"
+#include "animatednode.h"
 
-AnimatedObject::AnimatedObject() {
+AnimatedNode::AnimatedNode() {
 //    _extremity_translation_curves.set_interpolation(Curve::bezier);
 //    _rotation_curves.set_interpolation(Curve::bezier);
 }
 
-const btTransform AnimatedObject::getWorldTransform(const btTransform parent_transform, float time) const{
+const btTransform AnimatedNode::getWorldTransform(const btTransform parent_transform, float time) const{
     btTransform object_transform;
     btQuaternion quat;
 
@@ -42,7 +42,7 @@ const btTransform AnimatedObject::getWorldTransform(const btTransform parent_tra
     quat = bz * by * bx;
     quat.normalize();
 
-    object_transform.setOrigin(extremityTranslationVector(time));
+    object_transform.setOrigin(TranslationVector(time));
     object_transform.setRotation(quat); // conversion from euler angles xyz order to yxz
     return parent_transform * object_transform ;
 }

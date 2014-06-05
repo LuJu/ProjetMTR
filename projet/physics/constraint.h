@@ -28,49 +28,49 @@ POSSIBILITY OF SUCH DAMAGE.
 #define CONSTRAINT_H
 
 #include <QPair>
+
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
+
 #include "part.h"
-#include "joint.h"
 
 class Constraint
 {
 public:
-    Constraint();
-    Constraint(Part * first, Part * second, bool first_base = false, bool second_base = false);
-    Constraint& operator=( const Constraint& other ) ;
     enum constraints_types{
         hinge,
         point,
         cone
     };
-
+    Constraint();
+    //! Constraint constructor
+    /*!
+        \param  first : The first part to be connected to the constraint
+        \param  second : The second part to be connected to the constraint
+        \param  first base : Indicates whether the first part is to be connected to its top(true) or its base(false)
+        \param  second base : Indicates whether the second part is to be connected to its top(true) or its base(false)
+        return output
+    */
+    Constraint(Part * first, Part * second, bool first_base = false, bool second_base = false);
+    Constraint& operator=( const Constraint& other ) ;
     explicit Constraint(const Constraint& other);
     virtual ~Constraint();
 
-    btTypedConstraint* get_constraint() const{
-        if (!_constraint){
-            qWarning()<<"requesting uninitialized constraint pointer";
-        }
-        return _constraint;
-    }
+    btTypedConstraint* get_constraint() const;
     bool buildConstraint();
-    void allocateConstraint();
-
-    constraints_types _type;
-    bool has_parts() const;
-
-    QPair<Part*,Part*>& get_parts(){
-        return _parts;
-    }
 
     bool is_constraint_allocated(){return _constraint!=NULL;}
+    bool has_parts() const;
+    QPair<Part*,Part*>& get_parts(){return _parts;}
+    void set_constraint_type(constraints_types type){_type = type;}
 
 private:
     QPair<Part* ,Part* > _parts;
     btTypedConstraint * _constraint;
     void deleteConstraint();
     bool _first_base,_second_base;
+    void allocateConstraint();
+    constraints_types _type;
 };
 
 #endif // CONSTRAINT_H

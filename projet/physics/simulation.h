@@ -45,6 +45,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "bodyinfo.h"
 #include "humanbody.h"
 #include "simulationparameters.h"
+#include "simulationenvironment.h"
 #include "part.h"
 #include "joint.h"
 
@@ -61,13 +62,11 @@ public:
     //! Initiates the simulation: loads object data, etc
     void init(const SimulationParameters &params);
 
-    const QList<Part * >& get_display_list() {return  _display;}
-    const QList<Part * >& get_scenery() {return  _scenery;}
+    const QList<Part * >& get_display_list() const {return  _human._limbs;}
+    const QList<Part * >& get_scenery() const {return  _scenery;}
     float get_elapsed_realtime() const {return _elapsed_realtime;} //! Returns the realtime elapsed since the start of the simulation
     float get_elapsed_milliseconds() const {return _elapsed_simulation;} //! Returns the simulation time elapsed since the start of the simulation
 
-
-    HumanBody * get_human() {return &_human;}
     QReadWriteLock* get_lock() {return &_lock;}
 
     void start();
@@ -84,7 +83,7 @@ private slots:
     void loop();
 private:
     void update();
-    void allocateWorld();
+
     //! Function called when the simulation is over
     void simulationOver();
 
@@ -100,18 +99,14 @@ private:
     void fillWorld();
 
     SimulationParameters _params;
+    SimulationEnvironment * _environment;
+
     QReadWriteLock _lock;
 
-    btDiscreteDynamicsWorld * _world;
-    btBroadphaseInterface *_broadphase;
-    btCollisionDispatcher *_dispatcher;
-    btDefaultCollisionConfiguration *_collisionConfiguration;
-    btSequentialImpulseConstraintSolver *_sequentialImpulseConstraintSolver;
-
     QThread * _thread;
+
     HumanBody _human;
-    //animated objects
-    QList<Part * > _display;
+
     //unanimated objects
     QList<Part * > _scenery;
 

@@ -39,7 +39,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "3d/meshutils.h"
 
-#include "animatedobject.h"
+#include "animatednode.h"
 #include "simulatedobject.h"
 #include "shape.h"
 #include "utils.h"
@@ -72,7 +72,7 @@ public:
     const btTransform& get_original_transform() const {return _original_transform;}
     void set_original_transform(const btTransform& transform){_original_transform = transform;}
 
-    btRigidBody * get_body(){ return _simulation.get_body(_mass,_original_transform,_center_of_mass_proportion); }
+    btRigidBody * get_body(){ return _simulation.get_body(); }
 
     bool get_animated() const {return _animated;}
     void set_animated(bool animated){_animated = animated;}
@@ -93,8 +93,10 @@ public:
     //! Returns a smart pointer to the mesh representing the object
     MeshPointer& get_mesh(){return _mesh;}
     Shape& get_shape_struct(){return _shape;}
+    const Shape& get_shape_struct() const {return _shape;}
 
     void buildMesh();
+    void buildMotion();
     state_information _animation_information;
     state_information _simulation_information;
 
@@ -123,7 +125,6 @@ private:
     Part(const Part& object);
     void __build(const btVector3& origin, const btVector3& shape,Shape::shapetype type);
     void deleteMotion();
-    void buildMotion();
 
     MeshPointer _mesh;
     Shape _shape;
@@ -150,7 +151,7 @@ private:
     void insertDataToCurves(QList<Curve>& curves, float elapsed);
 
     //! updates the structure that will be used for exportation
-    void updateEnergyStructure(float gravity);
+    void updateEnergyStructure(float gravity, float time);
     void setSimulationTransformFromAnimation();
     btScalar get_density(){
         return _mass / _shape.get_volume();
@@ -158,7 +159,6 @@ private:
     void updateSimulation(float delta_t);
     void updateAnimation(float delta_t, const btTransform &transform, const btTransform &parent_transform);
 
-    btScalar angleDifference(btVector3 v1, btVector3 v2);
     SimulatedObject _simulation;
 
 };

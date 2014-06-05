@@ -68,12 +68,13 @@ typedef struct energy_info{
 
 typedef struct part_info{
     QString part_name;
+    float time;
     float length;
     t_energy_info animation, simulation;
     float ake_diff;
     float ke_diff;
     float pe_diff;
-    part_info():part_name(),length(0.0f),animation(),simulation(),ake_diff(0.0f),ke_diff(0.0f),pe_diff(0.0f){}
+    part_info():part_name(),length(0.0f),time(0.0f),animation(),simulation(),ake_diff(0.0f),ke_diff(0.0f),pe_diff(0.0f){}
 }t_part_info;
 
 
@@ -97,15 +98,10 @@ typedef struct state_information{
 }t_state_information;
 
 btScalar kineticMoment(btVector3 rotation_axis,btVector3 shape, btScalar mass);
+btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape , btScalar mass);
 double translationKineticEnergy(double speed, double mass);
 double potentialEnergy(double mass, double gravitation, double height);
 
-btScalar angularKineticEnergy();
-btScalar angularKineticEnergy(btVector3 angular_velocity, btVector3 rotation_vector_diff, btVector3 shape , btScalar mass);
-//btQuaternion derivated(const btQuaternion& quat);
-btVector3 angleNormalize(const btVector3 rot);
-void euler2AxisAngle(btVector3 rotation,float * ret);
-btVector3 xyz2yxz(btVector3 xyz);
-//btVector3 rotatedVector(btVector3 ypr, btVector3 vector);
 btVector3 rotatedVector(btQuaternion quat, btVector3 vector);
+btScalar angleDifference(btVector3 v1, btVector3 v2);
 #endif // BTUTILS_H

@@ -40,24 +40,18 @@ class SimulatedObject
 public:
     SimulatedObject();
 
-    state_information _information;
+    btRigidBody * get_body() const;
+    btDefaultMotionState * get_motion_state() const ;
 
-    btRigidBody * get_body(btScalar mass,btTransform transform, btScalar com_proportion=.5f);
+    //! Deletes the motion state and the body objects
     void deleteMotion();
-    void buildMotion(btScalar mass,btTransform transform, btScalar com_proportion=.5f);
+    //! Allocates the motion state and the body. Has to be called at least once before calling get_body() or get_motion_state()
+    void buildMotion(btScalar mass, btTransform transform, const Shape& shape, btScalar com_proportion=.5f);
 
-    void set_shape(Shape * shape){_shape = shape;}
-
-    btDefaultMotionState * get_motion_state() const {
-        if(!_motion_state)
-            qWarning()<<"Motion state not defined";
-        return _motion_state;
-    }
 
 private:
 
     btCollisionShape *_collision_shape;
-    Shape * _shape;
     btDefaultMotionState * _motion_state;
     btVector3 _local_inertia;
     btRigidBody * _body;

@@ -31,15 +31,17 @@ SimulatedObject::SimulatedObject():
     _body(NULL),
     _motion_state(NULL),
     _local_inertia(btVector3(0,0,0)),
-    _collision_shape(NULL),
-    _shape(NULL)
+    _collision_shape(NULL)
 {}
 
-btRigidBody *  SimulatedObject::get_body(btScalar mass,btTransform transform, btScalar com_proportion){
-    if(!_body || !_motion_state){
-        buildMotion(mass,transform,com_proportion);
-    }
+btRigidBody *  SimulatedObject::get_body() const{
+    if(!_body || !_motion_state) qWarning()<<"Attempting to access unallocated btRigidBody";
     return _body;
+}
+
+btDefaultMotionState * SimulatedObject::get_motion_state() const {
+    if(!_body || !_motion_state) qWarning()<<"Attempting to access unallocated btDefaultMotionState";
+    return _motion_state;
 }
 
 void SimulatedObject::deleteMotion(){
@@ -47,11 +49,11 @@ void SimulatedObject::deleteMotion(){
     if(_motion_state != NULL){delete _motion_state; _motion_state = NULL;}
 }
 
-void  SimulatedObject::buildMotion(btScalar mass,btTransform transform, btScalar com_proportion){
+void  SimulatedObject::buildMotion(btScalar mass, btTransform transform, const Shape &shape, btScalar com_proportion){
     deleteMotion();
-    _collision_shape = _shape->newCollisionShape();
+    _collision_shape = shape.newCollisionShape();
     _collision_shape->calculateLocalInertia(mass,_local_inertia);
-    btScalar length = _shape->get_shape().y();
+    btScalar length = shape.get_shape().y();
     btScalar com_y_position = length * com_proportion - length/2.0f;
     btTransform com_offset; com_offset.setIdentity();com_offset.setOrigin(btVector3(0,com_y_position,com_y_position));
     _motion_state = new btDefaultMotionState(transform,com_offset);

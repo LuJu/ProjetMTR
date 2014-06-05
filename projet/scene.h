@@ -73,6 +73,7 @@ public:
     void displayObjectPoints(Part *obj, QMatrix4x4& M);
     void displayPoints();
     Simulation  * _simulation;
+    int _selected_index;
 
 private:
     MeshPointer _cube_mesh;

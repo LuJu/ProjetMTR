@@ -64,8 +64,8 @@ public:
     Simulation  * _simulation;
     int _selected_index;
 private:
-    QList<Part * > _display;
-    QList<Curve> * curves;
+    const QList<Curve> * _display_curves;
+    const QList<Curve> * _display_curves_steps;
 
 };
 

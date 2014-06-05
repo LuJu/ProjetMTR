@@ -51,7 +51,6 @@ Part::~Part(){
 
 void Part::__build(const btVector3& origin, const btVector3& shape,Shape::shapetype type){
     _shape = Shape(shape,type);
-    _simulation.set_shape (&_shape);
 
     _original_transform.setIdentity();
     _original_transform.setOrigin(origin);
@@ -85,7 +84,7 @@ void Part::deleteMotion(){
 }
 
 void Part::buildMotion(){
-    _simulation.buildMotion(_mass,_original_transform,_center_of_mass_proportion);
+    _simulation.buildMotion(_mass,_original_transform,_shape,_center_of_mass_proportion);
 }
 
 void Part::buildMesh(){
@@ -102,15 +101,8 @@ void Part::updatePartInfo(float elapsed,float delta_t,float gravity,const btTran
     updateAnimation(delta_t,transform,parent_transform);
     updateSimulation(delta_t);
 
-    updateEnergyStructure(gravity);
+    updateEnergyStructure(gravity,elapsed);
     insertDataToCurves(_curves,elapsed);
-}
-
-btScalar Part::angleDifference(btVector3 v1, btVector3 v2){
-    btScalar dot_product = v1.dot(v2);
-    btScalar cost = dot_product / (v2.length() * v1.length());
-    btScalar rotation_angle = qAcos(cost);
-    return rotation_angle;
 }
 
 void Part::updateAnimation(float delta_t,const btTransform& transform, const btTransform& parent_transform){
@@ -223,9 +215,10 @@ void Part::updateSimulation(float delta_t){
         current._rotation_vector_diff.normalize();
 }
 
-void Part::updateEnergyStructure(float gravity){
+void Part::updateEnergyStructure(float gravity,float time){
 
     _energy.part_name = _body_part_name;
+    _energy.time = time;
 
     _energy.animation.position.x = _animation_information._current._center_of_mass_world_position.x();
     _energy.animation.position.y = _animation_information._current._center_of_mass_world_position.y();
@@ -287,13 +280,13 @@ void Part::insertDataToCurves(QList<Curve>& curves, float elapsed){
 //        }
 //        if (GlobalConfig::is_enabled("display_simulation_stats")) {
 //            curves[SIMULATION_KE].insert(elapsed,_energy.simulation.ke);
-            curves[SIMULATION_AKE].insert(elapsed,_energy.simulation.ake);
+//            curves[SIMULATION_AKE].insert(elapsed,_energy.simulation.ake);
 //            curves[SIMULATION_PE].insert(elapsed,_energy.simulation.pe);
 //        }
 //        if (GlobalConfig::is_enabled("display_diff")) {
-//            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
-//            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
-//            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
+            curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
+            curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
+            curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
 //            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
 //            curves[ANIMATION_X].insert(elapsed,_energy.animation.x);
 //            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);

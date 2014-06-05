@@ -67,15 +67,8 @@ btScalar Shape::cubeVolume()const{
 }
 
 
-btVector3 Shape::get_shape() const {
-    return _shape_vector;
-}
 
-void Shape::set_shape(const btVector3 &shape){
-    _shape_vector = shape;
-}
-
-btCollisionShape *Shape::buildCollisionShape(){
+btCollisionShape * Shape::newCollisionShape() const{
     btCollisionShape * collision_shape ;
     switch (_shape){
         case cube:
@@ -86,34 +79,8 @@ btCollisionShape *Shape::buildCollisionShape(){
             break;
         case capsule:
             collision_shape  = new btCapsuleShape(_shape_vector.x(),_shape_vector.y());
-//            toString(_shape_vector,"shape");
             break;
-        case plane:
-            collision_shape  = new btStaticPlaneShape(btVector3(0,1,0),1);
         break;
     }
     return collision_shape;
-
-}
-
-btCollisionShape * Shape::newCollisionShape(){
-    btCollisionShape * collision_shape = buildCollisionShape();
-    return collision_shape;
-}
-
-void Shape::deleteCollisionShape(btCollisionShape * collision_shape){
-    switch (_shape){
-        case cube:
-            delete((btBoxShape*)collision_shape);
-            break;
-        case cylinder:
-            delete((btCylinderShape*)collision_shape);
-            break;
-        case capsule:
-            delete((btCapsuleShape*)collision_shape);
-            break;
-        case plane:
-//            collision_shape  = new btStaticPlaneShape(btVector3(0,1,0),1);
-        break;
-    }
 }

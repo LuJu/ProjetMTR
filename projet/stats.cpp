@@ -45,7 +45,11 @@ void Stats::draw(){
     Viewer::draw();
     bool started;
     _simulation->get_lock()->lockForRead();
-    _display = _simulation->get_display_list();
+
+    if (_simulation->get_display_list().size() > 0){
+        _display_curves= &_simulation->get_display_list().at(_selected_index)->get_curves();
+        _display_curves_steps= &_simulation->get_display_list().at(_selected_index)->get_curves_steps();
+    }
     started = _simulation->is_started();
     _simulation->get_lock()->unlock();
     if(_simulation->is_over() && GlobalConfig::is_enabled("automatic_close")){
@@ -53,7 +57,6 @@ void Stats::draw(){
         close();
     } else if (started) {
         display3DObjects();
-        curves= &_display.at(_selected_index)->get_curves();
     }
     frameEnd();
 }
@@ -64,25 +67,26 @@ void Stats::displayStats(){
     float right,top,bottom,value;
     value = bottom = top = right = 0;
 
-    for (int i = 0; i < _display.size(); ++i) {
-        const QList<Curve>& curves= _display.at(i)->get_curves();
-        for (int j = 0; j < curves.size(); ++j) {
+    const QList<Curve>& curves= *_display_curves;
+    const QList<Curve>& curves_steps= *_display_curves_steps;
 
-            if (curves[j].size()>0){
-                value = (curves[j].end()-1).key();
-            } else {
-                value = 0;
-            }
-            if (right < value)
-                right = value;
-            value = curves[j].get_max();
-            if (top < value)
-                top = value;
-            value = curves[j].get_min();
-            if (bottom > value)
-                bottom = value;
+    for (int j = 0; j < curves.size(); ++j) {
+
+        if (curves[j].size()>0){
+            value = (curves[j].end()-1).key();
+        } else {
+            value = 0;
         }
+        if (right < value)
+            right = value;
+        value = curves[j].get_max();
+        if (top < value)
+            top = value;
+        value = curves[j].get_min();
+        if (bottom > value)
+            bottom = value;
     }
+
 
 
 
@@ -115,17 +119,11 @@ void Stats::displayStats(){
 
     pvm = P*V*M;
     updateMatrices(P,V,M);
-    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
+//    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 
-    for (int i = 0; i < _display.size(); ++i) {
-        if (_selected_index == i){
-            const QList<Curve>& curves= _display.at(i)->get_curves();
-            const QList<Curve>& curves_steps= _display.at(i)->get_curves_steps();
-            for (int j = 0; j < curves.size(); ++j) {
-                if (!curves[j].isEmpty())       MeshUtils::render(curves[j],1,curves[j].get_color(),1);
-                if (!curves_steps[j].isEmpty()) MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),3,true);
-            }
-        }
+    for (int j = 0; j < curves.size(); ++j) {
+        if (!curves[j].isEmpty())       MeshUtils::render(curves[j],1,curves[j].get_color(),1);
+        if (!curves_steps[j].isEmpty()) MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),3,true);
     }
 }
 

@@ -29,13 +29,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "ui_Debugging.h"
 #include "simulation.h"
-#include "humanbody.h"
 
 #include "stats.h"
+#include "scene.h"
 
 #include <QTimer>
 
 class Stats;
+class Scene;
 class DebuggingInterface : public Ui::Debugging
 {
 
@@ -46,9 +47,9 @@ public:
     void init(){
         part_list->clear();
         _simulation->get_lock()->lockForRead();
-        HumanBody * _human = _simulation->get_human();
-        for (int i = 0; i < _human->_limbs.size(); ++i) {
-            part_list->addItem(_human->_limbs[i]->get_body_part());
+        const QList<Part * >&  limbs = _simulation->get_display_list();
+        for (int i = 0; i < limbs.size(); ++i) {
+            part_list->addItem(limbs[i]->get_body_part());
         }
         _simulation->get_lock()->unlock();
     }
@@ -60,6 +61,7 @@ public:
     void update();
 
     Stats * _stats;
+    Scene * _scene;
 };
 
 #endif // DEBBUGINGINTERFACE_H
