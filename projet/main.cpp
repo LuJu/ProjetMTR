@@ -115,7 +115,6 @@ void parseArguments(int argc, char *argv[]){
             value= param.toInt(&ok);
             if (!ok)
                 qWarning()<<"parameter "<<i<<" invalid";
-            else qWarning()<<"parameter "<<value<<" valid";
         }
         switch (i){
         case 0:

@@ -62,9 +62,9 @@ void HumanBody::loadObjects(QString path){
                     else ignore = false;
                     if (!ignore){
                         object = new Joint();
-                        if (temp.size() >= 5 && temp.at(4) == "zeromass")
+                        if (temp.size() >= 5 && temp.at(4).contains("zero",Qt::CaseInsensitive))
                             mass = 0.0f;
-                        else mass = 1;
+                        else mass = 1.0f;
                         QString parent = temp.at(3);
                         QString name = temp.at(1);
                         object->_part_name = name;
@@ -93,10 +93,8 @@ void HumanBody::loadObjects(QString path){
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-//                                object->_animation.get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat());
 //                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat()/30);
-//                                object->get_animation().get_translation_curves()[order[k]].insert(values[j].toFloat(),sign[0] * values[j+1].toFloat()/30);
+                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat()/10);
                             }
                         }
                         btVector3 extends;
@@ -333,7 +331,6 @@ void HumanBody::buildConstraints(JointNode * current_node){
         for (int i = 0; i < n-1; ++i) {
             for (int j = i; j < n-1 ; ++j) {
                 list.append(QPair<JointNode*,JointNode*>(current_node->childAt(i),current_node->childAt(j+1)));
-
             }
         }
         for (int i = 0; i < list.size(); ++i) {
@@ -343,7 +340,11 @@ void HumanBody::buildConstraints(JointNode * current_node){
                     _constraints.append(Constraint(list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part(),true));
                 else
                     _constraints.append(Constraint(list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part()));
+            } else { // means that it is root
+                if (GlobalConfig::is_enabled("root_fixed"))
+                    _constraints.append(Constraint(list.at(i).second->get_data()->get_main_part(),NULL,false));
             }
+
         }
 
         for (int i = 0; i < current_node->get_number_of_children(); ++i) {

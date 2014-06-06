@@ -102,9 +102,6 @@ public:
 
     void setSimulationPosition(btTransform transform, float time);
     void setInitialPosition(btTransform transform, btTransform parent_transform);
-
-private:
-
     enum curve_data{
         ANIMATION_KE = 0,
         ANIMATION_AKE,
@@ -118,10 +115,15 @@ private:
         ANIMATION_X,
         ANIMATION_Y,
         ANIMATION_Z,
+        SIMULATION_X,
         SIMULATION_Y,
+        SIMULATION_Z,
         NUMBER_OF_CURVES
     };
     //! disabled
+
+private:
+
     Part(const Part& object);
     void __build(const btVector3& origin, const btVector3& shape,Shape::shapetype type);
     void deleteMotion();

@@ -71,20 +71,22 @@ void Stats::displayStats(){
     const QList<Curve>& curves_steps= *_display_curves_steps;
 
     for (int j = 0; j < curves.size(); ++j) {
+        if (_curves_displayed.at(j) == true){
 
-        if (curves[j].size()>0){
-            value = (curves[j].end()-1).key();
-        } else {
-            value = 0;
+            if (curves[j].size()>0){
+                value = (curves[j].end()-1).key();
+            } else {
+                value = 0;
+            }
+            if (right < value)
+                right = value;
+            value = curves[j].get_max();
+            if (top < value)
+                top = value;
+            value = curves[j].get_min();
+            if (bottom > value)
+                bottom = value;
         }
-        if (right < value)
-            right = value;
-        value = curves[j].get_max();
-        if (top < value)
-            top = value;
-        value = curves[j].get_min();
-        if (bottom > value)
-            bottom = value;
     }
 
 
@@ -119,11 +121,13 @@ void Stats::displayStats(){
 
     pvm = P*V*M;
     updateMatrices(P,V,M);
-//    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
+    MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 
     for (int j = 0; j < curves.size(); ++j) {
-        if (!curves[j].isEmpty())       MeshUtils::render(curves[j],1,curves[j].get_color(),1);
-        if (!curves_steps[j].isEmpty()) MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),3,true);
+        if(_curves_displayed.at(j) == true) {
+            if (!curves[j].isEmpty())       MeshUtils::render(curves[j],1,curves[j].get_color(),1);
+            if (!curves_steps[j].isEmpty()) MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),3,true);
+        }
     }
 }
 
@@ -140,6 +144,10 @@ void Stats::init(){
     _ui->set_zoom(100);
     _ui->activateProgressiveZoom(60);
     _selected_index = 0;
+
+    for (int i = 0; i < Part::NUMBER_OF_CURVES; ++i) {
+        _curves_displayed.append(false);
+    }
 }
 
 void Stats::keyPressEvent(QKeyEvent *keyEvent)

@@ -38,7 +38,7 @@ x;0;0
 y;0;0
 z;0;0;
 end;;
-object;left_leg;ignore;pelvis;zeromass
+object;left_leg;display;pelvis;mass
 scaling;;
 radius;0;0.07
 length;0;0.45

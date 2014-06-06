@@ -81,4 +81,10 @@ void DebuggingInterface::update(){
     fps->setText(QString::number(_scene->get_fps(),'f',0));
     fps_stats->setText(QString::number(_stats->get_fps(),'f',0));
 
+    QList<bool>& cb = _stats->_curves_displayed;
+    for (int i = 0; i < _checkboxes.size(); ++i) {
+        if (_checkboxes[i]->isChecked() ) cb[i] = true;
+        else cb[i] = false;
+    }
+
 }

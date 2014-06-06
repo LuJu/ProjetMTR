@@ -75,7 +75,9 @@ void Part::appendCurves(QList<Curve>& list){
     appendCurve(list,ANIMATION_X,"Animation KE",QColor(255,0,0));
     appendCurve(list,ANIMATION_Y,"Animation KE",QColor(255,0,255));
     appendCurve(list,ANIMATION_Z,"Animation KE",QColor(255,0,255));
+    appendCurve(list,SIMULATION_X,"Animation KE",QColor(0,255,255));
     appendCurve(list,SIMULATION_Y,"Animation KE",QColor(0,255,255));
+    appendCurve(list,SIMULATION_Z,"Animation KE",QColor(0,255,255));
 }
 
 
@@ -131,8 +133,8 @@ void Part::updateAnimation(float delta_t,const btTransform& transform, const btT
 //    different= different* current._center_of_mass_rotation;
     test = different * rotation_difference.inverse();
     test = btQuaternion( different * rotation_difference.inverse());
-    if (absolute_value(test.w()) <= 0.00001)
-        qDebug()<<"ZEROOOOO";
+//    if (absolute_value(test.w()) <= 0.00001)
+//        qDebug()<<"ZEROOOOO";
     current._center_of_mass_world_position = transform.getOrigin() - btc_bt;
     btVector3 animation_distance(current._center_of_mass_world_position - previous._center_of_mass_world_position);
     btVector3 rot_axis = rotation_difference.getAxis().normalize();
@@ -273,24 +275,21 @@ void Part::updateEnergyStructure(float gravity,float time){
 }
 
 void Part::insertDataToCurves(QList<Curve>& curves, float elapsed){
-//        if (GlobalConfig::is_enabled("display_animation_stats")) {
-//            curves[ANIMATION_KE].insert(elapsed,_energy.animation.ke);
+            curves[ANIMATION_KE].insert(elapsed,_energy.animation.ke);
             curves[ANIMATION_AKE].insert(elapsed,_energy.animation.ake);
-//            curves[ANIMATION_PE].insert(elapsed,_energy.animation.pe);
-//        }
-//        if (GlobalConfig::is_enabled("display_simulation_stats")) {
-//            curves[SIMULATION_KE].insert(elapsed,_energy.simulation.ke);
-//            curves[SIMULATION_AKE].insert(elapsed,_energy.simulation.ake);
-//            curves[SIMULATION_PE].insert(elapsed,_energy.simulation.pe);
-//        }
-//        if (GlobalConfig::is_enabled("display_diff")) {
+            curves[ANIMATION_PE].insert(elapsed,_energy.animation.pe);
+            curves[SIMULATION_KE].insert(elapsed,_energy.simulation.ke);
+            curves[SIMULATION_AKE].insert(elapsed,_energy.simulation.ake);
+            curves[SIMULATION_PE].insert(elapsed,_energy.simulation.pe);
             curves[DIFF_KE].insert(elapsed,_energy.ke_diff);
             curves[DIFF_AKE].insert(elapsed,_energy.ake_diff);
             curves[DIFF_PE].insert(elapsed,_energy.pe_diff);
-//            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
-//            curves[ANIMATION_X].insert(elapsed,_energy.animation.x);
-//            curves[ANIMATION_Y].insert(elapsed,_energy.animation.y);
-//        }
+            curves[ANIMATION_X].insert(elapsed,_energy.animation.position.x);
+            curves[ANIMATION_Y].insert(elapsed,_energy.animation.position.y);
+            curves[ANIMATION_Z].insert(elapsed,_energy.animation.position.z);
+            curves[SIMULATION_X].insert(elapsed,_energy.simulation.position.x);
+            curves[SIMULATION_Y].insert(elapsed,_energy.simulation.position.y);
+            curves[SIMULATION_Z].insert(elapsed,_energy.simulation.position.z);
 }
 
 void Part::setSimulationTransformFromAnimation(){

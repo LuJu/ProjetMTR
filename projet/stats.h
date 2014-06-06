@@ -63,6 +63,7 @@ public:
     void installDebugger();
     Simulation  * _simulation;
     int _selected_index;
+    QList<bool> _curves_displayed;
 private:
     const QList<Curve> * _display_curves;
     const QList<Curve> * _display_curves_steps;

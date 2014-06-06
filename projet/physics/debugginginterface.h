@@ -52,6 +52,34 @@ public:
             part_list->addItem(limbs[i]->get_body_part());
         }
         _simulation->get_lock()->unlock();
+
+
+        _checkboxes.reserve(Part::NUMBER_OF_CURVES);
+        for (int i = 0; i < Part::NUMBER_OF_CURVES; ++i) {
+            _checkboxes.append(NULL);
+        }
+
+        _checkboxes[Part::ANIMATION_AKE] = cb_ecr_anim;
+        _checkboxes[Part::ANIMATION_KE] = cb_ec_anim;
+        _checkboxes[Part::ANIMATION_PE] = cb_ep_anim;
+
+        _checkboxes[Part::ANIMATION_X] = cb_x_anim;
+        _checkboxes[Part::ANIMATION_Y] = cb_y_anim;
+        _checkboxes[Part::ANIMATION_Z] = cb_z_anim;
+
+        _checkboxes[Part::SIMULATION_AKE] = cb_ecr_simu;
+        _checkboxes[Part::SIMULATION_KE] = cb_ec_simu;
+        _checkboxes[Part::SIMULATION_PE] = cb_ep_simu;
+
+        _checkboxes[Part::SIMULATION_X] = cb_x_simu;
+        _checkboxes[Part::SIMULATION_Y] = cb_y_simu;
+        _checkboxes[Part::SIMULATION_Z] = cb_z_simu;
+
+        _checkboxes[Part::DIFF_AKE] = cb_ecr_diff;
+        _checkboxes[Part::DIFF_KE] = cb_ec_diff;
+        _checkboxes[Part::DIFF_PE] = cb_ep_diff;
+
+
     }
     void log(const char * msg){
 //        console->setText(msg);
@@ -62,6 +90,7 @@ public:
 
     Stats * _stats;
     Scene * _scene;
+    QList<QCheckBox *> _checkboxes;
 };
 
 #endif // DEBBUGINGINTERFACE_H

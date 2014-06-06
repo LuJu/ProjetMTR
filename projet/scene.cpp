@@ -44,7 +44,6 @@ Scene::Scene():
 
 void Scene::draw(){
     Viewer::draw();
-//    _simulation->loop();
     bool started;
     _simulation->get_lock()->lockForRead();
     _display = _simulation->get_display_list();
@@ -183,8 +182,8 @@ void Scene::display3DObjects(){
 
 void Scene::init(){
     Viewer::init();
-    _ui->set_zoom(100);
-    _ui->activateProgressiveZoom(3);
+    _ui->set_zoom(50);
+    _ui->activateProgressiveZoom(1);
     _cube_mesh = QSharedPointer<Mesh>(new Mesh);
     _selected_index = 0;
     MeshUtils::addFlatSurface(_cube_mesh.data());

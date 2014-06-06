@@ -76,7 +76,7 @@ void Constraint::deleteConstraint(){
 }
 
 bool Constraint::has_parts() const {
-    if (_parts.first==NULL && _parts.second==NULL) return false;
+    if (_parts.first==NULL) return false;
     return true;
 }
 

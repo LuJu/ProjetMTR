@@ -1,8 +1,24 @@
-export.csv 100 10000 1 1000 0 1 2 1 1 1
-export.csv 100 10000 1 500 0 1 2 1 1 1
-export.csv 100 10000 1 200 0 1 2 1 1 1
-export.csv 100 10000 1 150 0 1 2 1 1 1
-export.csv 100 10000 1 100 0 1 2 1 1 1
-export.csv 100 10000 1 90 0 1 2 1 1 1
-export.csv 100 10000 1 80 0 1 2 1 1 1
-export.csv 100 10000 1 70 0 1 2 1 1 1
+export1.csv 100 5000 1 1000
+export1.csv 100 5000 1 500
+export1.csv 100 5000 1 200
+export1.csv 100 5000 1 150
+export1.csv 100 5000 1 100
+export1.csv 100 5000 1 90
+export1.csv 100 5000 1 80
+export1.csv 100 5000 1 70
+export2.csv 100 5000 1 1000
+export2.csv 100 5000 1 500
+export2.csv 100 5000 1 200
+export2.csv 100 5000 1 150
+export2.csv 100 5000 1 100
+export2.csv 100 5000 1 90
+export2.csv 100 5000 1 80
+export2.csv 100 5000 1 70
+export3.csv 100 5000 1 1000
+export3.csv 100 5000 1 500
+export3.csv 100 5000 1 200
+export3.csv 100 5000 1 150
+export3.csv 100 5000 1 100
+export3.csv 100 5000 1 90
+export3.csv 100 5000 1 80
+export3.csv 100 5000 1 70
