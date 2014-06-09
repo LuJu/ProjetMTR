@@ -176,23 +176,23 @@ int main(int argc, char *argv[])
         gui._simulation = simulation;
         gui.setWindowTitle("Physics simulation");
         gui.move(0,0);
-        if (GlobalConfig::is_enabled("display_stats")) {
-            stats=new Stats(&gui);
-            stats->setWindowFlags( Qt::Window);
-            stats->_simulation = simulation;
-            stats->setWindowTitle("Stats");
-            stats->move(gui.width(),0);
-            stats->setGeometry(gui.width(),0,700,300);
-            if (GlobalConfig::is_enabled("debugging")){
-                _debugging_ui = NULL;
-                _debugging = new DebuggingWidget(&gui);
-                _debugging_ui = new DebuggingInterface();
+        if (GlobalConfig::is_enabled("debugging")){
+            _debugging_ui = NULL;
+            _debugging = new DebuggingWidget(&gui);
+            _debugging_ui = new DebuggingInterface();
 
-                _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
-                _debugging_ui->setupUi(_debugging);
-                _debugging->_interface = _debugging_ui;
-                _debugging_ui->_simulation=simulation;
+            _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
+            _debugging_ui->setupUi(_debugging);
+            _debugging->_interface = _debugging_ui;
+            _debugging_ui->_simulation=simulation;
 
+            if (GlobalConfig::is_enabled("display_stats")) {
+                stats=new Stats(&gui);
+                stats->setWindowFlags( Qt::Window);
+                stats->_simulation = simulation;
+                stats->setWindowTitle("Stats");
+                stats->move(gui.width(),0);
+                stats->setGeometry(gui.width(),0,700,300);
             }
         }
 #ifdef QT_4_

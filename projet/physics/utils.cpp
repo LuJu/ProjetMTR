@@ -70,7 +70,6 @@ btVector3 btQuat2Euler(btQuaternion q){
     z = q.y();
     w = q.w();
     btScalar test = x*z + y*w;
-//    qDebug()<<"test "<<test;
     if (test > .499 ) {
         heading = 2*atan2(z,w);
         attitude = M_PI_2;

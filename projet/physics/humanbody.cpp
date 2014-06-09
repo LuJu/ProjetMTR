@@ -93,8 +93,8 @@ void HumanBody::loadObjects(QString path){
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
-//                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat()/10);
+                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
+//                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat()/10);
                             }
                         }
                         btVector3 extends;
@@ -265,9 +265,12 @@ void HumanBody::setSimulationPositionJointTree(float elapsed,JointNode* node, bt
         Joint * data= node->get_data();
         if (elapsed == 0.0f){
             if(data->get_main_part() != NULL)
-                data->get_main_part()->setInitialPosition(object_transform,transform);
+                data->get_main_part()->initialTransformStateMatch(object_transform,transform);
         }
-        else if(data->get_main_part() != NULL) data->get_main_part()->setSimulationPosition(object_transform,elapsed);
+        else if(data->get_main_part() != NULL){
+            data->get_main_part()->updateStepsCurves(elapsed);// records the data for the curves
+            data->get_main_part()->transformStateMatch();
+        }
         for (int i = 0; i < node->get_number_of_children(); ++i) {
             setSimulationPositionJointTree(elapsed,node->childAt(i),object_transform);
         }

@@ -100,8 +100,8 @@ public:
     state_information _animation_information;
     state_information _simulation_information;
 
-    void setSimulationPosition(btTransform transform, float time);
-    void setInitialPosition(btTransform transform, btTransform parent_transform);
+    void transformStateMatch();
+    void initialTransformStateMatch(btTransform node_transform, btTransform parent_transform);
     enum curve_data{
         ANIMATION_KE = 0,
         ANIMATION_AKE,
@@ -122,6 +122,7 @@ public:
     };
     //! disabled
 
+    void updateStepsCurves(float elapsed){ insertDataToCurves(_curves_steps,elapsed);}
 private:
 
     Part(const Part& object);
@@ -143,9 +144,6 @@ private:
     bool _animated;
 
     t_part_info _energy;
-
-
-    btVector3 _calculated_simulation_speed;
 
 
     void appendCurve(QList<Curve>& list, int index, QString label, QColor color);

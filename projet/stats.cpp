@@ -89,38 +89,12 @@ void Stats::displayStats(){
         }
     }
 
-
-
-
-    if (GlobalConfig::is_enabled("automatic_stats_progression")){
-        window.setY(_ui->get_zoom()/10+1);
-        window.setHeight((-(_ui->get_zoom()/5)+1));
-        window.setX(right-width()*6);
-        window.setWidth(width()*6);
-
-    } else {
-        float zoom = _ui->get_zoom();
-        float log = 1 / (qLn(zoom) / qLn(10));
-        zoom = zoom ;
-
-        if (log < 0) log = 0;
-        log = log * 1000;
-        int height = log;
-        right = _ui->get_camera().get_position().x() * 6;
-        top = _ui->get_camera().get_position().y() / 2;
-        int topint = top + height/2;
-        window.setY(topint);
-        window.setHeight(-height);
-        window.setX(right);
-        window.setWidth(width()*6);
-
-    }
-
-
+    window.setY(_ui->get_zoom()/10+1);
+    window.setHeight((-(_ui->get_zoom()/5)+1));
+    window.setX(right-width()*6);
+    window.setWidth(width()*6);
     P.ortho(window);
-
-    pvm = P*V*M;
-    updateMatrices(P,V,M);
+    updateProjectionMatrix(P);
     MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 
     for (int j = 0; j < curves.size(); ++j) {
