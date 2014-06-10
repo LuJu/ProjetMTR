@@ -85,7 +85,7 @@ void HumanBody::loadObjects(QString path){
                 } else if (!ignore) {
                     if (temp.at(0)=="scaling") {
 //                        QStringList values = list[i+1+k] ;
-                        object->get_animation().get_scaling_curves()[0].insert(0.0f,0.1f);
+                        object->get_animation().get_scaling_curves()[0].insert(0.0f,0.05f);
 //                                if (k == 1){
 //                                    object->_animation.get_scaling_curves()[0].insert(0.0f,values[j].toFloat());}
 
@@ -94,7 +94,7 @@ void HumanBody::loadObjects(QString path){
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
                                 object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-//                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat()/10);
+//                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat()/30);
                             }
                         }
                         btVector3 extends;
@@ -299,12 +299,18 @@ void HumanBody::buildJointTree(){
                         _joints_tree.addNode(temp->_part_name,temp,parent->get_id());
                         new_part = new Part();
                         temp->set_main_part(new_part);
-                        new_part->set_mass(temp->_part_mass);
+//                        new_part->set_mass(temp->_part_mass);
+                        float mass = BodyInfo::mass(temp->_part_name,_mass);
+                        if (mass == 0.0f) {
+                            qDebug()<<"Error mass null for part "<<temp->_part_name;
+                            new_part->set_mass(1.0f);
+                        }
+                        else new_part->set_mass(mass);
                         new_part->set_body_part(temp->_part_name);
                         new_part->get_shape_struct().set_shape_type(Shape::capsule);
                         new_part->set_animated(true);
                         btVector3 extends = btVector3(temp->get_animation().TranslationVector(0));
-                        new_part->get_shape_struct().set_shape(btVector3(.05,extends.length(),.05));
+                        new_part->get_shape_struct().set_shape(btVector3(.01,extends.length(),.01));
                         new_part->buildMesh();
                         _limbs.append(new_part);
                         inserted[j] = true;
@@ -314,7 +320,8 @@ void HumanBody::buildJointTree(){
         }
         complete = true;
         for (int i = 0; i < number_of_joints; ++i) {
-            if (inserted[i] == false) complete = false;
+            if (inserted[i] == false)
+                complete = false;
         }
     }
 }

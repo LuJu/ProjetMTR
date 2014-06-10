@@ -64,11 +64,11 @@ void Simulation::init(const SimulationParameters& params) {
 
 Part * Simulation::allocateGround() const {
     Part * ground = new Part();
-    ground->get_shape_struct().set_shape(btVector3(5,0.02,5));
+    ground->get_shape_struct().set_shape(btVector3(2,0.01,2));
     ground->set_mass(0); // no gravity
     btTransform transform;
     transform.setIdentity();
-    transform.setOrigin(btVector3(0,-3,0));
+    transform.setOrigin(btVector3(0,0,0));
     ground->set_original_transform(transform);
     return ground;
 }
@@ -163,7 +163,7 @@ void Simulation::cleanWorld(){
             body = _parts[i]->get_body();
             _environment->get_world()->removeRigidBody(body);
         }
-        _world_filled = false; //indicates that the world is now empty/
+        _world_filled = false; //indicates that the world is now empty
     } else qDebug()<<"Attempting to clean an empty world" ;
 }
 

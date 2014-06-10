@@ -120,8 +120,6 @@ public:
         SIMULATION_Z,
         NUMBER_OF_CURVES
     };
-    //! disabled
-
     void updateStepsCurves(float elapsed){ insertDataToCurves(_curves_steps,elapsed);}
 private:
 
@@ -145,9 +143,6 @@ private:
 
     t_part_info _energy;
 
-
-    void appendCurve(QList<Curve>& list, int index, QString label, QColor color);
-    void appendCurves(QList<Curve>& list);
     void insertDataToCurves(QList<Curve>& curves, float elapsed);
 
     //! updates the structure that will be used for exportation

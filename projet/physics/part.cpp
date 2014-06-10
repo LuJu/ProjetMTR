@@ -40,12 +40,6 @@ Part::Part():
     __build(btVector3(0,0,0),btVector3(1,1,1),Shape::cube);
 }
 
-void Part::appendCurve(QList<Curve>& list, int index,QString label, QColor color){
-    Curve& c= list[index];
-    c.set_color(color);
-    c.set_label(label);
-}
-
 Part::~Part(){
 }
 
@@ -55,32 +49,11 @@ void Part::__build(const btVector3& origin, const btVector3& shape,Shape::shapet
     _original_transform.setIdentity();
     _original_transform.setOrigin(origin);
 
-    appendCurves(_curves);
-    appendCurves(_curves_steps);
-}
-
-void Part::appendCurves(QList<Curve>& list){
     for (int i = 0; i < NUMBER_OF_CURVES; ++i) {
-        list.append(Curve());
+        _curves.append(Curve());
+        _curves_steps.append(Curve());
     }
-    appendCurve(list,ANIMATION_KE,"Animation KE",QColor(255,0,0));
-    appendCurve(list,ANIMATION_AKE,"Animation KE",QColor(0,0,255));
-    appendCurve(list,ANIMATION_PE,"Animation KE",QColor(255,255,255));
-    appendCurve(list,SIMULATION_KE,"Animation KE",QColor(255,0,0));
-    appendCurve(list,SIMULATION_AKE,"Animation KE",QColor(0,0,255));
-    appendCurve(list,SIMULATION_PE,"Animation KE",QColor(255,255,25));
-    appendCurve(list,DIFF_KE,"Animation KE",QColor(255,0,255));
-    appendCurve(list,DIFF_AKE,"Animation KE",QColor(0,255,255));
-    appendCurve(list,DIFF_PE,"Animation KE",QColor(255,255,0));
-    appendCurve(list,ANIMATION_X,"Animation KE",QColor(255,0,0));
-    appendCurve(list,ANIMATION_Y,"Animation KE",QColor(255,0,255));
-    appendCurve(list,ANIMATION_Z,"Animation KE",QColor(255,0,255));
-    appendCurve(list,SIMULATION_X,"Animation KE",QColor(0,255,255));
-    appendCurve(list,SIMULATION_Y,"Animation KE",QColor(0,255,255));
-    appendCurve(list,SIMULATION_Z,"Animation KE",QColor(0,255,255));
 }
-
-
 
 void Part::deleteMotion(){
 }
@@ -121,10 +94,10 @@ void Part::updateAnimation(float delta_t,const btTransform& transform, const btT
     btVector3 shape_vector = btVector3(0,_shape.get_shape().y()/2,0);
     btScalar dot_product = shape_vector.dot(vector_dist);
     btScalar norm_product = shape_vector.length() * vector_dist.length();
-    if (absolute_value(dot_product-norm_product) < 0.001){
+    if (absolute_value(dot_product-norm_product) < 0.00001){
         rotation_angle = 0;
         rotation_axis = btVector3(1,0,0);
-    } else if (absolute_value(dot_product+norm_product)< 0.001){
+    } else if (absolute_value(dot_product+norm_product)< 0.00001){
         rotation_angle = M_PI;
         rotation_axis = btVector3(1,0,0);
     } else {
@@ -299,10 +272,10 @@ void Part::initialTransformStateMatch(btTransform node_transform,btTransform par
         btVector3 shape_vector = btVector3(0,_shape.get_shape().y()/2,0);
         btScalar dot_product = shape_vector.dot(vector_dist);
         btScalar norm_product = shape_vector.length() * vector_dist.length();
-        if (absolute_value(dot_product-norm_product) < 0.001){// two vectors in the same direction
+        if (absolute_value(dot_product-norm_product) < 0.00001){// two vectors in the same direction
             rotation_angle = 0;
             rotation_axis = btVector3(1,0,0);
-        } else if (absolute_value(dot_product+norm_product)< 0.001){ // two vectors in the opposite direction
+        } else if (absolute_value(dot_product+norm_product)< 0.00001){ // two vectors in the opposite direction
             rotation_angle = M_PI;
             rotation_axis = btVector3(1,0,0);
         } else {

@@ -62,7 +62,7 @@ void Stats::draw(){
 }
 
 void Stats::displayStats(){
-    QMatrix4x4 M,V,P,pvm;
+    QMatrix4x4 M,V,P;
     QRect window;
     float right,top,bottom,value;
     value = bottom = top = right = 0;
@@ -95,12 +95,15 @@ void Stats::displayStats(){
     window.setWidth(width()*6);
     P.ortho(window);
     updateProjectionMatrix(P);
+    updateViewMatrix(V);
     MeshUtils::drawGrid(window,QColor(0,0,0,255),1,1000,1000);
 
     for (int j = 0; j < curves.size(); ++j) {
         if(_curves_displayed.at(j) == true) {
-            if (!curves[j].isEmpty())       MeshUtils::render(curves[j],1,curves[j].get_color(),1);
-            if (!curves_steps[j].isEmpty()) MeshUtils::render(curves_steps[j],1,curves_steps[j].get_color(),3,true);
+            if (!curves[j].isEmpty())
+                MeshUtils::render(curves[j],1,QColor(255,255,255),1);
+            if (!curves_steps[j].isEmpty())
+                MeshUtils::render(curves_steps[j],1,QColor(255,255,255),3,true);
         }
     }
 }
@@ -114,7 +117,7 @@ void Stats::display3DObjects(){
 
 void Stats::init(){
     Viewer::init();
-    _ui->_type = UIState::camera2D;
+    updateMatrices(QMatrix4x4(),QMatrix4x4(),QMatrix4x4());
     _ui->set_zoom(100);
     _ui->activateProgressiveZoom(60);
     _selected_index = 0;
@@ -153,6 +156,5 @@ void Stats::closeEvent(QCloseEvent * event){
     _simulation->stop();
     _simulation->get_lock()->unlock();
     QApplication::closeAllWindows();
-//    QGLViewer::closeEvent(event);
 }
 
