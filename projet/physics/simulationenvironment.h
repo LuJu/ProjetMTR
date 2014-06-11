@@ -4,7 +4,9 @@
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
+#include "QDebug"
 
+//! Contains the objects to run a bullet simulation environment
 class SimulationEnvironment
 {
 public:

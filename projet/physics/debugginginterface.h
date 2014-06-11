@@ -37,6 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 class Stats;
 class Scene;
+
+//! Interface for displaying information on the program
 class DebuggingInterface : public Ui::Debugging
 {
 

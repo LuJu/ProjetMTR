@@ -35,9 +35,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "utils.h"
 
 
-//! An animated 3D object
+//! An animated 3D node
 /*!
         Represents an animated 3D object. The values of the movement at each time is contained in the three 3DCurves
+        This does not represent a limb of the body. The limbs of the body are represented by the Part class
     */
 class AnimatedNode
 {

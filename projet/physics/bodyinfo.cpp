@@ -26,6 +26,9 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 #include "bodyinfo.h"
 
+QHash<QString,bool> BodyInfo::segments_fixed;
+QList<QString> BodyInfo::headList;
+
 float BodyInfo::mass(const QString& body_part, float total_mass){
     float proportion;
     static QHash<QString,float> segments;
@@ -247,6 +250,52 @@ const CSVParser& BodyInfo::jointList(){
         first_time = false;
     }
     return parser;
+}
+
+
+void BodyInfo::genFixedInfo(const QString& filepath, QString target_name){
+    CSVParser parser;
+    QString part_name;
+    bool fixed;
+    parser.parseFile("../assets/CSV/input/"+filepath,",");
+    int index = -1;
+    if (parser.size() > 0){
+        const QStringList& names = parser.at(0);
+        for (int i = 1; i < names.size(); ++i) {
+            if (names.at(i) == target_name) {
+                index = i;
+                break;
+            }
+        }
+        if (index != -1){
+            for (int i = 1; i < parser.size(); ++i) {
+                part_name = parser.at(i).at(0);
+                if (parser.at(i).at(index).toLower() == "zero")
+                    fixed = true;
+                else fixed = false;
+
+                segments_fixed.insert(part_name, fixed);
+            }
+        } else {
+            qWarning()<<"Target file "<<target_name<<" not found";
+        }
+    }
+}
+
+bool BodyInfo::isFixed(QString part_name){
+    QHash<QString,bool>::const_iterator fixed = segments_fixed.find(part_name);
+    if (fixed != segments_fixed.end())
+        return fixed.value();
+    else
+        qWarning()<<"Part "<<part_name<<" not found";
+}
+
+const QList<QString>& BodyInfo::get_head_list(){
+    if (headList.isEmpty()){
+       headList.append("Neck");
+       headList.append("Head");
+       headList.append("Head_End");
+    }
 }
 
 //QList<QPair<QString,QString> > BodyInfo::angularCalculationList(){

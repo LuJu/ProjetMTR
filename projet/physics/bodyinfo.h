@@ -44,11 +44,18 @@ public:
         \return mass of the body part (kg)
     */
     static float mass(const QString& body_part, float total_mass);
+
+//    static void genFixedInfo(const QString& filepath);
     static const CSVParser& jointList();
 //    static QList<QStringList> jointList();
 //    static QList<QPair<QString,QString> > angularCalculationList();
+    static void genFixedInfo(const QString& filepath, QString target_name);
+    static bool isFixed(QString part_name);
+    static const QList<QString>& get_head_list();
 private:
     virtual void abstract() = 0;
+    static QHash<QString,bool> segments_fixed;
+    static QList<QString> headList;
 };
 
 #endif // BODYINFO_H

@@ -9,6 +9,8 @@ SimulationEnvironment::SimulationEnvironment(btVector3 gravity)
 
     _world = new btDiscreteDynamicsWorld(_dispatcher,_broadphase,_sequential_impulse_constraint_solver,_collision_configuration);
     _world->setGravity(gravity);
+    if (!_collision_configuration || !_dispatcher || !_broadphase || !_sequential_impulse_constraint_solver || !_world)
+        qCritical()<<"Failed to allocate world";
 }
 
 SimulationEnvironment::~SimulationEnvironment(){

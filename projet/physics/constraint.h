@@ -33,7 +33,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "btBulletDynamicsCommon.h"
 
 #include "part.h"
+//! Defines constraint betwenn the different parts of the body
+/*!
 
+    */
 class Constraint
 {
 public:

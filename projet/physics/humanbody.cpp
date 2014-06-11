@@ -27,7 +27,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "humanbody.h"
 
 HumanBody::HumanBody():
-    _mass(0)
+    _total_mass(0)
 {
 }
 
@@ -53,6 +53,11 @@ void HumanBody::loadObjects(QString path){
     bool ignore = false;
     float mass;
     qDebug()<<"parsing file "<<path;
+
+    QString body_name = path;
+    if(body_name.endsWith(".csv",Qt::CaseInsensitive)) body_name.remove(".csv");
+    BodyInfo::genFixedInfo("fixed.csv",body_name);
+
     while (list[i].at(0)!="parts_end"){
         for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
             temp= list[i];
@@ -62,9 +67,6 @@ void HumanBody::loadObjects(QString path){
                     else ignore = false;
                     if (!ignore){
                         object = new Joint();
-                        if (temp.size() >= 5 && temp.at(4).contains("zero",Qt::CaseInsensitive))
-                            mass = 0.0f;
-                        else mass = 1.0f;
                         QString parent = temp.at(3);
                         QString name = temp.at(1);
                         object->_part_name = name;
@@ -73,13 +75,23 @@ void HumanBody::loadObjects(QString path){
                         joint_parent = findJointByPartName(parent);
                         part_child = findPartByName(name);
                         part_parent = findPartByName(parent);
-                        if (temp.size() >= 8){
-                                object->_part_com_proportion = temp.at(5).toFloat();
-                                mass=temp.at(6).toFloat();
+
+                        if (GlobalConfig::is_enabled("use_csv_masses")){
+                            if (BodyInfo::isFixed(name)) mass = 0.0f;
+                            else mass = BodyInfo::mass(name,_total_mass);
+                        }
+                        else {
+                            if (temp.size() >= 5 && temp.at(4).contains("zero",Qt::CaseInsensitive))
+                                mass = 0.0f;
+                            else mass = 1.0f;
+                            if (temp.size() >= 8){
+                                    object->_part_com_proportion = temp.at(5).toFloat();
+                                    mass=temp.at(6).toFloat();
+                            }
+                        }
 //                                if (temp.at(7) == "cone") object->_type=Constraint::cone;
 //                                else if (temp.at(7) == "hinge") object->_type=Constraint::hinge;
 //                                else object->_type=Constraint::point;
-                        }
                         object->_part_mass=mass;
                     }
                 } else if (!ignore) {
@@ -224,7 +236,7 @@ void HumanBody::saveFullDataList(float duration, float steps_duration){
         parser<<i<<save.time<<
         save.animation.ke <<save.animation.ake <<save.animation.ake+save.animation.ke  <<save.animation.pe <<
         save.simulation.ke<<save.simulation.ake<<save.simulation.ake+save.simulation.ke<<save.simulation.pe<<
-        save.ke_diff      <<save.ake_diff      <<save.ake_diff+save.ake_diff           <<save.pe_diff;
+        save.ke_diff      <<save.ake_diff      <<save.ake_diff+save.ke_diff           <<save.pe_diff;
         parser.nextLine();
     }
     parser.saveInFile(name);
@@ -299,13 +311,7 @@ void HumanBody::buildJointTree(){
                         _joints_tree.addNode(temp->_part_name,temp,parent->get_id());
                         new_part = new Part();
                         temp->set_main_part(new_part);
-//                        new_part->set_mass(temp->_part_mass);
-                        float mass = BodyInfo::mass(temp->_part_name,_mass);
-                        if (mass == 0.0f) {
-                            qDebug()<<"Error mass null for part "<<temp->_part_name;
-                            new_part->set_mass(1.0f);
-                        }
-                        else new_part->set_mass(mass);
+                        new_part->set_mass(temp->_part_mass);
                         new_part->set_body_part(temp->_part_name);
                         new_part->get_shape_struct().set_shape_type(Shape::capsule);
                         new_part->set_animated(true);

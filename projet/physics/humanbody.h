@@ -67,15 +67,15 @@ public:
     void updateInformationJointTree(float elapsed, float diff, float gravity, JointNode* node=NULL, btTransform transform=btTransform::getIdentity());
     void setSimulationPositionJointTree(float elapsed, JointNode* node = NULL, btTransform transform =btTransform::getIdentity());
 
-    int get_mass() const {return _mass;}
-    void set_mass(int mass){_mass = mass;}
+    int get_mass() const {return _total_mass;}
+    void set_mass(int mass){_total_mass = mass;}
 
 protected:
     WTree<Joint> _joints_tree;
     QList<part_info> _data_list;
     QList<part_info> _full_data_list;
     QList<part_info> _complete_data_list;
-    int _mass;
+    int _total_mass;
 
     void exportSimulationToAnimation();
     void buildJointTree();
