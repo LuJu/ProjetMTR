@@ -1,0 +1,88 @@
+Spine, 
+
+Spine1,
+
+Spine2,
+LeftShoulder,
+RightShoulder,
+
+Neck,Head,
+Head,Head,
+Head_End,Head,
+
+
+LeftArm,Left Arm,
+LeftArmRoll,Left Arm,
+
+LeftForeArm,Left Fore Arm,
+LeftForeArmRoll,Left Fore Arm,
+
+LeftHand,Left Hand,
+LeftHandThumb1,Left Hand,
+LeftHandThumb2,Left Hand,
+LeftHandThumb3,Left Hand,
+LeftHandThumb4,Left Hand,
+LeftHandIndex1,Left Hand,
+LeftHandIndex2,Left Hand,
+LeftHandIndex3,Left Hand,
+LeftHandIndex4,Left Hand,
+LeftHandMiddle1,Left Hand,
+LeftHandMiddle2,Left Hand,
+LeftHandMiddle3,Left Hand,
+LeftHandMiddle4,Left Hand,
+LeftHandRing1,Left Hand,
+LeftHandRing2,Left Hand,
+LeftHandRing3,Left Hand,
+LeftHandRing4,Left Hand,
+LeftHandPinky1,Left Hand,
+LeftHandPinky2,Left Hand,
+LeftHandPinky3,Left Hand,
+LeftHandPinky4,Left Hand,
+
+RightArm,Righ Arm,
+RightArmRoll,Righ Arm,
+
+RightForeArm,Righ Fore Arm,
+RightForeArmRoll,Righ Fore Arm,
+
+RightHand,Right Hand,
+RightHandThumb1,Right Hand,
+RightHandThumb2,Right Hand,
+RightHandThumb3,Right Hand,
+RightHandThumb4,Right Hand,
+RightHandIndex1,Right Hand,
+RightHandIndex2,Right Hand,
+RightHandIndex3,Right Hand,
+RightHandIndex4,Right Hand,
+RightHandMiddle1,Right Hand,
+RightHandMiddle2,Right Hand,
+RightHandMiddle3,Right Hand,
+RightHandMiddle4,Right Hand,
+RightHandRing1,Right Hand,
+RightHandRing2,Right Hand,
+RightHandRing3,Right Hand,
+RightHandRing4,Right Hand,
+RightHandPinky1,Right Hand,
+RightHandPinky2,Right Hand,
+RightHandPinky3,Right Hand,
+RightHandPinky4,Right Hand,
+
+LeftUpLeg,Left Up Leg,
+LeftUpLegRoll,Left Up Leg,
+
+LeftLeg,Left Leg,
+LeftLegRoll,Left Leg,
+
+LeftFoot,Left Foot,
+LeftToeBase,Left Foot,
+LeftToes_End,Left Foot,
+
+RightFoot,Right Foot,
+RightToeBase,Right Foot,
+RightToes_End,Right Foot,
+
+RightUpLeg,Right Up Leg,
+RightUpLegRoll,Right Up Leg,
+
+RightLeg,Right Leg,
+RightLegRoll,Right Leg,

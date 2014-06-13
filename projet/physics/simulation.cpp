@@ -194,13 +194,18 @@ void Simulation::simulationOver()
 {
     //Setting path to save files
     QString path = "output/";
+    _human.recordSegmentData();
     if (QDir::setCurrent(path)) qDebug()<<"output path set :"<<path;
     else qDebug()<<"failed to set output path :"<<path;
-     _human.saveDataList();
-     _human.saveFullDataList(_params.get_duration(),_params.get_steps_duration());
-     _human.saveCompleteDataList();
-     _simulation_over = true;
-     qDebug()<<"Simulation over";
-     if (_params.get_automatic_close())
+    if (GlobalConfig::is_enabled("write_file"))
+        _human.saveDataList();
+    if (GlobalConfig::is_enabled("write_file_full"))
+        _human.saveFullDataList(_params.get_duration(),_params.get_steps_duration());
+    if (GlobalConfig::is_enabled("write_file_complete"))
+        _human.saveCompleteDataList();
+    _human.saveSegmentsDataList();
+    _simulation_over = true;
+    qDebug()<<"Simulation over";
+    if (_params.get_automatic_close())
         QApplication::exit();
 }

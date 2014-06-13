@@ -59,9 +59,12 @@ public:
 
     void loadObjects(QString path);
     void recordStatus();
+    void recordSegmentData();
     void saveDataList();
     void savePartDataList(const QString& part_name) const;
     void saveFullDataList(float duration, float steps_duration);
+    void saveSegmentDataList(const QString segment_name);
+    void saveSegmentsDataList();
     void saveCompleteDataList() const;
 
     void updateInformationJointTree(float elapsed, float diff, float gravity, JointNode* node=NULL, btTransform transform=btTransform::getIdentity());
@@ -75,6 +78,7 @@ protected:
     QList<part_info> _data_list;
     QList<part_info> _full_data_list;
     QList<part_info> _complete_data_list;
+    QList<part_info> _segments_data_list;
     int _total_mass;
 
     void exportSimulationToAnimation();

@@ -78,7 +78,7 @@ void HumanBody::loadObjects(QString path){
 
                         if (GlobalConfig::is_enabled("use_csv_masses")){
                             if (BodyInfo::isFixed(name)) mass = 0.0f;
-                            else mass = BodyInfo::mass(name,_total_mass);
+                            else mass = BodyInfo::subSegmentMass(name,_total_mass);
                         }
                         else {
                             if (temp.size() >= 5 && temp.at(4).contains("zero",Qt::CaseInsensitive))
@@ -169,6 +169,62 @@ void HumanBody::saveDataList(){
     }
 }
 
+void HumanBody::recordSegmentData(){
+    part_info segment_data;
+    QList<QString> effective_segments;
+    QString segment;
+    float time = -1;
+
+    effective_segments.append("Head");
+    effective_segments.append("Upper Trunc");
+    effective_segments.append("Lower Trunc");
+
+    effective_segments.append("Left Hand");
+    effective_segments.append("Left Arm");
+    effective_segments.append("Left Fore Arm");
+    effective_segments.append("Left Leg");
+    effective_segments.append("Left Up Leg");
+    effective_segments.append("Left Up Foot");
+
+    effective_segments.append("Right Hand");
+    effective_segments.append("Right Arm");
+    effective_segments.append("Right Fore Arm");
+    effective_segments.append("Right Leg");
+    effective_segments.append("Right Up Leg");
+    effective_segments.append("Right Up Foot");
+    qDebug()<<"Number of datas recorded : "<<_data_list.size();
+    for (int i = 0; i < effective_segments.size(); ++i) {
+        segment = effective_segments.at(i);
+        for (int j = 0; j < _data_list.size(); ++j) {
+            if (BodyInfo::getSegment(_data_list.at(j).part_name) == segment.toLower().replace(" ","")){
+                if (time < _data_list.at(i).time){
+                    time = _data_list.at(i).time;
+                    _segments_data_list.append(segment_data);
+                    segment_data = part_info();
+                    segment_data.part_name = segment;
+                    segment_data.time = time;
+                }
+                part_info energy = _data_list.at(j);
+
+                segment_data.time+= energy.time;
+
+                segment_data.simulation.ake += energy.simulation.ake;
+                segment_data.simulation.ke += energy.simulation.ke;
+                segment_data.simulation.pe += energy.simulation.pe;
+
+                segment_data.animation.ake += energy.animation.ake;
+                segment_data.animation.ke += energy.animation.ke;
+                segment_data.animation.pe += energy.animation.pe;
+
+                segment_data.ake_diff += energy.ake_diff;
+                segment_data.ke_diff += energy.ke_diff;
+                segment_data.pe_diff += energy.pe_diff;
+
+            }
+        }
+    }
+}
+
 void HumanBody::savePartDataList(const QString& part_name) const{
     QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
     part_info save;
@@ -193,7 +249,66 @@ void HumanBody::savePartDataList(const QString& part_name) const{
         }
     }
     parser.saveInFile(name);
+
+
+
 }
+
+
+void HumanBody::saveSegmentsDataList(){
+
+    QList<QString> effective_segments;
+    effective_segments.append("Head");
+    effective_segments.append("Upper Trunc");
+    effective_segments.append("Lower Trunc");
+
+    effective_segments.append("Left Hand");
+    effective_segments.append("Left Arm");
+    effective_segments.append("Left Fore Arm");
+    effective_segments.append("Left Leg");
+    effective_segments.append("Left Up Leg");
+    effective_segments.append("Left Up Foot");
+
+    effective_segments.append("Right Hand");
+    effective_segments.append("Right Arm");
+    effective_segments.append("Right Fore Arm");
+    effective_segments.append("Right Leg");
+    effective_segments.append("Right Up Leg");
+    effective_segments.append("Right Up Foot");
+    for (int i = 0; i < effective_segments.size(); ++i) {
+        saveSegmentDataList(effective_segments.at(i));
+    }
+}
+
+void HumanBody::saveSegmentDataList(const QString segment_name){
+
+    QString name=QDateTime::currentDateTime().toString("yy.MM.dd_hh'h'mm");
+    part_info save;
+    name = name +"_output_"+segment_name;
+    CSVParser parser;
+    parser<<"id"<<"temps"<<
+            "x animation"<<"y animation"<<"z animation"<<"x simulation"<<" y simulation"<<"z simulation"<<
+            "vitesse animation" <<"EC animation"  <<"ECA animation" <<"EP animation" <<
+            "vitesse simulation"<<"EC simulation" <<"ECA simulation"<<"EP simulation"<<
+            "EC difference"     <<"ECA difference"<<"EP difference" <<"erreur";
+    parser.nextLine();
+    for (int i = 0; i < _segments_data_list.size(); ++i) {
+        if (_segments_data_list[i].part_name == segment_name){
+            save=_segments_data_list.at(i);
+            parser<<save.part_name<<save.time<<
+                    save.animation.position.x     <<save.animation.position.y  <<save.animation.position.z   <<
+                    save.simulation.position.x    <<save.simulation.position.y <<save.simulation.position.z  <<
+                    save.animation.speed <<save.animation.ke <<save.animation.ake <<save.animation.pe<<
+                    save.simulation.speed<<save.simulation.ke<<save.simulation.ake<<save.animation.pe<<
+                    save.ke_diff         <<save.ake_diff     <<save.pe_diff;
+            parser.nextLine();
+        }
+    }
+    parser.saveInFile(name);
+
+}
+
+
 
 
 void HumanBody::saveCompleteDataList() const{
@@ -246,6 +361,9 @@ void HumanBody::updateInformationJointTree(float elapsed, float diff,float gravi
     if (node == NULL){
         node = _joints_tree.get_root();
         transform.setIdentity();
+        btQuaternion quat;
+        quat.setEuler(0,-M_PI_2,0);
+        transform.setRotation(quat);
         if (node){
             updateInformationJointTree(elapsed,diff,gravity,node,transform);
             for (int i = 0; i < _limbs.size(); ++i){
@@ -270,6 +388,9 @@ void HumanBody::setSimulationPositionJointTree(float elapsed,JointNode* node, bt
     if (node == NULL){
         node = _joints_tree.get_root();
         transform.setIdentity();
+        btQuaternion quat;
+        quat.setEuler(0,-M_PI_2,0);
+        transform.setRotation(quat);
         if (node) setSimulationPositionJointTree(elapsed,node,transform);
         else qWarning()<<"No root in part tree";
     } else {

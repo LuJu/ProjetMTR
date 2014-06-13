@@ -39,11 +39,11 @@ const btTransform AnimatedNode::getWorldTransform(const btTransform parent_trans
     btQuaternion bx(btVector3(1,0,0),xyz.x()),
                  by(btVector3(0,1,0),xyz.y()),
                  bz(btVector3(0,0,1),xyz.z());
-    quat = bz * by * bx;
+    quat = bz * by * bx; // conversion from euler angles xyz order to yxz
     quat.normalize();
 
     object_transform.setOrigin(TranslationVector(time));
-    object_transform.setRotation(quat); // conversion from euler angles xyz order to yxz
+    object_transform.setRotation(quat);
     return parent_transform * object_transform ;
 }
 
