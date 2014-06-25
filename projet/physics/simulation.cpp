@@ -195,15 +195,39 @@ void Simulation::simulationOver()
     //Setting path to save files
     QString path = "output/";
     _human.recordSegmentData();
-    if (QDir::setCurrent(path)) qDebug()<<"output path set :"<<path;
-    else qDebug()<<"failed to set output path :"<<path;
-    if (GlobalConfig::is_enabled("write_file"))
-        _human.saveDataList();
-    if (GlobalConfig::is_enabled("write_file_full"))
-        _human.saveFullDataList(_params.get_duration(),_params.get_steps_duration());
-    if (GlobalConfig::is_enabled("write_file_complete"))
-        _human.saveCompleteDataList();
-    _human.saveSegmentsDataList();
+
+    if (GlobalConfig::is_enabled("write_file")){
+        path = QString("output/normal");
+        if (QDir::setCurrent(path)) {
+            qDebug()<<"output path set :"<<path;
+            _human.saveDataList();
+        }
+        else qDebug()<<"failed to set output path :"<<path;
+    }
+    if (GlobalConfig::is_enabled("write_file_full")){
+        path = QString("./full");
+        if (QDir::setCurrent(path)) {
+            qDebug()<<"output path set :"<<path;
+            _human.saveFullDataList(_params.get_duration(),_params.get_steps_duration());
+        }
+        else qDebug()<<"failed to set output path :"<<path;
+    }
+    if (GlobalConfig::is_enabled("write_file_complete")){
+        path = QString("../complete");
+        if (QDir::setCurrent(path)) {
+            qDebug()<<"output path set :"<<path;
+            _human.saveCompleteDataList();
+        }
+        else qDebug()<<"failed to set output path :"<<path;
+    }
+    if (GlobalConfig::is_enabled("write_file_segments")){
+        path = QString("../segments");
+        if (QDir::setCurrent(path)){
+            qDebug()<<"output path set :"<<path;
+            _human.saveSegmentsDataList();
+        }
+        else qDebug()<<"failed to set output path :"<<path;
+    }
     _simulation_over = true;
     qDebug()<<"Simulation over";
     if (_params.get_automatic_close())

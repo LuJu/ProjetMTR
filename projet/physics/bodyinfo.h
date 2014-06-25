@@ -44,7 +44,6 @@ public:
         \return mass of the body part (kg)
     */
     static float subSegmentMass(const QString& body_part, float total_mass);
-    static float segmentMass(const QString& body_part, float total_mass);
 
 //    static void genFixedInfo(const QString& filepath);
     static const CSVParser& jointList();
@@ -54,6 +53,7 @@ public:
     static bool isFixed(QString part_name);
     static const QList<QString>& get_head_list();
     static QString getSegment(const QString& sub_segment);
+    static QList<QString> _true_limbs;
 private:
     virtual void abstract() = 0;
     static QHash<QString,bool> _segments_fixed;

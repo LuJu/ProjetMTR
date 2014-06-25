@@ -27,7 +27,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "animatednode.h"
 
 AnimatedNode::AnimatedNode() {
-//    _extremity_translation_curves.set_interpolation(Curve::bezier);
+    _extremity_translation_curves.set_interpolation(Curve::bezier);
 //    _rotation_curves.set_interpolation(Curve::bezier);
 }
 

@@ -1,72 +1,72 @@
-Spine,Lower Trunc,
-Spine1,Lower Trunc,
-Spine2,Upper Trunc,
-LeftShoulder,Upper Trunc,
-RightShoulder,Upper Trunck,
-Neck,Head,
-Head,Head,
-Head_End,Head,
-LeftArm,Left Arm,
-LeftArmRoll,Left Arm,
-LeftForeArm,Left Fore Arm,
-LeftForeArmRoll,Left Fore Arm,
-LeftHand,Left Hand,
-LeftHandThumb1,Left Hand,
-LeftHandThumb2,Left Hand,
-LeftHandThumb3,Left Hand,
-LeftHandThumb4,Left Hand,
-LeftHandIndex1,Left Hand,
-LeftHandIndex2,Left Hand,
-LeftHandIndex3,Left Hand,
-LeftHandIndex4,Left Hand,
-LeftHandMiddle1,Left Hand,
-LeftHandMiddle2,Left Hand,
-LeftHandMiddle3,Left Hand,
-LeftHandMiddle4,Left Hand,
-LeftHandRing1,Left Hand,
-LeftHandRing2,Left Hand,
-LeftHandRing3,Left Hand,
-LeftHandRing4,Left Hand,
-LeftHandPinky1,Left Hand,
-LeftHandPinky2,Left Hand,
-LeftHandPinky3,Left Hand,
-LeftHandPinky4,Left Hand,
-RightArm,Righ Arm,
-RightArmRoll,Righ Arm,
-RightForeArm,Righ Fore Arm,
-RightForeArmRoll,Righ Fore Arm,
-RightHand,Right Hand,
-RightHandThumb1,Right Hand,
-RightHandThumb2,Right Hand,
-RightHandThumb3,Right Hand,
-RightHandThumb4,Right Hand,
-RightHandIndex1,Right Hand,
-RightHandIndex2,Right Hand,
-RightHandIndex3,Right Hand,
-RightHandIndex4,Right Hand,
-RightHandMiddle1,Right Hand,
-RightHandMiddle2,Right Hand,
-RightHandMiddle3,Right Hand,
-RightHandMiddle4,Right Hand,
-RightHandRing1,Right Hand,
-RightHandRing2,Right Hand,
-RightHandRing3,Right Hand,
-RightHandRing4,Right Hand,
-RightHandPinky1,Right Hand,
-RightHandPinky2,Right Hand,
-RightHandPinky3,Right Hand,
-RightHandPinky4,Right Hand,
-LeftUpLeg,Left Up Leg,
-LeftUpLegRoll,Left Up Leg,
-LeftLeg,Left Leg,
-LeftLegRoll,Left Leg,
-LeftFoot,Left Foot,
-LeftToeBase,Left Foot,
-LeftToes_End,Left Foot,
-RightFoot,Right Foot,
-RightToeBase,Right Foot,
-RightToes_End,Right Foot,
-RightUpLeg,Right Up Leg,
-RightUpLegRoll,Right Up Leg,
-RightLeg,Right Leg,
-RightLegRoll,Right Leg,
+Spine,Lower Trunc,22,1,2,11
+Spine1,Lower Trunc,22,1,2,11
+Spine2,Upper Trunc,22,1,3,7.3333333333
+LeftShoulder,Upper Trunc,22,1,3,7.3333333333
+RightShoulder,Upper Trunc,22,1,3,7.3333333333
+Neck,Head,7.6,1,3,2.5333333333
+Head,Head,7.6,1,3,2.5333333333
+Head_End,Head,7.6,1,3,2.5333333333
+LeftArm,Left Arm,3.2,1,2,1.6
+LeftArmRoll,Left Arm,3.2,1,2,1.6
+LeftForeArm,Left Fore Arm,1.7,1,2,0.85
+LeftForeArmRoll,Left Fore Arm,1.7,1,2,0.85
+LeftHand,Left Hand,0.8,1,21,0.0380952381
+LeftHandThumb1,Left Hand,0.8,1,21,0.0380952381
+LeftHandThumb2,Left Hand,0.8,1,21,0.0380952381
+LeftHandThumb3,Left Hand,0.8,1,21,0.0380952381
+LeftHandThumb4,Left Hand,0.8,1,21,0.0380952381
+LeftHandIndex1,Left Hand,0.8,1,21,0.0380952381
+LeftHandIndex2,Left Hand,0.8,1,21,0.0380952381
+LeftHandIndex3,Left Hand,0.8,1,21,0.0380952381
+LeftHandIndex4,Left Hand,0.8,1,21,0.0380952381
+LeftHandMiddle1,Left Hand,0.8,1,21,0.0380952381
+LeftHandMiddle2,Left Hand,0.8,1,21,0.0380952381
+LeftHandMiddle3,Left Hand,0.8,1,21,0.0380952381
+LeftHandMiddle4,Left Hand,0.8,1,21,0.0380952381
+LeftHandRing1,Left Hand,0.8,1,21,0.0380952381
+LeftHandRing2,Left Hand,0.8,1,21,0.0380952381
+LeftHandRing3,Left Hand,0.8,1,21,0.0380952381
+LeftHandRing4,Left Hand,0.8,1,21,0.0380952381
+LeftHandPinky1,Left Hand,0.8,1,21,0.0380952381
+LeftHandPinky2,Left Hand,0.8,1,21,0.0380952381
+LeftHandPinky3,Left Hand,0.8,1,21,0.0380952381
+LeftHandPinky4,Left Hand,0.8,1,21,0.0380952381
+RightArm,Right Arm,3.2,1,2,1.6
+RightArmRoll,Right Arm,3.2,1,2,1.6
+RightForeArm,Right Fore Arm,1.7,1,2,0.85
+RightForeArmRoll,Right Fore Arm,1.7,1,2,0.85
+RightHand,Right Hand,0.8,1,21,0.0380952381
+RightHandThumb1,Right Hand,0.8,1,21,0.0380952381
+RightHandThumb2,Right Hand,0.8,1,21,0.0380952381
+RightHandThumb3,Right Hand,0.8,1,21,0.0380952381
+RightHandThumb4,Right Hand,0.8,1,21,0.0380952381
+RightHandIndex1,Right Hand,0.8,1,21,0.0380952381
+RightHandIndex2,Right Hand,0.8,1,21,0.0380952381
+RightHandIndex3,Right Hand,0.8,1,21,0.0380952381
+RightHandIndex4,Right Hand,0.8,1,21,0.0380952381
+RightHandMiddle1,Right Hand,0.8,1,21,0.0380952381
+RightHandMiddle2,Right Hand,0.8,1,21,0.0380952381
+RightHandMiddle3,Right Hand,0.8,1,21,0.0380952381
+RightHandMiddle4,Right Hand,0.8,1,21,0.0380952381
+RightHandRing1,Right Hand,0.8,1,21,0.0380952381
+RightHandRing2,Right Hand,0.8,1,21,0.0380952381
+RightHandRing3,Right Hand,0.8,1,21,0.0380952381
+RightHandRing4,Right Hand,0.8,1,21,0.0380952381
+RightHandPinky1,Right Hand,0.8,1,21,0.0380952381
+RightHandPinky2,Right Hand,0.8,1,21,0.0380952381
+RightHandPinky3,Right Hand,0.8,1,21,0.0380952381
+RightHandPinky4,Right Hand,0.8,1,21,0.0380952381
+LeftUpLeg,Left Up Leg,11.9,1,2,5.95
+LeftUpLegRoll,Left Up Leg,11.9,1,2,5.95
+LeftLeg,Left Leg,4.6,1,2,2.3
+LeftLegRoll,Left Leg,4.6,1,2,2.3
+LeftFoot,Left Foot,2,1,3,0.6666666667
+LeftToeBase,Left Foot,2,1,3,0.6666666667
+LeftToes_End,Left Foot,2,1,3,0.6666666667
+RightFoot,Right Foot,2,1,3,0.6666666667
+RightToeBase,Right Foot,2,1,3,0.6666666667
+RightToes_End,Right Foot,2,1,3,0.6666666667
+RightUpLeg,Right Up Leg,11.9,1,2,5.95
+RightUpLegRoll,Right Up Leg,11.9,1,2,5.95
+RightLeg,Right Leg,4.6,1,2,2.3
+RightLegRoll,Right Leg,4.6,1,2,2.3

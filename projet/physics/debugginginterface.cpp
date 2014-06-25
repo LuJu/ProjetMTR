@@ -35,7 +35,7 @@ void DebuggingInterface::update(){
 
 
     bool found = false;
-    int mass_value;
+    float mass_value;
     btVector3 shape;
     t_part_info info;
 
@@ -71,7 +71,7 @@ void DebuggingInterface::update(){
         simulation_Ke->setText(QString::number(info.simulation.ke,'f',4));
         simulation_aKe->setText(QString::number(info.simulation.ake,'f',4));
         simulation_Pe->setText(QString::number(info.simulation.pe,'f',4));
-        mass->setText(QString::number(mass_value,'f',2));
+        mass->setText(QString::number(mass_value,'f',3));
         length->setText(QString::number(shape.y(),'f',2));
         diff_aKe->setText(QString::number(info.ake_diff,'f',4));
         diff_Ke->setText(QString::number(info.ke_diff,'f',4));

@@ -182,31 +182,34 @@ void HumanBody::recordSegmentData(){
     effective_segments.append("Left Hand");
     effective_segments.append("Left Arm");
     effective_segments.append("Left Fore Arm");
-    effective_segments.append("Left Leg");
     effective_segments.append("Left Up Leg");
-    effective_segments.append("Left Up Foot");
+    effective_segments.append("Left Leg");
+    effective_segments.append("Left Foot");
 
     effective_segments.append("Right Hand");
     effective_segments.append("Right Arm");
     effective_segments.append("Right Fore Arm");
-    effective_segments.append("Right Leg");
     effective_segments.append("Right Up Leg");
-    effective_segments.append("Right Up Foot");
-    qDebug()<<"Number of datas recorded : "<<_data_list.size();
+    effective_segments.append("Right Leg");
+    effective_segments.append("Right Foot");
     for (int i = 0; i < effective_segments.size(); ++i) {
         segment = effective_segments.at(i);
+        time = -1;
         for (int j = 0; j < _data_list.size(); ++j) {
+            if (i == 1){
+                qDebug()<<"head";
+            }
             if (BodyInfo::getSegment(_data_list.at(j).part_name) == segment.toLower().replace(" ","")){
-                if (time < _data_list.at(i).time){
-                    time = _data_list.at(i).time;
-                    _segments_data_list.append(segment_data);
+                if (time < _data_list.at(j).time){
+                    if (time != -1)_segments_data_list.append(segment_data);
+                    time = _data_list.at(j).time;
                     segment_data = part_info();
                     segment_data.part_name = segment;
                     segment_data.time = time;
                 }
                 part_info energy = _data_list.at(j);
 
-                segment_data.time+= energy.time;
+                segment_data.time= energy.time;
 
                 segment_data.simulation.ake += energy.simulation.ake;
                 segment_data.simulation.ke += energy.simulation.ke;
@@ -223,6 +226,7 @@ void HumanBody::recordSegmentData(){
             }
         }
     }
+    _segments_data_list.append(segment_data);
 }
 
 void HumanBody::savePartDataList(const QString& part_name) const{
@@ -265,16 +269,16 @@ void HumanBody::saveSegmentsDataList(){
     effective_segments.append("Left Hand");
     effective_segments.append("Left Arm");
     effective_segments.append("Left Fore Arm");
-    effective_segments.append("Left Leg");
     effective_segments.append("Left Up Leg");
-    effective_segments.append("Left Up Foot");
+    effective_segments.append("Left Leg");
+    effective_segments.append("Left Foot");
 
     effective_segments.append("Right Hand");
     effective_segments.append("Right Arm");
     effective_segments.append("Right Fore Arm");
-    effective_segments.append("Right Leg");
     effective_segments.append("Right Up Leg");
-    effective_segments.append("Right Up Foot");
+    effective_segments.append("Right Leg");
+    effective_segments.append("Right Foot");
     for (int i = 0; i < effective_segments.size(); ++i) {
         saveSegmentDataList(effective_segments.at(i));
     }
@@ -287,19 +291,16 @@ void HumanBody::saveSegmentDataList(const QString segment_name){
     name = name +"_output_"+segment_name;
     CSVParser parser;
     parser<<"id"<<"temps"<<
-            "x animation"<<"y animation"<<"z animation"<<"x simulation"<<" y simulation"<<"z simulation"<<
-            "vitesse animation" <<"EC animation"  <<"ECA animation" <<"EP animation" <<
-            "vitesse simulation"<<"EC simulation" <<"ECA simulation"<<"EP simulation"<<
+            "EC animation"  <<"ECA animation" <<"EP animation" <<
+            "EC simulation" <<"ECA simulation"<<"EP simulation"<<
             "EC difference"     <<"ECA difference"<<"EP difference" <<"erreur";
     parser.nextLine();
     for (int i = 0; i < _segments_data_list.size(); ++i) {
-        if (_segments_data_list[i].part_name == segment_name){
+        if (_segments_data_list[i].part_name.toLower().replace(" ","") == segment_name.toLower().replace(" ","")){
             save=_segments_data_list.at(i);
             parser<<save.part_name<<save.time<<
-                    save.animation.position.x     <<save.animation.position.y  <<save.animation.position.z   <<
-                    save.simulation.position.x    <<save.simulation.position.y <<save.simulation.position.z  <<
-                    save.animation.speed <<save.animation.ke <<save.animation.ake <<save.animation.pe<<
-                    save.simulation.speed<<save.simulation.ke<<save.simulation.ake<<save.animation.pe<<
+                    save.animation.ke <<save.animation.ake <<save.animation.pe<<
+                    save.simulation.ke<<save.simulation.ake<<save.simulation.pe<<
                     save.ke_diff         <<save.ake_diff     <<save.pe_diff;
             parser.nextLine();
         }
@@ -439,6 +440,7 @@ void HumanBody::buildJointTree(){
                         btVector3 extends = btVector3(temp->get_animation().TranslationVector(0));
                         new_part->get_shape_struct().set_shape(btVector3(.01,extends.length(),.01));
                         new_part->buildMesh();
+                        qDebug()<<"part "<<new_part->get_body_part();
                         _limbs.append(new_part);
                         inserted[j] = true;
                     }

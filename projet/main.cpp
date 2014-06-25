@@ -97,11 +97,12 @@ QString usage(){
     QString use;
     use  = "USAGE : ";
     use.append("program ");
-    use.append("[input file] ");
-    use.append("[body total mass] ");
-    use.append("[simulation total duration] ");
-    use.append("[coefficient] ");
-    use.append("[steps duration] ");
+    use.append("[input file ");
+    use.append("[body total mass ");
+    use.append("[simulation total duration ");
+    use.append("[coefficient ");
+    use.append("[steps duration ");
+    use.append("]]]]]");
     return use;
 }
 
