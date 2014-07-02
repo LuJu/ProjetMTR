@@ -33,7 +33,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "btBulletDynamicsCommon.h"
 
 #include "part.h"
-//! Defines constraint betwenn the different parts of the body
+//! Defines constraint between the different parts of the body
 /*!
 
     */
@@ -59,11 +59,16 @@ public:
     explicit Constraint(const Constraint& other);
     virtual ~Constraint();
 
-    btTypedConstraint* get_constraint() const;
+    btTypedConstraint* get_constraint() const{
+        if (!_constraint){
+            qWarning()<<"requesting uninitialized constraint pointer";
+        }
+        return _constraint;
+    }
     bool buildConstraint();
 
     bool is_constraint_allocated(){return _constraint!=NULL;}
-    bool has_parts() const;
+    bool has_parts() const{return _parts.first!=NULL;}
     QPair<Part*,Part*>& get_parts(){return _parts;}
     void set_constraint_type(constraints_types type){_type = type;}
 

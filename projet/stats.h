@@ -60,7 +60,6 @@ public:
     virtual void closeEvent(QCloseEvent * event);
     virtual void display3DObjects();
     void displayStats();
-    void displayStatsTest();
     void installDebugger();
     Simulation  * _simulation;
     int _selected_index;

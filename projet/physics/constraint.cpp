@@ -75,19 +75,6 @@ void Constraint::deleteConstraint(){
     }
 }
 
-bool Constraint::has_parts() const {
-    if (_parts.first==NULL) return false;
-    return true;
-}
-
-
-btTypedConstraint* Constraint::get_constraint() const{
-    if (!_constraint){
-        qWarning()<<"requesting uninitialized constraint pointer";
-    }
-    return _constraint;
-}
-
 bool Constraint::buildConstraint(){
     if (has_parts()){
         allocateConstraint();
@@ -112,43 +99,31 @@ void Constraint::allocateConstraint(){
         shapeB = _parts.second->get_shape_struct().get_shape();
         bodyB = _parts.second->get_body();
     }
-
-//    rotA =_parts.first->_animation.rotationVector(0);
     rotationA.setEuler(0,0,M_PI_2);
     rotationB.setEuler(deg2rad(rotA.y()), deg2rad(rotA.x()), deg2rad(rotA.z()+90));
 
-    if (_first_base)
-        pivotA =  btVector3(0,shapeA.y()/2,0);
-    else
-        pivotA = - btVector3(0,shapeA.y()/2,0);
-//    pivotB = _parts.first->_animation.extremityTranslationVector(0) - btVector3(0,shapeB.y()/2,0);
-    if (_second_base)
-        pivotB = btVector3(0,shapeB.y()/2,0);
-    else
-        pivotB = - btVector3(0,shapeB.y()/2,0);
+    //setting the position of the pivot points. The posision is specified in local coordinates
+    if (_first_base)  pivotA =   btVector3(0,shapeA.y()/2,0);
+    else              pivotA = - btVector3(0,shapeA.y()/2,0);
+    if (_second_base) pivotB =   btVector3(0,shapeB.y()/2,0);
+    else              pivotB = - btVector3(0,shapeB.y()/2,0);
 
+    //localeA and localeB are not used for point2pointConstraints
     localeA.setIdentity();localeA.setRotation(rotationA);localeA.setOrigin(pivotA);
     localeB.setIdentity();localeB.setRotation(rotationB);localeB.setOrigin(pivotB);
 
     deleteConstraint();
     switch (_type){
     case point :
-        if (_parts.second != NULL){
-            constraint= new btPoint2PointConstraint(*bodyA,*bodyB,pivotA,pivotB);
-        }
-        else {
-            constraint= new btPoint2PointConstraint(*bodyA,pivotA);
-        }
+        if (_parts.second != NULL) constraint= new btPoint2PointConstraint(*bodyA,*bodyB,pivotA,pivotB);
+        else                       constraint= new btPoint2PointConstraint(*bodyA,pivotA);
         break;
     case cone:
-
         if (_parts.second != NULL){
             constraint= new btConeTwistConstraint(*bodyA,*bodyB,localeA,localeB);
             ((btConeTwistConstraint *)constraint)->setLimit(M_PI,M_PI,0);
         }
-        else {
-            qWarning()<<"cannot create cone constraint on one object";
-        }
+        else qWarning()<<"cannot create cone constraint on one object";
         break;
     case hinge:
         if (_parts.second != NULL){

@@ -2,19 +2,11 @@
     <qresource prefix="/models">
         <file alias="cube.obj">models/cube.obj</file>
     </qresource>
-    <qresource prefix="/CSV/input">
-        <file alias="values.csv">CSV/input/values.csv</file>
-    </qresource>
     <qresource prefix="/shaders">
         <file alias="vshader.glsl">shaders/vshader.glsl</file>
         <file alias="fshader.glsl">shaders/fshader.glsl</file>
         <file alias="gshader.glsl">shaders/gshader.glsl</file>
     </qresource>
-    <qresource prefix="/textures">
-        <file alias="wood.jpg">models/wood.jpg</file>
-    </qresource>
-    <qresource prefix="/materials">
-        <file alias="cube.mtl">models/cube.mtl</file>
-        <file alias="cube2.mtl">models/cube2.mtl</file>
-    </qresource>
+    <qresource prefix="/textures"/>
+    <qresource prefix="/materials"/>
 </RCC>

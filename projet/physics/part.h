@@ -71,7 +71,6 @@ public:
         SIMULATION_SPEED,
         NUMBER_OF_CURVES
     };
-    Part(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),Shape::shapetype type=Shape::cube);
     Part();
     ~Part();
 
@@ -121,6 +120,7 @@ public:
 
     void transformStateMatch();
     void initialTransformStateMatch(btTransform node_transform, btTransform parent_transform);
+    void updateStepsCurves(float elapsed){ insertDataToCurves(_curves_steps,elapsed);}
 private:
 
     Part(const Part& object);

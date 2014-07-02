@@ -26,13 +26,6 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 #include "part.h"
 
-Part::Part(const btVector3& origin, const btVector3& shape,Shape::shapetype type):
-    _mass(1),
-    _center_of_mass_proportion(.5f),
-    _animated(false){
-    __build(origin,shape,type);
-}
-
 Part::Part():
     _mass(1),
     _center_of_mass_proportion(.5f),
@@ -65,7 +58,7 @@ void Part::buildMotion(){
 void Part::buildMesh(){
     _mesh = MeshPointer(new Mesh);
     MeshUtils::addCapsuleShapeY(_mesh.data(),_shape.get_shape().y(),_shape.get_shape().x());
-    _mesh.data()->toBuffer();
+    _mesh.data()->activateBuffering();
 }
 
 void Part::updatePartInfo(float elapsed,float delta_t,float gravity,const btTransform& transform, const btTransform& parent_transform){
