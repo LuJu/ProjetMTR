@@ -205,6 +205,8 @@ void Part::insertDataToCurves(QList<Curve>& curves, float elapsed){
     curves[SIMULATION_X].insert(elapsed,_energy.simulation.position.x);
     curves[SIMULATION_Y].insert(elapsed,_energy.simulation.position.y);
     curves[SIMULATION_Z].insert(elapsed,_energy.simulation.position.z);
+    curves[ANIMATION_SPEED].insert(elapsed,_energy.animation.speed);
+    curves[SIMULATION_SPEED].insert(elapsed,_energy.simulation.speed);
 }
 
 void Part::setSimulationTransformFromAnimation(){
@@ -220,9 +222,6 @@ void Part::setSimulationTransformFromAnimation(){
 }
 
 void Part::transformStateMatch(){
-
-
-
     t_state_data& current_a = _animation_information._current;
     t_state_data& current_s = _simulation_information._current;
     t_state_data& previous_a = _animation_information._previous;

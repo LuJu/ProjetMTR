@@ -229,13 +229,13 @@ float BodyInfo::subSegmentMass(const QString& body_part, float total_mass){
             }
         }
     }
-    qDebug()<<"target "<<body_part.toLower().replace(" ","");
-    qDebug()<<"list "<<_sub_segments;
+//    qDebug()<<"target "<<body_part.toLower().replace(" ","");
+//    qDebug()<<"list "<<_sub_segments;
     QHash<QString,float>::const_iterator it = _sub_segments.find(body_part.toLower().replace(" ",""));
     if (it !=_sub_segments.end())
         proportion = it.value();
     else {
-        qDebug()<<body_part;
+//        qDebug()<<body_part;
         proportion = 0;
     }
 //    return 0;
@@ -292,7 +292,7 @@ void BodyInfo::genFixedInfo(const QString& filepath, QString target_name){
     if (parser.size() > 0){
         const QStringList& names = parser.at(0);
         for (int i = 1; i < names.size(); ++i) {
-            qDebug()<<"Name : "<<target_name<<" "<<names.at(i);
+//            qDebug()<<"Name : "<<target_name<<" "<<names.at(i);
             if (names.at(i) == target_name) {
                 index = i;
                 break;
@@ -316,7 +316,7 @@ void BodyInfo::genFixedInfo(const QString& filepath, QString target_name){
 bool BodyInfo::isFixed(QString part_name){
     QHash<QString,bool>::const_iterator fixed = _segments_fixed.find(part_name);
     if (fixed != _segments_fixed.end()) {
-        qDebug()<<"fixed " <<fixed.value();
+//        qDebug()<<"fixed " <<fixed.value();
         return fixed.value();
     }
     else

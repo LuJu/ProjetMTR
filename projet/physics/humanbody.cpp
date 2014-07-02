@@ -133,7 +133,7 @@ void HumanBody::loadObjects(QString path){
     for (int i = 0; i < _limbs.size(); ++i) {
         _limbs[i]->buildMesh();
     }
-    buildJointTree();
+    buildTree();
     buildConstraints();
 }
 
@@ -196,9 +196,6 @@ void HumanBody::recordSegmentData(){
         segment = effective_segments.at(i);
         time = -1;
         for (int j = 0; j < _data_list.size(); ++j) {
-            if (i == 1){
-                qDebug()<<"head";
-            }
             if (BodyInfo::getSegment(_data_list.at(j).part_name) == segment.toLower().replace(" ","")){
                 if (time < _data_list.at(j).time){
                     if (time != -1)_segments_data_list.append(segment_data);
@@ -358,7 +355,7 @@ void HumanBody::saveFullDataList(float duration, float steps_duration){
     parser.saveInFile(name);
 
 }
-void HumanBody::updateInformationJointTree(float elapsed, float diff,float gravity,JointNode* node, btTransform transform){
+void HumanBody::updateInformation(float elapsed, float diff,float gravity,JointNode* node, btTransform transform){
     if (node == NULL){
         node = _joints_tree.get_root();
         transform.setIdentity();
@@ -366,7 +363,7 @@ void HumanBody::updateInformationJointTree(float elapsed, float diff,float gravi
         quat.setEuler(0,-M_PI_2,0);
         transform.setRotation(quat);
         if (node){
-            updateInformationJointTree(elapsed,diff,gravity,node,transform);
+            updateInformation(elapsed,diff,gravity,node,transform);
             for (int i = 0; i < _limbs.size(); ++i){
                 _complete_data_list.append(_limbs[i]->getEnergyInformation());
             }
@@ -379,20 +376,20 @@ void HumanBody::updateInformationJointTree(float elapsed, float diff,float gravi
         if (data->get_main_part() != NULL )
             data->get_main_part()->updatePartInfo(elapsed,diff,gravity,object_transform,transform );
         for (int i = 0; i < node->get_number_of_children(); ++i) {
-            updateInformationJointTree(elapsed,diff,gravity,node->childAt(i),object_transform);
+            updateInformation(elapsed,diff,gravity,node->childAt(i),object_transform);
         }
     }
 }
 
 
-void HumanBody::setSimulationPositionJointTree(float elapsed,JointNode* node, btTransform transform){
+void HumanBody::setSimulationPosition(float elapsed,JointNode* node, btTransform transform){
     if (node == NULL){
         node = _joints_tree.get_root();
         transform.setIdentity();
         btQuaternion quat;
         quat.setEuler(0,-M_PI_2,0);
         transform.setRotation(quat);
-        if (node) setSimulationPositionJointTree(elapsed,node,transform);
+        if (node) setSimulationPosition(elapsed,node,transform);
         else qWarning()<<"No root in part tree";
     } else {
         btTransform object_transform = node->get_data()->get_animation().getWorldTransform(transform,elapsed);
@@ -406,11 +403,11 @@ void HumanBody::setSimulationPositionJointTree(float elapsed,JointNode* node, bt
             data->get_main_part()->transformStateMatch();
         }
         for (int i = 0; i < node->get_number_of_children(); ++i) {
-            setSimulationPositionJointTree(elapsed,node->childAt(i),object_transform);
+            setSimulationPosition(elapsed,node->childAt(i),object_transform);
         }
     }
 }
-void HumanBody::buildJointTree(){
+void HumanBody::buildTree(){
     Joint * temp;
     Part * new_part;
     JointNode * parent;
@@ -440,7 +437,6 @@ void HumanBody::buildJointTree(){
                         btVector3 extends = btVector3(temp->get_animation().TranslationVector(0));
                         new_part->get_shape_struct().set_shape(btVector3(.01,extends.length(),.01));
                         new_part->buildMesh();
-                        qDebug()<<"part "<<new_part->get_body_part();
                         _limbs.append(new_part);
                         inserted[j] = true;
                     }

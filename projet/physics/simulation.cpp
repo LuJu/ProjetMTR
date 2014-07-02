@@ -105,9 +105,9 @@ void Simulation::loop(){
                 time_since_last_update = 0;
                 _lock.lockForWrite(); {
                     update();
-                    if (_step_counter > steps_duration)
+                    if (_step_counter >= steps_duration)
                         stepOver();
-                    if (_end_counter > duration)
+                    if (_end_counter >= duration)
                         simulationOver();
                     _updates_since_last_step++;
                 } _lock.unlock();
@@ -126,18 +126,18 @@ void Simulation::update(){
     btScalar clock_time = _clock.getTimeMicroseconds()/coeff;
 
     _diff =  clock_time-_elapsed_realtime;
-    _elapsed_realtime=clock_time;
-    _elapsed_simulation=_elapsed_simulation+progression_ms;
     _environment->get_world()->stepSimulation(progression_s ,1,btScalar(1.0/(ups)));
     _step_counter+=progression_ms; // conversion from seconds to ms
     _end_counter+=progression_ms;
     _ups_counter+=progression_ms;
-    _human.updateInformationJointTree(_elapsed_simulation,progression_ms,_params.get_gravity().y());
+    _elapsed_realtime=clock_time;
+    _elapsed_simulation=_elapsed_simulation+progression_ms;
+    _human.updateInformation(_elapsed_simulation,progression_ms,_params.get_gravity().y());
 }
 
 void Simulation::resetStep(float time){
     cleanWorld();
-    _human.setSimulationPositionJointTree(time);
+    _human.setSimulationPosition(time);
     fillWorld();
     _updates_since_last_step = 0;
     _step_counter = 0;
@@ -193,38 +193,42 @@ void Simulation::fillWorld(){
 void Simulation::simulationOver()
 {
     //Setting path to save files
-    QString path = "output/";
+    QString path = "output";
     _human.recordSegmentData();
-
+    QDir::setCurrent(path);
     if (GlobalConfig::is_enabled("write_file")){
-        path = QString("output/normal");
+        path = QString("normal");
         if (QDir::setCurrent(path)) {
             qDebug()<<"output path set :"<<path;
             _human.saveDataList();
+            QDir::setCurrent("..");
         }
         else qDebug()<<"failed to set output path :"<<path;
     }
     if (GlobalConfig::is_enabled("write_file_full")){
-        path = QString("./full");
+        path = QString("full");
         if (QDir::setCurrent(path)) {
             qDebug()<<"output path set :"<<path;
             _human.saveFullDataList(_params.get_duration(),_params.get_steps_duration());
+            QDir::setCurrent("..");
         }
         else qDebug()<<"failed to set output path :"<<path;
     }
     if (GlobalConfig::is_enabled("write_file_complete")){
-        path = QString("../complete");
+        path = QString("complete");
         if (QDir::setCurrent(path)) {
             qDebug()<<"output path set :"<<path;
             _human.saveCompleteDataList();
+            QDir::setCurrent("..");
         }
         else qDebug()<<"failed to set output path :"<<path;
     }
     if (GlobalConfig::is_enabled("write_file_segments")){
-        path = QString("../segments");
+        path = QString("segments");
         if (QDir::setCurrent(path)){
             qDebug()<<"output path set :"<<path;
             _human.saveSegmentsDataList();
+            QDir::setCurrent("..");
         }
         else qDebug()<<"failed to set output path :"<<path;
     }

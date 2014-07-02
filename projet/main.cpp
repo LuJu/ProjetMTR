@@ -47,6 +47,18 @@ DebuggingInterface * _debugging_ui;
 
 //! Function to do quick tests
 void quickTest(){
+//BezierPath b;
+//qDebug()<<b.interpolation(0,.5,2.5,3,0);
+//qDebug()<<b.interpolation(0,.5,2.5,3,.1);
+//qDebug()<<b.interpolation(0,.5,2.5,3,.2);
+//qDebug()<<b.interpolation(0,.5,2.5,3,1);
+//        Curve c;
+//        c.set_interpolation(Curve::bezier);
+//        c.insert(0,4);
+//        c.insert(2,3);
+//        c.insert(7,250);
+//        c.insert(10,4);
+//        float x = c.get_value(1.5);
 }
 
 //Redirects the debug messages

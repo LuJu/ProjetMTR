@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>427</width>
-    <height>339</height>
+    <height>390</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>9</pointsize>
+     <pointsize>8</pointsize>
      <weight>75</weight>
      <italic>true</italic>
      <bold>true</bold>
@@ -45,7 +45,7 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>9</pointsize>
+     <pointsize>8</pointsize>
      <weight>75</weight>
      <italic>true</italic>
      <bold>true</bold>
@@ -56,7 +56,7 @@
      <widget class="QLabel" name="label_34">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -71,7 +71,7 @@
      <widget class="QLabel" name="mass">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -86,7 +86,7 @@
      <widget class="QLabel" name="label_35">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -110,7 +110,7 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>9</pointsize>
+     <pointsize>8</pointsize>
      <weight>75</weight>
      <italic>true</italic>
      <bold>true</bold>
@@ -121,7 +121,7 @@
      <widget class="QLabel" name="label_47">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -136,7 +136,7 @@
      <widget class="QLabel" name="length">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -151,7 +151,7 @@
      <widget class="QLabel" name="label_48">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -175,7 +175,7 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>9</pointsize>
+     <pointsize>8</pointsize>
      <weight>75</weight>
      <italic>true</italic>
      <bold>true</bold>
@@ -186,7 +186,7 @@
      <widget class="QLabel" name="label_36">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -201,7 +201,7 @@
      <widget class="QLabel" name="fps">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -216,7 +216,7 @@
      <widget class="QLabel" name="label_37">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -240,7 +240,7 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>9</pointsize>
+     <pointsize>8</pointsize>
      <weight>75</weight>
      <italic>true</italic>
      <bold>true</bold>
@@ -251,7 +251,7 @@
      <widget class="QLabel" name="label_38">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -266,7 +266,7 @@
      <widget class="QLabel" name="fps_stats">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -281,7 +281,7 @@
      <widget class="QLabel" name="label_39">
       <property name="font">
        <font>
-        <pointsize>9</pointsize>
+        <pointsize>8</pointsize>
         <weight>75</weight>
         <italic>true</italic>
         <bold>true</bold>
@@ -303,6 +303,11 @@
      <height>101</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -320,7 +325,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>9</pointsize>
+      <pointsize>8</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -345,7 +350,7 @@
         <widget class="QLabel" name="simulation_label">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -360,7 +365,7 @@
         <widget class="QLabel" name="simulatio_speed_label_2">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -390,6 +395,11 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>x :</string>
            </property>
@@ -399,7 +409,7 @@
           <widget class="QLabel" name="simulation_position_x">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -414,7 +424,7 @@
           <widget class="QLabel" name="label_22">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -431,6 +441,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_19">
          <item>
           <widget class="QCheckBox" name="cb_y_simu">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>y :</string>
            </property>
@@ -440,7 +455,7 @@
           <widget class="QLabel" name="simulation_position_y">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -455,7 +470,7 @@
           <widget class="QLabel" name="label_23">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -472,6 +487,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
           <widget class="QCheckBox" name="cb_z_simu">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>z :</string>
            </property>
@@ -481,7 +501,7 @@
           <widget class="QLabel" name="simulation_position_z">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -496,7 +516,7 @@
           <widget class="QLabel" name="label_24">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -519,7 +539,7 @@
           <widget class="QLabel" name="label_52">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -534,7 +554,7 @@
           <widget class="QLabel" name="simulation_aspeed">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -549,7 +569,7 @@
           <widget class="QLabel" name="label_54">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -565,13 +585,10 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_17">
          <item>
-          <widget class="QLabel" name="label_13">
+          <widget class="QCheckBox" name="cb_vit_simu">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
-             <weight>75</weight>
-             <italic>true</italic>
-             <bold>true</bold>
+             <pointsize>8</pointsize>
             </font>
            </property>
            <property name="text">
@@ -583,7 +600,7 @@
           <widget class="QLabel" name="simulation_speed">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -598,7 +615,7 @@
           <widget class="QLabel" name="label_25">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -615,6 +632,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_10">
          <item>
           <widget class="QCheckBox" name="cb_ec_simu">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Ec :</string>
            </property>
@@ -624,7 +646,7 @@
           <widget class="QLabel" name="simulation_Ke">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -639,7 +661,7 @@
           <widget class="QLabel" name="label_26">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -656,6 +678,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_15">
          <item>
           <widget class="QCheckBox" name="cb_ecr_simu">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Ecr :</string>
            </property>
@@ -665,7 +692,7 @@
           <widget class="QLabel" name="simulation_aKe">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -680,7 +707,7 @@
           <widget class="QLabel" name="label_27">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -697,6 +724,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_16">
          <item>
           <widget class="QCheckBox" name="cb_ep_simu">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Ep :</string>
            </property>
@@ -706,7 +738,7 @@
           <widget class="QLabel" name="simulation_Pe">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -721,7 +753,7 @@
           <widget class="QLabel" name="label_28">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -748,6 +780,11 @@
      <height>111</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -765,7 +802,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>9</pointsize>
+      <pointsize>8</pointsize>
       <weight>75</weight>
       <italic>true</italic>
       <bold>true</bold>
@@ -790,7 +827,7 @@
         <widget class="QLabel" name="animation_label_2">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -805,7 +842,7 @@
         <widget class="QLabel" name="animation_speed_label_3">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -835,6 +872,11 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>x :</string>
            </property>
@@ -844,7 +886,7 @@
           <widget class="QLabel" name="animation_position_x">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -859,7 +901,7 @@
           <widget class="QLabel" name="label_40">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -876,6 +918,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_22">
          <item>
           <widget class="QCheckBox" name="cb_y_anim">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>y :</string>
            </property>
@@ -885,7 +932,7 @@
           <widget class="QLabel" name="animation_position_y">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -900,7 +947,7 @@
           <widget class="QLabel" name="label_43">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -917,6 +964,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_23">
          <item>
           <widget class="QCheckBox" name="cb_z_anim">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>z :</string>
            </property>
@@ -926,7 +978,7 @@
           <widget class="QLabel" name="animation_position_z">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -941,7 +993,7 @@
           <widget class="QLabel" name="label_53">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -964,7 +1016,7 @@
           <widget class="QLabel" name="label_55">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -979,7 +1031,7 @@
           <widget class="QLabel" name="animation_aspeed">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -994,7 +1046,7 @@
           <widget class="QLabel" name="label_56">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1010,13 +1062,10 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_25">
          <item>
-          <widget class="QLabel" name="label_14">
+          <widget class="QCheckBox" name="cb_vit_anim">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
-             <weight>75</weight>
-             <italic>true</italic>
-             <bold>true</bold>
+             <pointsize>8</pointsize>
             </font>
            </property>
            <property name="text">
@@ -1028,7 +1077,7 @@
           <widget class="QLabel" name="animation_speed">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1043,7 +1092,7 @@
           <widget class="QLabel" name="label_57">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1060,6 +1109,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_26">
          <item>
           <widget class="QCheckBox" name="cb_ec_anim">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Ec :</string>
            </property>
@@ -1069,7 +1123,7 @@
           <widget class="QLabel" name="animation_Ke">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1084,7 +1138,7 @@
           <widget class="QLabel" name="label_58">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1101,6 +1155,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_27">
          <item>
           <widget class="QCheckBox" name="cb_ecr_anim">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Ecr :</string>
            </property>
@@ -1110,7 +1169,7 @@
           <widget class="QLabel" name="animation_aKe">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1125,7 +1184,7 @@
           <widget class="QLabel" name="label_59">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1142,6 +1201,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_28">
          <item>
           <widget class="QCheckBox" name="cb_ep_anim">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Ep :</string>
            </property>
@@ -1151,7 +1215,7 @@
           <widget class="QLabel" name="animation_Pe">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1166,7 +1230,7 @@
           <widget class="QLabel" name="label_60">
            <property name="font">
             <font>
-             <pointsize>9</pointsize>
+             <pointsize>8</pointsize>
              <weight>75</weight>
              <italic>true</italic>
              <bold>true</bold>
@@ -1193,6 +1257,11 @@
      <height>81</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -1205,12 +1274,22 @@
       <x>0</x>
       <y>0</y>
       <width>175</width>
-      <height>81</height>
+      <height>104</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+     </font>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_21">
      <item>
       <widget class="QLabel" name="label_33">
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Diff :</string>
        </property>
@@ -1220,6 +1299,11 @@
       <layout class="QHBoxLayout" name="horizontalLayout_12">
        <item>
         <widget class="QCheckBox" name="cb_ec_diff">
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Ec :</string>
          </property>
@@ -1229,7 +1313,7 @@
         <widget class="QLabel" name="diff_Ke">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -1244,7 +1328,7 @@
         <widget class="QLabel" name="label_44">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -1261,6 +1345,11 @@
       <layout class="QHBoxLayout" name="horizontalLayout_13">
        <item>
         <widget class="QCheckBox" name="cb_ecr_diff">
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Ecr :</string>
          </property>
@@ -1270,7 +1359,7 @@
         <widget class="QLabel" name="diff_aKe">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -1285,7 +1374,7 @@
         <widget class="QLabel" name="label_45">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -1302,6 +1391,11 @@
       <layout class="QHBoxLayout" name="horizontalLayout_14">
        <item>
         <widget class="QCheckBox" name="cb_ep_diff">
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Ep :</string>
          </property>
@@ -1311,7 +1405,7 @@
         <widget class="QLabel" name="diff_Pe">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>
@@ -1326,7 +1420,7 @@
         <widget class="QLabel" name="label_46">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>75</weight>
            <italic>true</italic>
            <bold>true</bold>

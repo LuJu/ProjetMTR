@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 AnimatedNode::AnimatedNode() {
     _extremity_translation_curves.set_interpolation(Curve::bezier);
-//    _rotation_curves.set_interpolation(Curve::bezier);
+    _rotation_curves.set_interpolation(Curve::bezier);
 }
 
 const btTransform AnimatedNode::getWorldTransform(const btTransform parent_transform, float time) const{

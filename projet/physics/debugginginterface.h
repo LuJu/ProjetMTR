@@ -68,6 +68,7 @@ public:
         _checkboxes[Part::ANIMATION_X] = cb_x_anim;
         _checkboxes[Part::ANIMATION_Y] = cb_y_anim;
         _checkboxes[Part::ANIMATION_Z] = cb_z_anim;
+        _checkboxes[Part::ANIMATION_SPEED] = cb_vit_anim;
 
         _checkboxes[Part::SIMULATION_AKE] = cb_ecr_simu;
         _checkboxes[Part::SIMULATION_KE] = cb_ec_simu;
@@ -76,6 +77,7 @@ public:
         _checkboxes[Part::SIMULATION_X] = cb_x_simu;
         _checkboxes[Part::SIMULATION_Y] = cb_y_simu;
         _checkboxes[Part::SIMULATION_Z] = cb_z_simu;
+        _checkboxes[Part::SIMULATION_SPEED] = cb_vit_simu;
 
         _checkboxes[Part::DIFF_AKE] = cb_ecr_diff;
         _checkboxes[Part::DIFF_KE] = cb_ec_diff;

@@ -74,7 +74,7 @@ void Scene::displayObjects(){
         else _program->setUniformValue("intensity",0.5f);
 
         obj = _display.at(i);
-        if (obj->get_animated()){
+        if (obj->is_animated()){
             if (display_animation){
                 // displaying animation object
                 transform.setIdentity();

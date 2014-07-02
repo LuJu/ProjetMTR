@@ -30,18 +30,19 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <QObject>
 #include <QVector>
 #include <QRect>
+
 #include "core/viewer.h"
-#include "btBulletDynamicsCommon.h"
-#include "btBulletCollisionCommon.h"
-#include "BulletSoftBody/btSoftBody.h"
-#include "BulletSoftBody/btSoftBodyHelpers.h"
-#include "physics/part.h"
-#include "physics/simulation.h"
-#include "physics/debugginginterface.h"
 #include "utils/maths.h"
 #include "utils/csvparser.h"
 #include "3d/meshutils.h"
-#include "3d/objloader.h"
+
+#include "btBulletDynamicsCommon.h"
+#include "btBulletCollisionCommon.h"
+
+#include "physics/part.h"
+#include "physics/simulation.h"
+#include "physics/debugginginterface.h"
+
 
 //! Main viewer of the program
 /*!
@@ -68,7 +69,6 @@ public:
     virtual void display3DObjects();
 
     void displayObjects();
-    void displaySimulation();
     void displayObject(Part *obj, QMatrix4x4& M);
     void displayObjectPoints(Part *obj, QMatrix4x4& M);
     void displayPoints();

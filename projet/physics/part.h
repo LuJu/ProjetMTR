@@ -51,6 +51,26 @@ POSSIBILITY OF SUCH DAMAGE.
 class Part
 {
 public:
+    enum curve_data{
+        ANIMATION_KE = 0,
+        ANIMATION_AKE,
+        ANIMATION_PE,
+        SIMULATION_KE,
+        SIMULATION_AKE,
+        SIMULATION_PE,
+        DIFF_KE,
+        DIFF_AKE,
+        DIFF_PE,
+        ANIMATION_X,
+        ANIMATION_Y,
+        ANIMATION_Z,
+        SIMULATION_X,
+        SIMULATION_Y,
+        SIMULATION_Z,
+        ANIMATION_SPEED,
+        SIMULATION_SPEED,
+        NUMBER_OF_CURVES
+    };
     Part(const btVector3 &origin, const btVector3 &shape=btVector3(1,1,1),Shape::shapetype type=Shape::cube);
     Part();
     ~Part();
@@ -73,7 +93,7 @@ public:
 
     btRigidBody * get_body(){ return _simulation.get_body(); }
 
-    bool get_animated() const {return _animated;}
+    bool is_animated() const {return _animated;}
     void set_animated(bool animated){_animated = animated;}
 
     const QString& get_body_part() const {return _body_part_name;}
@@ -101,25 +121,6 @@ public:
 
     void transformStateMatch();
     void initialTransformStateMatch(btTransform node_transform, btTransform parent_transform);
-    enum curve_data{
-        ANIMATION_KE = 0,
-        ANIMATION_AKE,
-        ANIMATION_PE,
-        SIMULATION_KE,
-        SIMULATION_AKE,
-        SIMULATION_PE,
-        DIFF_KE,
-        DIFF_AKE,
-        DIFF_PE,
-        ANIMATION_X,
-        ANIMATION_Y,
-        ANIMATION_Z,
-        SIMULATION_X,
-        SIMULATION_Y,
-        SIMULATION_Z,
-        NUMBER_OF_CURVES
-    };
-    void updateStepsCurves(float elapsed){ insertDataToCurves(_curves_steps,elapsed);}
 private:
 
     Part(const Part& object);

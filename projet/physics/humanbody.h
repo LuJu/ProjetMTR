@@ -67,22 +67,22 @@ public:
     void saveSegmentsDataList();
     void saveCompleteDataList() const;
 
-    void updateInformationJointTree(float elapsed, float diff, float gravity, JointNode* node=NULL, btTransform transform=btTransform::getIdentity());
-    void setSimulationPositionJointTree(float elapsed, JointNode* node = NULL, btTransform transform =btTransform::getIdentity());
+    void updateInformation(float elapsed, float diff, float gravity, JointNode* node=NULL, btTransform transform=btTransform::getIdentity());
+    void setSimulationPosition(float elapsed, JointNode* node = NULL, btTransform transform =btTransform::getIdentity());
 
     int get_mass() const {return _total_mass;}
     void set_mass(int mass){_total_mass = mass;}
 
 protected:
+    int _total_mass;
+
     WTree<Joint> _joints_tree;
     QList<part_info> _data_list;
     QList<part_info> _full_data_list;
     QList<part_info> _complete_data_list;
     QList<part_info> _segments_data_list;
-    int _total_mass;
 
-    void exportSimulationToAnimation();
-    void buildJointTree();
+    void buildTree();
     void buildConstraints(JointNode * current_node=NULL);
 
     QList<Joint*>::iterator findJointByPartName(const QString& name);

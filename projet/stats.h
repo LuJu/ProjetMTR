@@ -30,17 +30,18 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <QObject>
 #include <QVector>
 #include <QRect>
+
 #include "core/viewer.h"
-#include "btBulletDynamicsCommon.h"
-#include "btBulletCollisionCommon.h"
-#include "BulletSoftBody/btSoftBody.h"
-#include "BulletSoftBody/btSoftBodyHelpers.h"
-#include "physics/part.h"
-#include "physics/simulation.h"
-#include "physics/debugginginterface.h"
 #include "utils/maths.h"
 #include "utils/csvparser.h"
 #include "3d/meshutils.h"
+
+#include "btBulletDynamicsCommon.h"
+#include "btBulletCollisionCommon.h"
+
+#include "physics/part.h"
+#include "physics/simulation.h"
+#include "physics/debugginginterface.h"
 
 //! Displays the curves representing the measures done
 class Stats : public Viewer
