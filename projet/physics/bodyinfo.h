@@ -46,12 +46,6 @@ public:
     static float subSegmentMass(const QString& body_part, float total_mass);
     //! Returns the list of the joint types for each limbs
     static const CSVParser& jointList();
-    //! generates the list of fixed limbs
-    /*!
-        \param  filepath : the path of the csv file containing limbs list
-        \param  target_name : the name of the animation
-    */
-    static void genFixedInfo(const QString& filepath, QString target_name);
     //! Returns whether the part has to be fixed (mass = 0) or not
     /*!
       Returns whether the part has to be fixed (mass = 0) or not. \n
@@ -61,11 +55,21 @@ public:
     static bool isFixed(QString part_name);
     //! Returns the parent segment of the subsegment given in parameter
     static QString getSegment(const QString& sub_segment);
+    static QStringList getSegmentList(){return _segments;}
+
+    static void loadData(QString file_name);
 private:
     virtual void abstract() = 0;
+    //! generates the list of fixed limbs
+    /*!
+        \param  filepath : the path of the csv file containing limbs list
+        \param  target_name : the name of the animation
+    */
+    static void genFixedInfo(QString target_name);
+    static void loadSegmentsData();
     static QHash<QString,bool> _segments_fixed;
     static QHash<QString,float> _sub_segments;
-    static QHash<QString,float> _segments;
+    static QStringList _segments;
     static QHash<QString,QString> _segments_parenting;
     static CSVParser _joint_values;
 };

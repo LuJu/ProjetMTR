@@ -69,6 +69,8 @@ public:
         SIMULATION_Z,
         ANIMATION_SPEED,
         SIMULATION_SPEED,
+        ANIMATION_ASPEED,
+        SIMULATION_ASPEED,
         NUMBER_OF_CURVES
     };
     Part();

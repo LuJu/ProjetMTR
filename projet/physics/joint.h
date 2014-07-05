@@ -29,6 +29,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "part.h"
 #include "animatednode.h"
+#include "constraint.h"
 
 #include "debuggingutils.h"
 
@@ -49,6 +50,7 @@ public:
     AnimatedNode& get_animation() {return _animation;}
     QString _part_name;
     QString _parent_part_name;
+    Constraint::constraints_types _constraint_type;
     float _part_mass;
     float _part_com_proportion;
 

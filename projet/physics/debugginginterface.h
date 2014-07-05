@@ -30,12 +30,12 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "ui_Debugging.h"
 #include "simulation.h"
 
-#include "stats.h"
+#include "graphviewer.h"
 #include "scene.h"
 
 #include <QTimer>
 
-class Stats;
+class GraphViewer;
 class Scene;
 
 //! Interface for displaying information on the program
@@ -69,6 +69,7 @@ public:
         _checkboxes[Part::ANIMATION_Y] = cb_y_anim;
         _checkboxes[Part::ANIMATION_Z] = cb_z_anim;
         _checkboxes[Part::ANIMATION_SPEED] = cb_vit_anim;
+        _checkboxes[Part::ANIMATION_ASPEED] = cb_vita_anim;
 
         _checkboxes[Part::SIMULATION_AKE] = cb_ecr_simu;
         _checkboxes[Part::SIMULATION_KE] = cb_ec_simu;
@@ -78,6 +79,7 @@ public:
         _checkboxes[Part::SIMULATION_Y] = cb_y_simu;
         _checkboxes[Part::SIMULATION_Z] = cb_z_simu;
         _checkboxes[Part::SIMULATION_SPEED] = cb_vit_simu;
+        _checkboxes[Part::SIMULATION_ASPEED] = cb_vita_simu;
 
         _checkboxes[Part::DIFF_AKE] = cb_ecr_diff;
         _checkboxes[Part::DIFF_KE] = cb_ec_diff;
@@ -92,7 +94,7 @@ public:
 
     void update();
 
-    Stats * _stats;
+    GraphViewer * _stats;
     Scene * _scene;
     QList<QCheckBox *> _checkboxes;
 };

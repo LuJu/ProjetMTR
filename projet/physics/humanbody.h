@@ -45,8 +45,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "joint.h"
 #include "constraint.h"
 
+typedef WNode<Joint> SceneGraphNode;
+typedef WTree<Joint> SceneGraph;
+
 //! Contains the information about all parts of the body
-typedef WNode<Joint> JointNode;
 class HumanBody
 {
 public:
@@ -59,7 +61,7 @@ public:
 
     void loadObjects(QString path);
     void recordStatus();
-    void recordSegmentData();
+    QList<part_info> recordSegmentData();
     void saveDataList();
     void savePartDataList(const QString& part_name) const;
     void saveFullDataList(float duration, float steps_duration);
@@ -67,8 +69,8 @@ public:
     void saveSegmentsDataList();
     void saveCompleteDataList() const;
 
-    void updateInformation(float elapsed, float diff, float gravity, JointNode* node=NULL, btTransform transform=btTransform::getIdentity());
-    void setSimulationPosition(float elapsed, JointNode* node = NULL, btTransform transform =btTransform::getIdentity());
+    void updateInformation(float elapsed, float diff, float gravity, SceneGraphNode* node=NULL, btTransform transform=btTransform::getIdentity());
+    void setSimulationPosition(float elapsed, SceneGraphNode* node = NULL, btTransform transform =btTransform::getIdentity());
 
     int get_mass() const {return _total_mass;}
     void set_mass(int mass){_total_mass = mass;}
@@ -76,14 +78,15 @@ public:
 protected:
     int _total_mass;
 
-    WTree<Joint> _joints_tree;
-    QList<part_info> _data_list;
-    QList<part_info> _full_data_list;
-    QList<part_info> _complete_data_list;
+    SceneGraph _scene_graph;
+    QList<part_info> _data_list; // contains the energy information at each delta_t
+    QList<part_info> _sum_data_list; // contains the sum of the energies for at each delta_t
+    QList<part_info> _complete_data_list; // contains all the energy calculation at all timesteps, even outside of a delta_t
     QList<part_info> _segments_data_list;
+    QList<part_info> _sum_segments_data_list; //contains the sum of the energies for the segments at each delta_t
 
-    void buildTree();
-    void buildConstraints(JointNode * current_node=NULL);
+    void buildSceneGraph();
+    void buildConstraints(SceneGraphNode * current_node=NULL);
 
     QList<Joint*>::iterator findJointByPartName(const QString& name);
     QList<Part * >::iterator findPartByName(const QString& name);

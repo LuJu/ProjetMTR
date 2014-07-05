@@ -56,7 +56,7 @@ void HumanBody::loadObjects(QString path){
 
     QString body_name = path;
     if(body_name.endsWith(".csv",Qt::CaseInsensitive)) body_name.remove(".csv");
-    BodyInfo::genFixedInfo("fixed.csv",body_name);
+    BodyInfo::loadData(body_name);
 
     while (list[i].at(0)!="parts_end"){
         for (i; list[i].at(0)!="end" && i<list.size() ; ++i) {
@@ -84,34 +84,26 @@ void HumanBody::loadObjects(QString path){
                             if (temp.size() >= 5 && temp.at(4).contains("zero",Qt::CaseInsensitive))
                                 mass = 0.0f;
                             else mass = 1.0f;
-                            if (temp.size() >= 8){
+                            if (temp.size() >= 6){
                                     object->_part_com_proportion = temp.at(5).toFloat();
                                     mass=temp.at(6).toFloat();
                             }
                         }
-//                                if (temp.at(7) == "cone") object->_type=Constraint::cone;
-//                                else if (temp.at(7) == "hinge") object->_type=Constraint::hinge;
-//                                else object->_type=Constraint::point;
+                        if (temp.size() >= 7){
+                            if (temp.at(6) == "cone") object->_constraint_type=Constraint::cone;
+                            else if (temp.at(6) == "hinge") object->_constraint_type=Constraint::hinge;
+                            else object->_constraint_type=Constraint::point;
+                        }
                         object->_part_mass=mass;
                     }
                 } else if (!ignore) {
-                    if (temp.at(0)=="scaling") {
-//                        QStringList values = list[i+1+k] ;
-                        object->get_animation().get_scaling_curves()[0].insert(0.0f,0.05f);
-//                                if (k == 1){
-//                                    object->_animation.get_scaling_curves()[0].insert(0.0f,values[j].toFloat());}
-
-                    } else if (temp.at(0)=="translation") {
+                    if (temp.at(0)=="translation") {
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
                             for (int j=1; j<values.size()-1;j+=2){
                                 object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat());
-//                                object->get_animation().get_translation_curves()[k].insert(values[j].toFloat(),values[j+1].toFloat()/30);
                             }
                         }
-                        btVector3 extends;
-                        extends = btVector3(object->get_animation().TranslationVector(0));
-//                        if (part_parent != _parts.end()) (*part_parent)->get_shape_struct().set_shape(btVector3(.01,extends.length(),.01));
                     } else if (temp.at(0)=="rotation") {
                         for (int k=0; k<3;k++) {
                             QStringList values = list[i+1+k] ;
@@ -123,9 +115,7 @@ void HumanBody::loadObjects(QString path){
                 }
             }
         }
-        if (!ignore){
-            _joints.append(object);
-        }
+        if (!ignore)_joints.append(object);
         i++;
     }
 
@@ -133,7 +123,7 @@ void HumanBody::loadObjects(QString path){
     for (int i = 0; i < _limbs.size(); ++i) {
         _limbs[i]->buildMesh();
     }
-    buildTree();
+    buildSceneGraph();
     buildConstraints();
 }
 
@@ -171,27 +161,10 @@ void HumanBody::saveDataList(){
 
 void HumanBody::recordSegmentData(){
     part_info segment_data;
-    QList<QString> effective_segments;
+    QStringList effective_segments = BodyInfo::getSegmentList();
     QString segment;
     float time = -1;
 
-    effective_segments.append("Head");
-    effective_segments.append("Upper Trunc");
-    effective_segments.append("Lower Trunc");
-
-    effective_segments.append("Left Hand");
-    effective_segments.append("Left Arm");
-    effective_segments.append("Left Fore Arm");
-    effective_segments.append("Left Up Leg");
-    effective_segments.append("Left Leg");
-    effective_segments.append("Left Foot");
-
-    effective_segments.append("Right Hand");
-    effective_segments.append("Right Arm");
-    effective_segments.append("Right Fore Arm");
-    effective_segments.append("Right Up Leg");
-    effective_segments.append("Right Leg");
-    effective_segments.append("Right Foot");
     for (int i = 0; i < effective_segments.size(); ++i) {
         segment = effective_segments.at(i);
         time = -1;
@@ -257,25 +230,7 @@ void HumanBody::savePartDataList(const QString& part_name) const{
 
 
 void HumanBody::saveSegmentsDataList(){
-
-    QList<QString> effective_segments;
-    effective_segments.append("Head");
-    effective_segments.append("Upper Trunc");
-    effective_segments.append("Lower Trunc");
-
-    effective_segments.append("Left Hand");
-    effective_segments.append("Left Arm");
-    effective_segments.append("Left Fore Arm");
-    effective_segments.append("Left Up Leg");
-    effective_segments.append("Left Leg");
-    effective_segments.append("Left Foot");
-
-    effective_segments.append("Right Hand");
-    effective_segments.append("Right Arm");
-    effective_segments.append("Right Fore Arm");
-    effective_segments.append("Right Up Leg");
-    effective_segments.append("Right Leg");
-    effective_segments.append("Right Foot");
+    QStringList effective_segments = BodyInfo::getSegmentList();
     for (int i = 0; i < effective_segments.size(); ++i) {
         saveSegmentDataList(effective_segments.at(i));
     }
@@ -355,13 +310,15 @@ void HumanBody::saveFullDataList(float duration, float steps_duration){
     parser.saveInFile(name);
 
 }
-void HumanBody::updateInformation(float elapsed, float diff,float gravity,JointNode* node, btTransform transform){
+void HumanBody::updateInformation(float elapsed, float diff,float gravity,SceneGraphNode* node, btTransform transform){
     if (node == NULL){
-        node = _joints_tree.get_root();
+        node = _scene_graph.get_root();
         transform.setIdentity();
+#ifdef Y_AXIS_MINUS_90_DEGREES_ROTATION_OFFSET
         btQuaternion quat;
         quat.setEuler(0,-M_PI_2,0);
         transform.setRotation(quat);
+#endif
         if (node){
             updateInformation(elapsed,diff,gravity,node,transform);
             for (int i = 0; i < _limbs.size(); ++i){
@@ -382,13 +339,15 @@ void HumanBody::updateInformation(float elapsed, float diff,float gravity,JointN
 }
 
 
-void HumanBody::setSimulationPosition(float elapsed,JointNode* node, btTransform transform){
+void HumanBody::setSimulationPosition(float elapsed,SceneGraphNode* node, btTransform transform){
     if (node == NULL){
-        node = _joints_tree.get_root();
+        node = _scene_graph.get_root(); // gets root if the function is called with no parameter
         transform.setIdentity();
+#ifdef Y_AXIS_MINUS_90_DEGREES_ROTATION_OFFSET
         btQuaternion quat;
         quat.setEuler(0,-M_PI_2,0);
         transform.setRotation(quat);
+#endif
         if (node) setSimulationPosition(elapsed,node,transform);
         else qWarning()<<"No root in part tree";
     } else {
@@ -407,27 +366,29 @@ void HumanBody::setSimulationPosition(float elapsed,JointNode* node, btTransform
         }
     }
 }
-void HumanBody::buildTree(){
+void HumanBody::buildSceneGraph(){
     Joint * temp;
     Part * new_part;
-    JointNode * parent;
+    SceneGraphNode * parent;
     int number_of_joints = _joints.size();
-    bool inserted[number_of_joints];
-    bool complete = false;
+    int uncomplete = number_of_joints;
+    bool inserted[number_of_joints];// array of bools to check which nodes have been insterted
+
     for (int i = 0; i < number_of_joints; ++i) {
         inserted[i] = false;
     }
-    while ( complete == false){
+
+    while ( uncomplete > 0){
         for (int j = 0; j < number_of_joints; ++j) {
             if(inserted[j] == false){
                 temp = _joints[j];
                 if (!temp->has_parent()){
-                    _joints_tree.addNode(temp->_part_name,temp);
+                    _scene_graph.addNode(temp->_part_name,temp);
                     inserted[j] = true;
                 } else {
-                    parent = _joints_tree.get_node_by_name(temp->_parent_part_name);
+                    parent = _scene_graph.get_node_by_name(temp->_parent_part_name);
                     if (parent!=NULL){
-                        _joints_tree.addNode(temp->_part_name,temp,parent->get_id());
+                        _scene_graph.addNode(temp->_part_name,temp,parent->get_id());
                         new_part = new Part();
                         temp->set_main_part(new_part);
                         new_part->set_mass(temp->_part_mass);
@@ -435,49 +396,44 @@ void HumanBody::buildTree(){
                         new_part->get_shape_struct().set_shape_type(Shape::capsule);
                         new_part->set_animated(true);
                         btVector3 extends = btVector3(temp->get_animation().TranslationVector(0));
-                        new_part->get_shape_struct().set_shape(btVector3(.01,extends.length(),.01));
+                        new_part->get_shape_struct().set_shape(btVector3(.02,extends.length(),.02));
                         new_part->buildMesh();
                         _limbs.append(new_part);
                         inserted[j] = true;
                     }
                 }
+                uncomplete--;
             }
-        }
-        complete = true;
-        for (int i = 0; i < number_of_joints; ++i) {
-            if (inserted[i] == false)
-                complete = false;
         }
     }
 }
 
-void HumanBody::buildConstraints(JointNode * current_node){
+void HumanBody::buildConstraints(SceneGraphNode * current_node){
     Joint * temp;
     if (current_node == NULL){
-        current_node = _joints_tree.get_root();
+        current_node = _scene_graph.get_root();
     }
     if (current_node != NULL){
         temp = current_node->get_data();
-        QList<QPair<JointNode*,JointNode*> > list;
+        QList<QPair<SceneGraphNode*,SceneGraphNode*> > list;
         int n = current_node->get_number_of_children();
         for (int i = 0; i < n; ++i) {
-            list.append(QPair<JointNode*,JointNode*>(current_node,current_node->childAt(i)));
+            list.append(QPair<SceneGraphNode*,SceneGraphNode*>(current_node,current_node->childAt(i)));
         }
         for (int i = 0; i < n-1; ++i) {
             for (int j = i; j < n-1 ; ++j) {
-                list.append(QPair<JointNode*,JointNode*>(current_node->childAt(i),current_node->childAt(j+1)));
+                list.append(QPair<SceneGraphNode*,SceneGraphNode*>(current_node->childAt(i),current_node->childAt(j+1)));
             }
         }
         for (int i = 0; i < list.size(); ++i) {
             if (list.at(i).first->get_data()->get_main_part()){
-//                Constraint c(list.at(i).first->get_data()->_main_part,list.at(i).second->get_data()->_main_part);
                 if (list.at(i).first == current_node)
-                    _constraints.append(Constraint(list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part(),true));
+                    _constraints.append(Constraint(temp->_constraint_type,list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part(),true));
                 else
-                    _constraints.append(Constraint(list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part()));
+                    _constraints.append(Constraint(temp->_constraint_type,list.at(i).first->get_data()->get_main_part(),list.at(i).second->get_data()->get_main_part()));
             } else { // means that it is root
                 if (GlobalConfig::is_enabled("root_fixed"))
-                    _constraints.append(Constraint(list.at(i).second->get_data()->get_main_part(),NULL,false));
+                    _constraints.append(Constraint(Constraint::point,list.at(i).second->get_data()->get_main_part(),NULL,false));
             }
 
         }

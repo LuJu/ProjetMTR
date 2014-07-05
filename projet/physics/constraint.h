@@ -54,7 +54,7 @@ public:
         \param  second base : Indicates whether the second part is to be connected to its top(true) or its base(false)
         return output
     */
-    Constraint(Part * first, Part * second, bool first_base = false, bool second_base = false);
+    Constraint(constraints_types type, Part * first, Part * second, bool first_base = false, bool second_base = false);
     Constraint& operator=( const Constraint& other ) ;
     explicit Constraint(const Constraint& other);
     virtual ~Constraint();

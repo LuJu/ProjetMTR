@@ -28,83 +28,49 @@ POSSIBILITY OF SUCH DAMAGE.
 
 QHash<QString,bool> BodyInfo::_segments_fixed;
 QHash<QString,float> BodyInfo::_sub_segments;
-QHash<QString,float> BodyInfo::_segments;
+QStringList BodyInfo::_segments;
 QHash<QString,QString> BodyInfo::_segments_parenting;
 CSVParser BodyInfo::_joint_values;
 
-float BodyInfo::subSegmentMass(const QString& body_part, float total_mass){
-    float proportion;
+
+void BodyInfo::loadData(QString file_name){
+    loadSegmentsData();
+    genFixedInfo(file_name);
+}
+
+void BodyInfo::loadSegmentsData(){
     if (_sub_segments.size() == 0){
         CSVParser parser;
         QString filepath("../assets/CSV/input/segments_subs.csv");
         QString sub_segment_name;
+        QString segment_name;
         float mass;
 
-        if (_sub_segments.size() == 0){
-            parser.parseFile(filepath,",");
-            if (parser.size() > 0){
-                for (int i = 0; i < parser.size(); ++i) {
-                    sub_segment_name = parser.at(i).at(0).toLower().replace(" ","");
-                    mass =     parser.at(i).at(5).toFloat();
-                    _sub_segments.insert(sub_segment_name,mass);
-                }
-            } else {
-                qWarning()<<"Target file "<<filepath<<" not found";
-            }
-        }
-    }
-    QHash<QString,float>::const_iterator it = _sub_segments.find(body_part.toLower().replace(" ",""));
-    if (it !=_sub_segments.end())
-        proportion = it.value();
-    else {
-        proportion = 0;
-    }
-    return (total_mass/100) * proportion;
-}
-
-const CSVParser& BodyInfo::jointList(){
-    static bool first_time = true;
-    if (first_time){
-        _joint_values.parseFile(":/CSV/input/jointvalues.csv",";");
-        first_time = false;
-    }
-    return _joint_values;
-}
-
-
-QString BodyInfo::getSegment(const QString& sub_segment){
-    CSVParser parser;
-    QString filepath("../assets/CSV/input/segments_subs.csv");
-    QString segment_name;
-    QString sub_segment_name;
-
-    if (_segments.size() == 0){
-        parser.parseFile(filepath,",");
-        if (parser.size() > 0){
-            for (int i = 0; i < parser.size(); ++i) {
+        parser.parseFile(filepath,";");
+        if (parser.size() > 1){
+            for (int i = 1; i < parser.size(); ++i) {
                 sub_segment_name = parser.at(i).at(0).toLower().replace(" ","");
                 segment_name =     parser.at(i).at(1).toLower().replace(" ","");
+                mass = parser.at(i).at(5).toFloat();
+                _sub_segments.insert(sub_segment_name,mass);
                 _segments_parenting.insert(sub_segment_name,segment_name);
+
+                if (qFind(_segments,segment_name)==_segments.end()){
+                    _segments.append(segment_name);
+                }
             }
+            qDebug()<<"Loaded segment mass file "<<filepath;
         } else {
             qWarning()<<"Target file "<<filepath<<" not found";
         }
     }
-
-
-    QHash<QString,QString>::const_iterator it = _segments_parenting.find(sub_segment.toLower().replace(" ",""));
-    if (it !=_segments_parenting.end())
-        segment_name = it.value();
-    else segment_name=QString("");
-    return segment_name;
-
 }
 
-void BodyInfo::genFixedInfo(const QString& filepath, QString target_name){
+void BodyInfo::genFixedInfo(QString target_name){
     CSVParser parser;
     QString part_name;
     bool fixed;
-    parser.parseFile("../assets/CSV/input/"+filepath,",");
+    parser.parseFile("../assets/CSV/input/fixed.csv",",");
     int index = -1;
     if (parser.size() > 0){
         const QStringList& names = parser.at(0);
@@ -129,7 +95,42 @@ void BodyInfo::genFixedInfo(const QString& filepath, QString target_name){
     }
 }
 
-bool BodyInfo::isFixed(QString part_name){
+float BodyInfo::subSegmentMass(const QString& body_part, float total_mass){
+    float proportion;
+
+    if (_sub_segments.size() == 0) qWarning()<<"Empty segments data";
+
+    QHash<QString,float>::const_iterator it = _sub_segments.find(body_part.toLower().replace(" ",""));
+    if (it !=_sub_segments.end()) proportion = it.value();
+    else proportion = 0.0f;
+    if (proportion == 0.0f)
+        qWarning()<<"segment mass proportion = 0 for part "<<body_part.toLower().replace(" ","");
+    return (total_mass/100) * proportion;
+}
+
+const CSVParser& BodyInfo::jointList(){
+    static bool first_time = true;
+    if (first_time){
+        _joint_values.parseFile("../assets/CSV/input/jointvalues.csv",";");
+        first_time = false;
+    }
+    return _joint_values;
+}
+
+
+QString BodyInfo::getSegment(const QString& sub_segment){
+    QString segment_name;
+
+    if (_segments_parenting.size() == 0) qWarning()<<"Empty segments data";
+
+    QHash<QString,QString>::const_iterator it = _segments_parenting.find(sub_segment.toLower().replace(" ",""));
+    if (it !=_segments_parenting.end()) segment_name = it.value();
+    else segment_name=QString("");
+    return segment_name;
+}
+
+
+bool BodyInfo::isFixed(QString part_name) {
     QHash<QString,bool>::const_iterator fixed = _segments_fixed.find(part_name);
     if (fixed != _segments_fixed.end()) { return fixed.value(); }
     else qWarning()<<"Part "<<part_name<<" not found";

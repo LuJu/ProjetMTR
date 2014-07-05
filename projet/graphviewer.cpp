@@ -24,24 +24,24 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-#include "stats.h"
+#include "graphviewer.h"
 
-Stats::~Stats(){
+GraphViewer::~GraphViewer(){
 }
 
-Stats::Stats(QGLContext *context):
+GraphViewer::GraphViewer(QGLContext *context):
     Viewer(context){
 
 }
-Stats::Stats(QWidget *parent):
+GraphViewer::GraphViewer(QWidget *parent):
     Viewer(parent){
 
 }
-Stats::Stats():
+GraphViewer::GraphViewer():
     Viewer(){
 }
 
-void Stats::draw(){
+void GraphViewer::draw(){
     Viewer::draw();
     bool started;
     _simulation->get_lock()->lockForRead();
@@ -61,9 +61,9 @@ void Stats::draw(){
     frameEnd();
 }
 
-void Stats::displayStats(){
+void GraphViewer::displayStats(){
     QMatrix4x4 M,V,P;
-    QRect window;
+    QRectF window;
     float right,top,bottom,value;
     value = bottom = top = right = 0;
 
@@ -88,11 +88,15 @@ void Stats::displayStats(){
                 bottom = value;
         }
     }
-
-    window.setY(_ui->get_zoom()/10+1);
-    window.setHeight((-(_ui->get_zoom()/5)+1));
-    window.setX(right-width()*6);
-    window.setWidth(width()*6);
+    float scale_y = (float)(_ui->get_zoom());
+    if ( scale_y < 1.0f){
+        scale_y = 1.0f;
+    }
+    float height_scale_y = (float)height()/100.0f;
+    window.setY((scale_y*height_scale_y)/2.0f);
+    window.setHeight((-scale_y)*height_scale_y);
+    window.setX(right-width()*10.0f);
+    window.setWidth(width()*10.0f);
     P.ortho(window);
     updateProjectionMatrix(P);
     updateViewMatrix(V);
@@ -107,18 +111,18 @@ void Stats::displayStats(){
         }
     }
 }
-void Stats::display3DObjects(){
+void GraphViewer::display3DObjects(){
     bindProgram();
     glViewport(0,0,width(),height());
     displayStats();
     releaseProgram();
 }
 
-void Stats::init(){
+void GraphViewer::init(){
     Viewer::init();
     updateMatrices(QMatrix4x4(),QMatrix4x4(),QMatrix4x4());
     _ui->set_zoom(100);
-    _ui->activateProgressiveZoom(60);
+    _ui->activateProgressiveZoom(4);
     _selected_index = 0;
 
     for (int i = 0; i < Part::NUMBER_OF_CURVES; ++i) {
@@ -126,7 +130,7 @@ void Stats::init(){
     }
 }
 
-void Stats::keyPressEvent(QKeyEvent *keyEvent)
+void GraphViewer::keyPressEvent(QKeyEvent *keyEvent)
 {
     bool simulation_started = false;
     _simulation->get_lock()->lockForRead();
@@ -144,12 +148,12 @@ void Stats::keyPressEvent(QKeyEvent *keyEvent)
     }
 }
 
-void Stats::keyReleaseEvent(QKeyEvent *keyEvent)
+void GraphViewer::keyReleaseEvent(QKeyEvent *keyEvent)
 {
     Viewer::keyReleaseEvent(keyEvent);
 }
 
-void Stats::closeEvent(QCloseEvent * event){
+void GraphViewer::closeEvent(QCloseEvent * event){
     Viewer::closeEvent(event);
     _simulation->get_lock()->lockForRead();
     _simulation->stop();

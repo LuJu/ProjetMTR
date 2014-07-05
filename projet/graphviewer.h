@@ -44,15 +44,15 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "physics/debugginginterface.h"
 
 //! Displays the curves representing the measures done
-class Stats : public Viewer
+class GraphViewer : public Viewer
 {
     Q_OBJECT
 public slots :
 public:
-    ~Stats();
-    Stats(QGLContext * context);
-    Stats();
-    Stats(QWidget * parent);
+    ~GraphViewer();
+    GraphViewer(QGLContext * context);
+    GraphViewer();
+    GraphViewer(QWidget * parent);
     virtual void draw();
     virtual void init();
     virtual void keyPressEvent(QKeyEvent *keyEvent);

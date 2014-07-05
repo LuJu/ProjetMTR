@@ -116,6 +116,7 @@ private:
 
 
     btScalar _step_counter;
+    btScalar _delta_counter;
     btScalar _end_counter;
     btScalar _ups_counter;
     btScalar _last_update_time;

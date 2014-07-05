@@ -35,12 +35,14 @@ SimulatedObject::SimulatedObject():
 {}
 
 btRigidBody *  SimulatedObject::get_body() const{
-    if(!_body || !_motion_state) qWarning()<<"Attempting to access unallocated btRigidBody";
+    if(!_body || !_motion_state)
+        qWarning()<<"Attempting to access unallocated btRigidBody";
     return _body;
 }
 
 btDefaultMotionState * SimulatedObject::get_motion_state() const {
-    if(!_body || !_motion_state) qWarning()<<"Attempting to access unallocated btDefaultMotionState";
+    if(!_body || !_motion_state)
+        qWarning()<<"Attempting to access unallocated btDefaultMotionState";
     return _motion_state;
 }
 
@@ -57,6 +59,10 @@ void  SimulatedObject::buildMotion(btScalar mass, btTransform transform, const S
     btScalar com_y_position = length * com_proportion - length/2.0f;
     btTransform com_offset; com_offset.setIdentity();com_offset.setOrigin(btVector3(0,com_y_position,com_y_position));
     _motion_state = new btDefaultMotionState(transform,com_offset);
+    if ( _motion_state == NULL)
+        qWarning()<<"Motion state unallocated";
     btRigidBody::btRigidBodyConstructionInfo construction_info(mass, _motion_state, _collision_shape , _local_inertia);
     _body = new btRigidBody(construction_info);
+    if ( _body== NULL)
+        qWarning()<<"Body unallocated";
 }

@@ -36,9 +36,9 @@ Constraint::Constraint():
     _parts.second= NULL;
 }
 
-Constraint::Constraint(Part * first, Part * second, bool first_base, bool second_base):
+Constraint::Constraint(constraints_types type, Part * first, Part * second, bool first_base, bool second_base):
     _constraint(NULL),
-    _type(point),
+    _type(type),
     _first_base(first_base),
     _second_base(second_base)
 {

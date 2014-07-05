@@ -48,6 +48,8 @@ public:
     void set_ups(int ups){_ups = ups;}
     btScalar get_steps_duration() const {return _steps_duration;}
     void set_steps_duration(int steps_duration){_steps_duration = steps_duration;}
+    btScalar get_delta_duration() const {return _delta_duration;}
+    void set_delta_duration(int delta_duration){_delta_duration = delta_duration;}
     btScalar get_body_mass() const {return _body_mass;}
     void set_body_mass(int body_mass){_body_mass = body_mass;}
     const QString& get_input_location() const {return _input_location;}
@@ -57,6 +59,7 @@ public:
 
 private:
     btScalar _steps_duration;
+    btScalar _delta_duration;
     btScalar _body_mass;
     btScalar _duration;
     btScalar _coefficient;

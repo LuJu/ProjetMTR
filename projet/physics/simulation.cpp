@@ -33,6 +33,7 @@ Simulation::Simulation():
     _initiated(false),
     _end_counter(0),
     _updates_since_last_step(0),
+    _delta_counter(0),
     _started(false),
     _elapsed_simulation(0),
     _paused(false)
@@ -94,6 +95,7 @@ void Simulation::loop(){
     btScalar ups =            _params.get_ups();
     btScalar duration =       _params.get_duration();
     btScalar steps_duration = _params.get_steps_duration();
+    btScalar delta_duration = _params.get_delta_duration();
 
     btScalar clock_time = _clock.getTimeMilliseconds() / coeff ;
     _last_update_time = clock_time;
@@ -107,6 +109,10 @@ void Simulation::loop(){
                     update();
                     if (_step_counter >= steps_duration)
                         stepOver();
+                    if (_delta_counter >= delta_duration){
+                        _human.recordStatus();
+                        _delta_counter = 0;
+                    }
                     if (_end_counter >= duration)
                         simulationOver();
                     _updates_since_last_step++;
@@ -128,6 +134,7 @@ void Simulation::update(){
     _diff =  clock_time-_elapsed_realtime;
     _environment->get_world()->stepSimulation(progression_s ,1,btScalar(1.0/(ups)));
     _step_counter+=progression_ms; // conversion from seconds to ms
+    _delta_counter+=progression_ms;
     _end_counter+=progression_ms;
     _ups_counter+=progression_ms;
     _elapsed_realtime=clock_time;
@@ -144,7 +151,7 @@ void Simulation::resetStep(float time){
 }
 
 void Simulation::stepOver(){
-    _human.recordStatus();
+//    _human.recordStatus();
     resetStep(_elapsed_simulation);
 }
 

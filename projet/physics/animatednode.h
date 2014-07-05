@@ -45,11 +45,11 @@ class AnimatedNode
 public:
     AnimatedNode();
 
-    btVector3 scalingVector(float time) const {
-        return btVector3(_scaling_curves[0].get_value(time),
-                         _scaling_curves[1].get_value(time),
-                         _scaling_curves[2].get_value(time));
-    }
+//    btVector3 scalingVector(float time) const {
+//        return btVector3(_scaling_curves[0].get_value(time),
+//                         _scaling_curves[1].get_value(time),
+//                         _scaling_curves[2].get_value(time));
+//    }
     btVector3 TranslationVector(float time) const {
         return btVector3(_extremity_translation_curves[0].get_value(time),
                          _extremity_translation_curves[1].get_value(time),
@@ -60,7 +60,7 @@ public:
                          _rotation_curves[1].get_value(time),
                          _rotation_curves[2].get_value(time));
     }
-    Curve3d& get_scaling_curves() {return _scaling_curves;}
+//    Curve3d& get_scaling_curves() {return _scaling_curves;}
     Curve3d& get_rotation_curves() {return _rotation_curves;}
     Curve3d& get_translation_curves() {return _extremity_translation_curves;}
 

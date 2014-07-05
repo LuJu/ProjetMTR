@@ -30,7 +30,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "scene.h"
-#include "stats.h"
+#include "graphviewer.h"
 #include "core/core.h"
 #include "utils/geometry.h"
 #include "utils/typedefinitions.h"
@@ -47,18 +47,6 @@ DebuggingInterface * _debugging_ui;
 
 //! Function to do quick tests
 void quickTest(){
-//BezierPath b;
-//qDebug()<<b.interpolation(0,.5,2.5,3,0);
-//qDebug()<<b.interpolation(0,.5,2.5,3,.1);
-//qDebug()<<b.interpolation(0,.5,2.5,3,.2);
-//qDebug()<<b.interpolation(0,.5,2.5,3,1);
-//        Curve c;
-//        c.set_interpolation(Curve::bezier);
-//        c.insert(0,4);
-//        c.insert(2,3);
-//        c.insert(7,250);
-//        c.insert(10,4);
-//        float x = c.get_value(1.5);
 }
 
 //Redirects the debug messages
@@ -148,6 +136,7 @@ void parseArguments(int argc, char *argv[]){
             GlobalConfig::set_int("steps_duration",value);
             break ;
         case 6:
+            GlobalConfig::set_int("delta_duration",value);
             break ;
         case 7:
             break ;
@@ -171,7 +160,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QGLFormat b;
     Scene gui;
-    Stats * stats;
+    GraphViewer * stats;
 
     int ret=0;
     qDebug()<<"LAUNCHING PROGRAM FACIAL ANIMATION THROUGH EFFORT";
@@ -200,7 +189,7 @@ int main(int argc, char *argv[])
             _debugging_ui->_simulation=simulation;
 
             if (GlobalConfig::is_enabled("display_stats")) {
-                stats=new Stats(&gui);
+                stats=new GraphViewer(&gui);
                 stats->setWindowFlags( Qt::Window);
                 stats->_simulation = simulation;
                 stats->setWindowTitle("Stats");
@@ -222,6 +211,7 @@ int main(int argc, char *argv[])
     params.set_coefficient(GlobalConfig::get_int("coefficient"));
     params.set_duration(GlobalConfig::get_int("duration"));
     params.set_steps_duration(GlobalConfig::get_int("steps_duration"));
+    params.set_delta_duration(GlobalConfig::get_int("delta_duration"));
     params.set_body_mass(GlobalConfig::get_int("body_mass"));
     params.set_input_location(GlobalConfig::get_string("input_location"));
     params.set_automatic_close(GlobalConfig::is_enabled("automatic_close"));

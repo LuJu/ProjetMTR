@@ -536,17 +536,14 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_18">
          <item>
-          <widget class="QLabel" name="label_52">
+          <widget class="QCheckBox" name="cb_vita_simu">
            <property name="font">
             <font>
              <pointsize>8</pointsize>
-             <weight>75</weight>
-             <italic>true</italic>
-             <bold>true</bold>
             </font>
            </property>
            <property name="text">
-            <string>V angle</string>
+            <string>Vit ang:</string>
            </property>
           </widget>
          </item>
@@ -1013,17 +1010,14 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_24">
          <item>
-          <widget class="QLabel" name="label_55">
+          <widget class="QCheckBox" name="cb_vita_anim">
            <property name="font">
             <font>
              <pointsize>8</pointsize>
-             <weight>75</weight>
-             <italic>true</italic>
-             <bold>true</bold>
             </font>
            </property>
            <property name="text">
-            <string>V angle</string>
+            <string>Vit ang:</string>
            </property>
           </widget>
          </item>
@@ -1274,7 +1268,7 @@
       <x>0</x>
       <y>0</y>
       <width>175</width>
-      <height>104</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="font">

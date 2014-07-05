@@ -200,6 +200,8 @@ void Part::insertDataToCurves(QList<Curve>& curves, float elapsed){
     curves[SIMULATION_Z].insert(elapsed,_energy.simulation.position.z);
     curves[ANIMATION_SPEED].insert(elapsed,_energy.animation.speed);
     curves[SIMULATION_SPEED].insert(elapsed,_energy.simulation.speed);
+    curves[ANIMATION_ASPEED].insert(elapsed,_energy.animation.aspeed);
+    curves[SIMULATION_ASPEED].insert(elapsed,_energy.simulation.aspeed);
 }
 
 void Part::setSimulationTransformFromAnimation(){
