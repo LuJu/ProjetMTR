@@ -41,9 +41,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "ui_Debugging.h"
 #include "physics/debuggingwidget.h"
 
-DebuggingWidget * _debugging;
-DebuggingInterface * _debugging_ui;
-
 
 //! Function to do quick tests
 void quickTest(){
@@ -56,41 +53,24 @@ void customMessageHandler(QtMsgType type, const char *msg)
 }
 void firstConfiguration(){
     GlobalConfig::defaultValue("zoom",QVariant(100));
-    GlobalConfig::defaultValue("quaternion_w",QVariant(0.999962));
-    GlobalConfig::defaultValue("quaternion_x",QVariant(-0.00830986));
-    GlobalConfig::defaultValue("quaternion_y",QVariant(0.00131711));
-    GlobalConfig::defaultValue("quaternion_z",QVariant(-0.00231517));
-
     GlobalConfig::defaultValue("duration",QVariant(100000));
     GlobalConfig::defaultValue("steps_duration",QVariant(10000));
     GlobalConfig::defaultValue("coefficient",QVariant(1));
     GlobalConfig::defaultValue("ups",QVariant(60));
     GlobalConfig::defaultValue("body_mass",QVariant(70));
-    GlobalConfig::defaultValue("input_location",QVariant("values.csv"));
+    GlobalConfig::defaultValue("input_location",QVariant("68.1_OK.csv"));
     GlobalConfig::defaultValue("constraints_activated",QVariant("true"));
-
-    GlobalConfig::defaultValue("output_fps",QVariant("true"));
-    GlobalConfig::defaultValue("debug_output_debug",QVariant("true"));
-    GlobalConfig::defaultValue("debug_output_warning",QVariant("true"));
-    GlobalConfig::defaultValue("debug_output_critical",QVariant("true"));
-    GlobalConfig::defaultValue("display_ui",QVariant("true"));
     GlobalConfig::defaultValue("display_animation",QVariant("true"));
     GlobalConfig::defaultValue("display_simulation",QVariant("true"));
-    GlobalConfig::defaultValue("display_animation_stats",QVariant("true"));
-    GlobalConfig::defaultValue("display_curves_normalized",QVariant("true"));
     GlobalConfig::defaultValue("automatic_close",QVariant("true"));
     GlobalConfig::defaultValue("automatic_start",QVariant("true"));
-    GlobalConfig::defaultValue("shaders",QVariant("true"));
-    GlobalConfig::defaultValue("automatic_stats_progression",QVariant("true"));
-    GlobalConfig::defaultValue("automatic",QVariant("true"));
-
-    GlobalConfig::defaultValue("display_error",QVariant("true"));
-    GlobalConfig::defaultValue("display_stats",QVariant("true"));
-    GlobalConfig::defaultValue("display_speed",QVariant("true"));
+    GlobalConfig::defaultValue("root_fixed",QVariant("false"));
+    GlobalConfig::defaultValue("use_csv_masses",QVariant("true"));
     GlobalConfig::defaultValue("display_simulation_window",QVariant("true"));
-    GlobalConfig::defaultValue("display_simulation_stats",QVariant("true"));
-    GlobalConfig::defaultValue("display_diff",QVariant("true"));
-    GlobalConfig::defaultValue("debugging",QVariant("true"));
+    GlobalConfig::defaultValue("write_file_complete",QVariant("true"));
+    GlobalConfig::defaultValue("write_file_full",QVariant("true"));
+    GlobalConfig::defaultValue("write_file",QVariant("true"));
+    GlobalConfig::defaultValue("write_file_segments",QVariant("true"));
 }
 
 QString usage(){
@@ -99,10 +79,8 @@ QString usage(){
     use.append("program ");
     use.append("[input file ");
     use.append("[body total mass ");
-    use.append("[simulation total duration ");
-    use.append("[coefficient ");
     use.append("[steps duration ");
-    use.append("]]]]]");
+    use.append("]]]");
     return use;
 }
 
@@ -127,28 +105,7 @@ void parseArguments(int argc, char *argv[]){
             GlobalConfig::set_int("body_mass",value);
             break ;
         case 3:
-            GlobalConfig::set_int("duration",value);
-            break ;
-        case 4:
-            GlobalConfig::set_int("coefficient",value);
-            break ;
-        case 5:
             GlobalConfig::set_int("steps_duration",value);
-            break ;
-        case 6:
-            GlobalConfig::set_int("delta_duration",value);
-            break ;
-        case 7:
-            break ;
-        case 8:
-            break ;
-        case 9:
-            break ;
-        case 10:
-            break ;
-        case 11:
-            break ;
-        case 12:
             break ;
         }
     }
@@ -158,11 +115,16 @@ void parseArguments(int argc, char *argv[]){
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QGLFormat b;
     Scene gui;
     GraphViewer * stats;
 
-    int ret=0;
+    DebuggingWidget * _debugging;
+    DebuggingInterface * _debugging_ui;
+
+    int ret;
+
+    QGLFormat format;
+
     qDebug()<<"LAUNCHING PROGRAM FACIAL ANIMATION THROUGH EFFORT";
     qDebug()<<usage();
     GlobalConfig::loadConfiguration("ETS","FacialAnimation");
@@ -178,32 +140,28 @@ int main(int argc, char *argv[])
         gui._simulation = simulation;
         gui.setWindowTitle("Physics simulation");
         gui.move(0,0);
-        if (GlobalConfig::is_enabled("debugging")){
-            _debugging_ui = NULL;
-            _debugging = new DebuggingWidget(&gui);
-            _debugging_ui = new DebuggingInterface();
 
-            _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
-            _debugging_ui->setupUi(_debugging);
-            _debugging->_interface = _debugging_ui;
-            _debugging_ui->_simulation=simulation;
+        _debugging_ui = NULL;
+        _debugging = new DebuggingWidget(&gui);
+        _debugging_ui = new DebuggingInterface();
 
-            if (GlobalConfig::is_enabled("display_stats")) {
-                stats=new GraphViewer(&gui);
-                stats->setWindowFlags( Qt::Window);
-                stats->_simulation = simulation;
-                stats->setWindowTitle("Stats");
-                stats->move(gui.width(),0);
-                stats->setGeometry(gui.width(),0,700,300);
-            }
-        }
+        _debugging->setWindowFlags( Qt::SubWindow | Qt::Window);
+        _debugging_ui->setupUi(_debugging);
+        _debugging->_interface = _debugging_ui;
+        _debugging_ui->_simulation=simulation;
+
+        stats=new GraphViewer(&gui);
+        stats->setWindowFlags( Qt::Window);
+        stats->_simulation = simulation;
+        stats->setWindowTitle("Stats");
+        stats->move(gui.width(),0);
+        stats->setGeometry(gui.width(),0,700,300);
+    }
 #ifdef QT_4_
         qInstallMsgHandler(customMessageHandler);
 #else
         qInstallMessageHandler(customMessageHandler);
 #endif
-
-    }
 
     SimulationParameters params;
     params.set_gravity(btVector3(0,-9.8,0));
@@ -218,33 +176,25 @@ int main(int argc, char *argv[])
     simulation->init(params);
 
 
-    if (GlobalConfig::is_enabled("automatic_start"))
-        simulation->start();
-
+    if (GlobalConfig::is_enabled("automatic_start")) simulation->start();
     if (GlobalConfig::is_enabled("display_simulation_window"))
     {
         gui.show();
-        if (GlobalConfig::is_enabled("display_stats")) {
-            stats->show();
-            if (GlobalConfig::is_enabled("debugging")){
-                _debugging->show();
-                _debugging_ui->init();
-                _debugging->init();
-                _debugging->move(gui.width(),600);
-                _debugging_ui->_stats = stats;
-                _debugging_ui->_scene = &gui;
-            }
-        }
+        stats->show();
+        _debugging->show();
+        _debugging_ui->init();
+        _debugging->init();
+        _debugging->move(gui.width(),600);
+        _debugging_ui->_stats = stats;
+        _debugging_ui->_scene = &gui;
     }
 
     ret=app.exec();
     delete simulation;
-    if (GlobalConfig::is_enabled("display_stats")) {
+    if (GlobalConfig::is_enabled("display_simulation_window")) {
         delete stats;
-        if (GlobalConfig::is_enabled("debugging")){
-            delete _debugging;
-            delete _debugging_ui;
-        }
+        delete _debugging;
+        delete _debugging_ui;
     }
     return ret;
 }

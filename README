@@ -1,0 +1,4 @@
+To install : 
+run script called compile.sh
+usage with the command line : ./projet [input file [body total mass [steps duration ]]]
+modify the files in /assets to change the simulations

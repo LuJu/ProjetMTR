@@ -33,8 +33,6 @@ btScalar rot_x(btScalar x , btScalar y , btScalar z , btScalar w)
     btScalar m_z = z;
     btScalar m_w = w;
     btScalar rotx = qAtan2(2*((m_w * m_x) + (m_y * m_z)), 1 - (2 * ((m_x* m_x) + (m_y * m_y))));
-//    qDebug()<<"1: "<<2*((m_w * m_x) + (m_y * m_z));
-//    qDebug()<<"2: "<<1 - (2 * ((m_x* m_x) + (m_y * m_y)));
     return rotx;
 }
 

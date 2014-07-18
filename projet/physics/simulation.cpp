@@ -107,10 +107,9 @@ void Simulation::loop(){
                 time_since_last_update = 0;
                 _lock.lockForWrite(); {
                     update();
-                    if (_step_counter >= steps_duration)
-                        stepOver();
-                    if (_delta_counter >= delta_duration){
+                    if (_step_counter >= steps_duration){
                         _human.recordStatus();
+                        stepOver();
                         _delta_counter = 0;
                     }
                     if (_end_counter >= duration)

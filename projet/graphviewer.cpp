@@ -62,36 +62,24 @@ void GraphViewer::draw(){
 }
 
 void GraphViewer::displayStats(){
-    QMatrix4x4 M,V,P;
+    QMatrix4x4 V,P;
     QRectF window;
-    float right,top,bottom,value;
-    value = bottom = top = right = 0;
+    float right,value;
+    value = right = 0.0f;
 
-    const QList<Curve>& curves= *_display_curves;
+    const QList<Curve>& curves=       *_display_curves;
     const QList<Curve>& curves_steps= *_display_curves_steps;
 
     for (int j = 0; j < curves.size(); ++j) {
         if (_curves_displayed.at(j) == true){
-
-            if (curves[j].size()>0){
-                value = (curves[j].end()-1).key();
-            } else {
-                value = 0;
-            }
-            if (right < value)
-                right = value;
-            value = curves[j].get_max();
-            if (top < value)
-                top = value;
-            value = curves[j].get_min();
-            if (bottom > value)
-                bottom = value;
+            if (curves[j].size()>0)
+                if (value < (curves[j].end()-1).key()) value = (curves[j].end()-1).key();
         }
     }
+    right = value;
     float scale_y = (float)(_ui->get_zoom());
-    if ( scale_y < 1.0f){
-        scale_y = 1.0f;
-    }
+    if ( scale_y < 1.0f) scale_y = 1.0f;
+
     float height_scale_y = (float)height()/100.0f;
     window.setY((scale_y*height_scale_y)/2.0f);
     window.setHeight((-scale_y)*height_scale_y);
@@ -107,7 +95,7 @@ void GraphViewer::displayStats(){
             if (!curves[j].isEmpty())
                 MeshUtils::render(curves[j],1,QColor(255,255,255),1);
             if (!curves_steps[j].isEmpty())
-                MeshUtils::render(curves_steps[j],1,QColor(255,255,255),3,true);
+                MeshUtils::render(curves_steps[j],1,QColor(255,0,0),3,true);
         }
     }
 }
@@ -141,8 +129,6 @@ void GraphViewer::keyPressEvent(QKeyEvent *keyEvent)
         _simulation->get_lock()->lockForRead();
         _simulation->start();
         _simulation->get_lock()->unlock();
-    } else if (keyEvent->key()==Qt::Key_A) {
-        GlobalConfig::switchState("automatic_stats_progression");
     } else {
         Viewer::keyPressEvent(keyEvent);
     }

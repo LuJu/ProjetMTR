@@ -61,7 +61,7 @@ public:
 
     void loadObjects(QString path);
     void recordStatus();
-    QList<part_info> recordSegmentData();
+    void recordSegmentData();
     void saveDataList();
     void savePartDataList(const QString& part_name) const;
     void saveFullDataList(float duration, float steps_duration);

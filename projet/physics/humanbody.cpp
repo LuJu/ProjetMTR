@@ -71,7 +71,6 @@ void HumanBody::loadObjects(QString path){
                         QString name = temp.at(1);
                         object->_part_name = name;
                         object->_parent_part_name = parent;
-
                         joint_parent = findJointByPartName(parent);
                         part_child = findPartByName(name);
                         part_parent = findPartByName(parent);
@@ -79,8 +78,7 @@ void HumanBody::loadObjects(QString path){
                         if (GlobalConfig::is_enabled("use_csv_masses")){
                             if (BodyInfo::isFixed(name)) mass = 0.0f;
                             else mass = BodyInfo::subSegmentMass(name,_total_mass);
-                        }
-                        else {
+                        } else {
                             if (temp.size() >= 5 && temp.at(4).contains("zero",Qt::CaseInsensitive))
                                 mass = 0.0f;
                             else mass = 1.0f;
@@ -149,7 +147,7 @@ void HumanBody::recordStatus(){
         full_data.pe_diff += energy.pe_diff;
 
     }
-    _full_data_list.append(full_data);
+    _sum_data_list.append(full_data);
 }
 
 
@@ -195,8 +193,8 @@ void HumanBody::recordSegmentData(){
 
             }
         }
+        _segments_data_list.append(segment_data);
     }
-    _segments_data_list.append(segment_data);
 }
 
 void HumanBody::savePartDataList(const QString& part_name) const{
@@ -217,7 +215,7 @@ void HumanBody::savePartDataList(const QString& part_name) const{
                     save.animation.position.x     <<save.animation.position.y  <<save.animation.position.z   <<
                     save.simulation.position.x    <<save.simulation.position.y <<save.simulation.position.z  <<
                     save.animation.speed <<save.animation.ke <<save.animation.ake <<save.animation.pe<<
-                    save.simulation.speed<<save.simulation.ke<<save.simulation.ake<<save.animation.pe<<
+                    save.simulation.speed<<save.simulation.ke<<save.simulation.ake<<save.simulation.pe<<
                     save.ke_diff         <<save.ake_diff     <<save.pe_diff;
             parser.nextLine();
         }
@@ -282,7 +280,7 @@ void HumanBody::saveCompleteDataList() const{
                 save.animation.position.x     <<save.animation.position.y  <<save.animation.position.z   <<
                 save.simulation.position.x    <<save.simulation.position.y <<save.simulation.position.z  <<
                 save.animation.speed <<save.animation.ke <<save.animation.ake <<save.animation.pe<<
-                save.simulation.speed<<save.simulation.ke<<save.simulation.ake<<save.animation.pe<<
+                save.simulation.speed<<save.simulation.ke<<save.simulation.ake<<save.simulation.pe<<
                 save.ke_diff         <<save.ake_diff     <<save.pe_diff;
          parser.nextLine();
     }
@@ -299,8 +297,8 @@ void HumanBody::saveFullDataList(float duration, float steps_duration){
             "ECT simulation (J)"<<"ECA simulation (J)"<<"EC totale simulation"<<"EP simulation (J)"<<
             "ECT difference (J)"<<"ECA difference (J)"<<"EC totale difference"<<"EP difference (J)"<<"duree(ms):"<<duration<<"pas(ms):"<<steps_duration;
     parser.nextLine();
-    for (int i = 0; i < _full_data_list.size(); ++i) {
-        save=_full_data_list.at(i);
+    for (int i = 0; i < _sum_data_list.size(); ++i) {
+        save=_sum_data_list.at(i);
         parser<<i<<save.time<<
         save.animation.ke <<save.animation.ake <<save.animation.ake+save.animation.ke  <<save.animation.pe <<
         save.simulation.ke<<save.simulation.ake<<save.simulation.ake+save.simulation.ke<<save.simulation.pe<<
